@@ -1,3 +1,0 @@
-MainApplication.java
- MainApplication
- MainApplication$1
