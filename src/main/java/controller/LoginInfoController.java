@@ -1,4 +1,4 @@
-package application;
+package controller;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-public class loginInfoController {
+public class LoginInfoController {
 	
 	@FXML private Label user;
 	@FXML private Label pass;
@@ -31,7 +31,7 @@ public class loginInfoController {
 	
 	//going to forgot password scene
 	public void goToLoginPage(ActionEvent event) throws IOException {
-		Parent forgotPassword = FXMLLoader.load(getClass().getResource("login.fxml"));
+		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
 		
 		// stage info

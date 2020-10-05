@@ -1,5 +1,3 @@
-package application;
-	
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -15,7 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.fxml.FXMLLoader;
 
 
-public class Main extends Application implements EventHandler<ActionEvent> {
+public class JavaFXController extends Application implements EventHandler<ActionEvent> {
 	
 	Button button;
 	
@@ -38,9 +36,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 //		primaryStage.show();
 		
 		
-		Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene scene = new Scene(root,700,400);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
