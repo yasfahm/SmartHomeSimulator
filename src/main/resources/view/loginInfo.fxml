@@ -41,9 +41,12 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <Label fx:id="date" layoutX="14.0" layoutY="187.0" text="Date" />
-                  <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="25.0" prefWidth="120.0" text="User" />
                   <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLoginPage" text="Log Out" />
                   <Button layoutX="17.0" layoutY="286.0" mnemonicParsing="false" onAction="#goToUserSettings" prefHeight="25.0" prefWidth="113.0" text="User Control" />
+                  <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="17.0" prefWidth="32.0" text="User" />
+                  <Label fx:id="pass" layoutX="14.0" layoutY="246.0" prefHeight="17.0" prefWidth="58.0" text="Password" />
+                   <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" prefHeight="17.0" onAction = "#addHouseLayout" text="Add House Layout" />
+                   <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLoginPage" text="Log Out" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -123,7 +126,7 @@
                                                 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                                              </center>
                                              <bottom>
-                                                <Label text="Hous" BorderPane.alignment="CENTER" />
+                                                <Label text="House" BorderPane.alignment="CENTER" />
                                              </bottom>
                                           </BorderPane>
                                        </children>
