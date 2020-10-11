@@ -42,33 +42,47 @@ public class RegistrationServiceTest
     }
 
     @Test
-    public void register_succesfully()
+    public void register_successfully()
     {
-        RegistrationStatus status = RegistrationService.registration("testUser1", "testUser1", "testUser1");
+        RegistrationStatus status = RegistrationService.registration("testUser1", "testUser1","testUser1", "testUser1", "testUser1");
         assertEquals(RegistrationStatus.USER_CREATED, status);
     }
 
     @Test
     public void not_equal_password()
     {
-        RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1", "wrong");
+        RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1","testUser1","testUser1", "wrong");
         assertEquals(RegistrationStatus.PASSWORD_NOT_EQUAL, status);
     }
 
     @Test
     public void not_unique_username() throws SQLException
     {
-        RegistrationService.registration("testUser2", "testUser1", "testUser1");
-        RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1", "testUser1");
+        RegistrationService.registration("testUser2", "testUser1", "testUser1", "testUser1","testUser1");
+        RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1","testUser1","testUser1", "testUser1");
         assertEquals(RegistrationStatus.NOT_UNIQUE_USERNAME, status);
 
         assertEquals(DatabaseService.GetNumberOfUsername("testUser2").size(), 1);
     }
 
     @Test
+    public void no_firstname()
+    {
+        RegistrationStatus status = RegistrationService.registration("testUser2", null, null, "testUser1","testUser1");
+        assertEquals(RegistrationStatus.NAME_IS_EMPTY, status);
+    }
+
+    @Test
+    public void spaces_as_firstname()
+    {
+        RegistrationStatus status = RegistrationService.registration("testUser2", "    ", "correct", "testUser1","testUser1");
+        assertEquals(RegistrationStatus.NAME_IS_EMPTY, status);
+    }
+
+    @Test
     public void update_password() throws SQLException
     {
-        RegistrationService.registration("testUser3", "testUser1", "testUser1");
+        RegistrationService.registration("testUser3", "testUser1","testUser1","testUser1", "testUser1");
         RegistrationStatus status = RegistrationService.updatePassword("testUser3", "test", "test");
         assertEquals(RegistrationStatus.PASSWORD_UPDATED, status);
 

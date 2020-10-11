@@ -1,23 +1,22 @@
 package controller;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Objects;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import service.LoginService;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Objects;
 
 public class LoginController {
 	
@@ -65,13 +64,8 @@ public class LoginController {
 
 		if (Objects.nonNull(userInfo))
 		{
-			controller.setUser(userInfo.get("firstname").toString());
-			controller.setPass(userInfo.get("lastname").toString());
+			controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
 			controller.setDate(date);
-
-			//userD.setText(controller.getUser().getText());
-			//passD.setText(controller.getPass().getText());
-			//controller.getUser()
 
 			// stage info
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

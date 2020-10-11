@@ -14,15 +14,10 @@ import javafx.stage.Stage;
 public class LoginInfoController {
 	
 	@FXML private Label user;
-	@FXML private Label pass;
 	@FXML private Label date;
 	
 	public void setUser(String s) {
 		user.setText(s);
-	}
-	
-	public void setPass(String s) {
-		pass.setText(s);
 	}
 	
 	public void setDate(String s) {

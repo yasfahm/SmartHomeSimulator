@@ -1,15 +1,20 @@
 package service;
 
 import constants.RegistrationStatus;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.SQLException;
 
 public class RegistrationService
 {
-    public static RegistrationStatus registration(final String username, final String password, final String passwordVerification)
+    public static RegistrationStatus registration(final String username, final String firstname, final String lastname, final String password, final String passwordVerification)
     {
         try
         {
+            if(StringUtils.isEmpty(StringUtils.trim(firstname)) || StringUtils.isEmpty(StringUtils.trim(lastname)))
+            {
+                return RegistrationStatus.NAME_IS_EMPTY;
+            }
             if (!password.equals(passwordVerification))
             {
                 return RegistrationStatus.PASSWORD_NOT_EQUAL;
@@ -17,8 +22,7 @@ public class RegistrationService
 
             if (DatabaseService.GetNumberOfUsername(username).size() < 1)
             {
-                // TODO add label for firstname and lastname here
-                DatabaseService.createNewUser(username, password, username, username);
+                DatabaseService.createNewUser(username, password, firstname, lastname);
                 return RegistrationStatus.USER_CREATED;
             }
             else
