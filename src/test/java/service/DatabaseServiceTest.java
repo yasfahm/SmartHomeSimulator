@@ -3,6 +3,7 @@ package service;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import constants.UserRoles;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,13 +16,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DatabaseServiceTest
-{
+public class DatabaseServiceTest {
     static DB db;
 
     @BeforeAll
-    static void setup() throws ManagedProcessException, SQLException
-    {
+    static void setup() throws ManagedProcessException, SQLException {
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
         config.setPort(0);
 
@@ -37,14 +36,12 @@ public class DatabaseServiceTest
     }
 
     @AfterAll
-    static void cleanup() throws ManagedProcessException
-    {
+    static void cleanup() throws ManagedProcessException {
         db.stop();
     }
 
     @Test
-    public void create_and_get_a_user() throws SQLException
-    {
+    public void create_and_get_a_user() throws SQLException {
         DatabaseService.createNewUser("testUser0", "testPassword", "testName", "testName");
         Map<String, Object> result = DatabaseService.verifyLogin("testUser0", "testPassword");
 
@@ -53,8 +50,7 @@ public class DatabaseServiceTest
     }
 
     @Test
-    public void verify_unique_username() throws SQLException
-    {
+    public void verify_unique_username() throws SQLException {
         DatabaseService.createNewUser("testUser1", "testPassword", "testName", "testName");
         List<String> result = DatabaseService.GetNumberOfUsername("testUser1");
         assertEquals(1, result.size());
@@ -65,8 +61,7 @@ public class DatabaseServiceTest
     }
 
     @Test
-    public void create_and_update_a_user_password() throws SQLException
-    {
+    public void create_and_update_a_user_password() throws SQLException {
         DatabaseService.createNewUser("testUser2", "testPassword", "testName", "testName");
         Map<String, Object> result = DatabaseService.verifyLogin("testUser2", "testPassword");
         assertEquals("testName", result.get("firstname"));
@@ -77,5 +72,23 @@ public class DatabaseServiceTest
         result = DatabaseService.verifyLogin("testUser2", "testPass");
         assertEquals("testName", result.get("firstname"));
         assertEquals("testName", result.get("lastname"));
+    }
+
+    @Test
+    public void create_and_update_user_role() throws SQLException {
+        DatabaseService.createNewUserRole("testUser3", UserRoles.STRANGER.toString());
+
+        DatabaseService.getAllUserRoles().forEach(r -> {
+            if (r.getUsername().equals("testUser3")) {
+                assertEquals(UserRoles.STRANGER.toString(), r.getRole().toString());
+            }
+        });
+
+        DatabaseService.updateUserRole("testUser3", UserRoles.GUEST.toString());
+        DatabaseService.getAllUserRoles().forEach(r -> {
+            if (r.getUsername().equals("testUser3")) {
+                assertEquals(UserRoles.GUEST.toString(), r.getRole().toString());
+            }
+        });
     }
 }

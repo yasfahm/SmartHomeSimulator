@@ -62,8 +62,7 @@ public class LoginController {
 
 		Map<String, Object> userInfo = LoginService.login(userD.getText(), passD.getText());
 
-		if (Objects.nonNull(userInfo))
-		{
+		if (Objects.nonNull(userInfo)) {
 			controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
 			controller.setDate(date);
 
@@ -72,8 +71,7 @@ public class LoginController {
 			window.setScene(loginScene);
 			window.show();
 		}
-		else
-		{
+		else {
 			// Create Popup with no user correlating to given username and password
 			System.out.println("Incorrect username and password");
 		}

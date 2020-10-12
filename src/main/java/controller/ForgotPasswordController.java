@@ -13,8 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import service.RegistrationService;
 
-public class ForgotPasswordController
-{
+public class ForgotPasswordController {
 	@FXML
 	private TextField username;
 	@FXML

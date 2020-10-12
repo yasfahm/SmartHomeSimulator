@@ -1,6 +1,5 @@
 package constants;
 
-public enum RegistrationStatus
-{
+public enum RegistrationStatus {
     USER_CREATED, NOT_UNIQUE_USERNAME, PASSWORD_NOT_EQUAL, PASSWORD_UPDATED, USERNAME_NOT_FOUND, NAME_IS_EMPTY
 }

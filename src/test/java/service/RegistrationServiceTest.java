@@ -14,13 +14,11 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RegistrationServiceTest
-{
+public class RegistrationServiceTest {
     static DB db;
 
     @BeforeAll
-    static void setup() throws ManagedProcessException, SQLException
-    {
+    static void setup() throws ManagedProcessException, SQLException {
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
         config.setPort(0);
 
@@ -36,28 +34,24 @@ public class RegistrationServiceTest
     }
 
     @AfterAll
-    static void cleanup() throws ManagedProcessException
-    {
+    static void cleanup() throws ManagedProcessException {
         db.stop();
     }
 
     @Test
-    public void register_successfully()
-    {
+    public void register_successfully() {
         RegistrationStatus status = RegistrationService.registration("testUser1", "testUser1","testUser1", "testUser1", "testUser1");
         assertEquals(RegistrationStatus.USER_CREATED, status);
     }
 
     @Test
-    public void not_equal_password()
-    {
+    public void not_equal_password() {
         RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1","testUser1","testUser1", "wrong");
         assertEquals(RegistrationStatus.PASSWORD_NOT_EQUAL, status);
     }
 
     @Test
-    public void not_unique_username() throws SQLException
-    {
+    public void not_unique_username() throws SQLException {
         RegistrationService.registration("testUser2", "testUser1", "testUser1", "testUser1","testUser1");
         RegistrationStatus status = RegistrationService.registration("testUser2", "testUser1","testUser1","testUser1", "testUser1");
         assertEquals(RegistrationStatus.NOT_UNIQUE_USERNAME, status);
@@ -66,22 +60,19 @@ public class RegistrationServiceTest
     }
 
     @Test
-    public void no_firstname()
-    {
+    public void no_firstname() {
         RegistrationStatus status = RegistrationService.registration("testUser2", null, null, "testUser1","testUser1");
         assertEquals(RegistrationStatus.NAME_IS_EMPTY, status);
     }
 
     @Test
-    public void spaces_as_firstname()
-    {
+    public void spaces_as_firstname() {
         RegistrationStatus status = RegistrationService.registration("testUser2", "    ", "correct", "testUser1","testUser1");
         assertEquals(RegistrationStatus.NAME_IS_EMPTY, status);
     }
 
     @Test
-    public void update_password() throws SQLException
-    {
+    public void update_password() throws SQLException {
         RegistrationService.registration("testUser3", "testUser1","testUser1","testUser1", "testUser1");
         RegistrationStatus status = RegistrationService.updatePassword("testUser3", "test", "test");
         assertEquals(RegistrationStatus.PASSWORD_UPDATED, status);
@@ -91,8 +82,7 @@ public class RegistrationServiceTest
     }
 
     @Test
-    public void cannot_update_unknown_username_password()
-    {
+    public void cannot_update_unknown_username_password() {
         RegistrationStatus status = RegistrationService.updatePassword("testUser4", "test", "test");
         assertEquals(RegistrationStatus.USERNAME_NOT_FOUND, status);
     }

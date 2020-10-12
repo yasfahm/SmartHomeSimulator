@@ -34,4 +34,19 @@ public class LoginInfoController {
 		window.setScene(forgotPasswordScene);
 		window.show();
 	}
+
+	public void goToUserSettings(ActionEvent event) throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
+		Parent userRoles = loader.load();
+		Scene userRolesScene = new Scene(userRoles);
+
+		UserRolesController controller = loader.getController();
+		controller.setUsername(user.getText());
+
+		// stage info
+		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+		window.setScene(userRolesScene);
+		window.show();
+	}
 }

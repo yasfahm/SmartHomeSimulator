@@ -7,12 +7,10 @@ import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
 
-public class MainApplication
-{
+public class MainApplication {
 
 
-    public static void main(String[] args) throws ManagedProcessException, SQLException
-    {
+    public static void main(String[] args) throws ManagedProcessException, SQLException {
         SetupDatabase();
         JavaFXController.main(args);
     }
@@ -22,16 +20,13 @@ public class MainApplication
      * Data directory is on the drive's root in a folder named mariaDB
      * @throws ManagedProcessException
      */
-    private static void SetupDatabase() throws ManagedProcessException, SQLException
-    {
+    private static void SetupDatabase() throws ManagedProcessException, SQLException {
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
         config.setPort(0);
-        if (SystemUtils.IS_OS_WINDOWS)
-        {
+        if (SystemUtils.IS_OS_WINDOWS) {
             config.setDataDir("/mariaDB/backup");
         }
-        else
-        {
+        else {
             config.setDataDir("~/mariaDB/backup");
         }
 

@@ -16,8 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import service.RegistrationService;
 
-public class SignUpController
-{
+public class SignUpController {
 	@FXML
 	private TextField username;
 	@FXML
@@ -41,33 +40,27 @@ public class SignUpController
 		window.show();
 	}
 
-	public void processRegistration(ActionEvent event)
-	{
+	public void processRegistration(ActionEvent event) {
 		RegistrationStatus status = RegistrationService.registration(username.getText(), firstname.getText(), lastname.getText(), password.getText(), passwordVerification.getText());
 
 		switch (status) {
-			case USER_CREATED:
-			{
+			case USER_CREATED: {
 				setPrompt(Alert.AlertType.INFORMATION, "User has been created");
 				break;
 			}
-			case PASSWORD_NOT_EQUAL:
-			{
+			case PASSWORD_NOT_EQUAL: {
 				setPrompt(Alert.AlertType.WARNING, "Passwords are not equal");
 				break;
 			}
-			case NOT_UNIQUE_USERNAME:
-			{
+			case NOT_UNIQUE_USERNAME: {
 				setPrompt(Alert.AlertType.WARNING, "Username has already been taken");
 				break;
 			}
-			case NAME_IS_EMPTY:
-			{
+			case NAME_IS_EMPTY: {
 				setPrompt(Alert.AlertType.WARNING, "First name and Last name must not be empty");
 				break;
 			}
-			default:
-			{
+			default: {
 				setPrompt(Alert.AlertType.ERROR, "Seems like an error occurred");
 			}
 		}
@@ -75,8 +68,7 @@ public class SignUpController
 		alert.showAndWait();
 	}
 
-	private void setPrompt(final Alert.AlertType alertType, final String message)
-	{
+	private void setPrompt(final Alert.AlertType alertType, final String message) {
 		alert = new Alert(alertType);
 		alert.setHeaderText(null);
 		alert.setContentText(message);
