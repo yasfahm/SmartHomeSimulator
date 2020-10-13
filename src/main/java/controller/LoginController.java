@@ -109,7 +109,7 @@ public class LoginController {
 	 * Gets the location of a mouse.
 	 * @param event
 	 */
-	public void handle(MouseEvent event) {
+	public void getLocation(MouseEvent event) {
 		xOffset = event.getSceneX();
 		yOffset = event.getSceneY();
 	}

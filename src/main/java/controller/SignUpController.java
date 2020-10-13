@@ -58,26 +58,31 @@ public class SignUpController {
 		RegistrationStatus status = RegistrationService.registration(username.getText(), firstname.getText(), lastname.getText(), password.getText(), passwordVerification.getText());
 
 		switch (status) {
+			//changes the label's text to "User has been created"
 			case USER_CREATED: {
 				displayMessage.setTextFill(Color.BLACK);
 				displayMessage.setText("User has been created");
 				break;
 			}
+			//changes the label's text to "Passwords are not equal"
 			case PASSWORD_NOT_EQUAL: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Passwords are not equal");
 				break;
 			}
+			//changes the label's text to "Username has already been taken"
 			case NOT_UNIQUE_USERNAME: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Username has already been taken");
 				break;
 			}
+			//changes the label's text to "First name and Last name must not be empty"
 			case NAME_IS_EMPTY: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("First name and Last name must not be empty");
 				break;
 			}
+			//changes the label's text to "Seems like an error occurred"
 			default: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Seems like an error occurred");
@@ -98,7 +103,7 @@ public class SignUpController {
 	 * Gets the location of a mouse.
 	 * @param event
 	 */
-	public void handle(MouseEvent event) {
+	public void getLocation(MouseEvent event) {
 		xOffset = event.getSceneX();
 		yOffset = event.getSceneY();
 	}

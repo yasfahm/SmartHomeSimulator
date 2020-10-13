@@ -58,22 +58,25 @@ public class ForgotPasswordController {
 	public void updatePassword(ActionEvent event) {
 		RegistrationStatus status = RegistrationService.updatePassword(username.getText(), password.getText(), passwordVerification.getText());
 		switch (status) {
+			//changes the label's text to "Password has been updated"
 			case PASSWORD_UPDATED: {
 				displayMessage.setTextFill(Color.BLACK);
 				displayMessage.setText("Password has been updated");
-				//setPrompt(Alert.AlertType.INFORMATION, "Password has been created");
 				break;
 			}
+			//changes the label's text to "Passwords are not equal"
 			case PASSWORD_NOT_EQUAL: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Passwords are not equal");
 				break;
 			}
+			//changes the label's text to "Username not found"
 			case USERNAME_NOT_FOUND: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Username not found");
 				break;
 			}
+			//changes the label's text to "Seems like an error occurred"
 			default: {
 				displayMessage.setTextFill(Color.RED);
 				displayMessage.setText("Seems like an error occurred");
@@ -94,7 +97,7 @@ public class ForgotPasswordController {
 	 * Gets the location of a mouse.
 	 * @param event
 	 */
-	public void handle(MouseEvent event) {
+	public void getLocation(MouseEvent event) {
 		xOffset = event.getSceneX();
 		yOffset = event.getSceneY();
 	}

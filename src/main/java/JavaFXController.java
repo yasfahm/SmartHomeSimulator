@@ -15,28 +15,10 @@ import javafx.stage.StageStyle;
 
 
 public class JavaFXController extends Application implements EventHandler<ActionEvent> {
-	
-	Button button;
-	
+
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		
-//		primaryStage.setTitle("TEST");
-//		
-//		button = new Button();
-//		button.setText("test");
-//		button.setOnAction(this);
-//		
-//		StackPane layout = new StackPane();
-//		layout.getChildren().add(button);
-//		
-//		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("Sample.fxml"));
-//		Scene scene = new Scene(layout,400,400);
-//		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-//		primaryStage.setScene(scene);
-//		primaryStage.show();
-		
-		
+
 		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene scene = new Scene(root,700,400);
 		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
@@ -46,17 +28,7 @@ public class JavaFXController extends Application implements EventHandler<Action
 
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
-		
 	}
-	
-//	@Override
-//	public void handle(ActionEvent event) {
-//		if(event.getSource()==button) {
-//			System.out.println("test");
-//		}
-//	}
 
 	/**
 	 * Main method which runs the program.
@@ -69,6 +41,6 @@ public class JavaFXController extends Application implements EventHandler<Action
 	@Override
 	public void handle(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
