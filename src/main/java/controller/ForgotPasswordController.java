@@ -64,10 +64,10 @@ public class ForgotPasswordController {
 				displayMessage.setText("Password has been updated");
 				break;
 			}
-			//changes the label's text to "Passwords are not equal"
+			//changes the label's text to "Passwords do not match"
 			case PASSWORD_NOT_EQUAL: {
 				displayMessage.setTextFill(Color.RED);
-				displayMessage.setText("Passwords are not equal");
+				displayMessage.setText("Passwords do not match");
 				break;
 			}
 			//changes the label's text to "Username not found"
