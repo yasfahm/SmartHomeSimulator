@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.fxml.FXMLLoader;
+import javafx.stage.StageStyle;
 
 
 public class JavaFXController extends Application implements EventHandler<ActionEvent> {
@@ -39,6 +40,10 @@ public class JavaFXController extends Application implements EventHandler<Action
 		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene scene = new Scene(root,700,400);
 		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
+
+		//removing title bar from the window(stage)
+		primaryStage.initStyle(StageStyle.UNDECORATED);
+
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
@@ -52,7 +57,11 @@ public class JavaFXController extends Application implements EventHandler<Action
 //			System.out.println("test");
 //		}
 //	}
-	
+
+	/**
+	 * Main method which runs the program.
+	 * @param
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
