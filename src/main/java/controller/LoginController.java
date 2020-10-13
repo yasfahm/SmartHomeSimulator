@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -20,21 +19,12 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LoginController {
-	/**
-	 * declaring variables
-	 */
+	
 	@FXML private TextField userD;
 	@FXML private PasswordField passD;
-	@FXML private Label displayMessage;
-
-	private double xOffset = 0;
-	private double yOffset = 0;
-
-	/**
-	 * This function loads the forgot password page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
-	 */
+	
+	
+	//going to forgot password scene
 	public void goToForgotPassword(ActionEvent event) throws IOException {
 		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/forgotPassword.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
@@ -44,12 +34,8 @@ public class LoginController {
 		window.setScene(forgotPasswordScene);
 		window.show();
 	}
-
-	/**
-	 * This function loads the sign up page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
-	 */
+	
+	//going to sign up scene
 	public void goToSignUp(ActionEvent event) throws IOException {
 		Parent signUp = FXMLLoader.load(getClass().getResource("/view/signUp.fxml"));
 		Scene signUpScene = new Scene(signUp);
@@ -58,12 +44,8 @@ public class LoginController {
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 		window.setScene(signUpScene);window.show();
 	}
-
-	/**
-	 * This function loads the loginInfo page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
-	 */
+	
+	//show the login info
 	public void loginInfo(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/loginInfo.fxml"));
@@ -91,36 +73,12 @@ public class LoginController {
 		}
 		else {
 			// Create Popup with no user correlating to given username and password
-			displayMessage.setText("Incorrect username and password");
+			System.out.println("Incorrect username and password");
 		}
 
 	}
-
-	/**
-	 * This function will close the application
-	 * @param event
-	 * @throws IOException
-	 */
+		
 	public void close(MouseEvent event) throws IOException {
 		System.exit(0);
-	}
-
-	/**
-	 * Gets the location of a mouse.
-	 * @param event
-	 */
-	public void handle(MouseEvent event) {
-		xOffset = event.getSceneX();
-		yOffset = event.getSceneY();
-	}
-
-	/**
-	 * Changes the location of the window(stage) based on the mouse location..
-	 * @param event
-	 */
-	public void move(MouseEvent event) {
-		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setX(event.getScreenX() - xOffset);
-		window.setY(event.getScreenY() - yOffset);
 	}
 }
