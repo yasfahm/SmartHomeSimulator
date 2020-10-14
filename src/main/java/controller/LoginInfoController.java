@@ -14,18 +14,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.Popup;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class LoginInfoController {
-	
+	/**
+	 * declaring variables
+	 */
 	@FXML private Label user;
 	@FXML private Label date;
 	private Desktop desktop = Desktop.getDesktop();
 
+	private double xOffset = 0;
+	private double yOffset = 0;
 	public void setUser(String s) {
 		user.setText(s);
 	}
@@ -35,6 +37,11 @@ public class LoginInfoController {
 	}
 
 	//going to forgot password scene
+	/**
+	 * This function loads the login page(scene) into the window(stage)
+	 * @param event
+	 * @throws IOException
+	 */
 	public void goToLoginPage(ActionEvent event) throws IOException {
 		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
@@ -45,6 +52,11 @@ public class LoginInfoController {
 		window.show();
 	}
 
+	/**
+	 * This function loads the user roles page(scene) into the window(stage)
+	 * @param event
+	 * @throws IOException
+	 */
 	public void goToUserSettings(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
@@ -74,12 +86,31 @@ public class LoginInfoController {
 
 	}
 
-//	private void openFile(File file) {
-//		try {
-//			desktop.open(file);
-//		}
-//		catch (Exception e){
-//			System.out.println("uh oh");
-//		}
-//	}
+	/**
+	 * This function will close the application
+	 * @param event
+	 * @throws IOException
+	 */
+	public void close(MouseEvent event) throws IOException {
+		System.exit(0);
+	}
+
+	/**
+	 * Gets the location of a mouse.
+	 * @param event
+	 */
+	public void getLocation(MouseEvent event) {
+		xOffset = event.getSceneX();
+		yOffset = event.getSceneY();
+	}
+
+	/**
+	 * Changes the location of the window(stage) based on the mouse location..
+	 * @param event
+	 */
+	public void move(MouseEvent event) {
+		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+		window.setX(event.getScreenX() - xOffset);
+		window.setY(event.getScreenY() - yOffset);
+	}
 }
