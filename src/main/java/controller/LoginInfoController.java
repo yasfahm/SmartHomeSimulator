@@ -16,6 +16,10 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.Popup;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 
 public class LoginInfoController {
@@ -28,6 +32,7 @@ public class LoginInfoController {
 
 	private double xOffset = 0;
 	private double yOffset = 0;
+
 	public void setUser(String s) {
 		user.setText(s);
 	}
