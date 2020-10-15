@@ -2,6 +2,9 @@ package entity;
 
 import constants.UserRoles;
 
+/**
+ * Database entity for User Roles
+ */
 public class UserRole {
     private String username;
     private UserRoles role;
