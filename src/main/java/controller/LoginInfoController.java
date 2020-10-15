@@ -1,5 +1,19 @@
 package controller;
 
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import entity.Door;
 import entity.Position;
 import entity.Room;
@@ -7,6 +21,7 @@ import entity.Window;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,6 +33,11 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
+
+import org.json.*;
+
 import service.HouseLayoutService;
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +45,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Controller responsible for the control and flow of the main, loginInfo, scene
- */
-public class LoginInfoController {
+
+public class LoginInfoController implements Initializable {
+
 	/**
 	 * declaring variables
 	 */
@@ -36,12 +55,14 @@ public class LoginInfoController {
 	@FXML private Label date;
 	@FXML private Canvas houseRender;
 	@FXML private Label time;
-
+	
+	
 	private GraphicsContext gc ;
 	private double xOffset = 0;
 	private double yOffset = 0;
 	private final int ROOM_SIZE = 75;
 	private final int DOOR_SIZE = ROOM_SIZE - 55;
+	private long timeInMillis;
 
 	public void setUser(String s) {
 		user.setText(s);
@@ -51,8 +72,59 @@ public class LoginInfoController {
 		date.setText(s);
 	}
 	
-	public void setTime(String s) {
-		time.setText(s);
+	/**
+	 * Function to setting new time label
+	 * @param lt
+	 */
+	public void setTime(LocalTime lt) {
+		System.out.println("setTime()");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+		String strTime = dtf.format(lt);
+		System.out.println(strTime);
+		time.setText(strTime);
+		
+		// setting variable for durationInMillis
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		try {
+			Date date = sdf.parse(strTime);
+			this.timeInMillis = date.getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Animation controller for clock
+	 */
+	private void moveClock() {
+		this.timeInMillis += 1000;
+		long second = (timeInMillis / 1000) % 60;
+		long minute = (timeInMillis / (1000 * 60)) % 60;
+		long hour = (timeInMillis / (1000 * 60 * 60)) % 24 - 5;
+		time.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+	}
+
+	/**
+	 * Function from interface Initializable, initialize default actions
+	 * @param location, resources
+	 */
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		String date = DateTimeFormatter.ofPattern("yyyy - MMMM - dd").format(LocalDateTime.now());
+		this.setDate(date);
+		LocalTime currentTime = LocalTime.now();
+		this.setTime(currentTime);
+		
+		// Calling animation on clock
+		Timeline clock = new Timeline(
+			new KeyFrame(Duration.ZERO, 
+			e -> moveClock()
+		),
+	         new KeyFrame(Duration.seconds(1))
+	    );
+	    clock.setCycleCount(Animation.INDEFINITE);
+	    clock.play();
+	    
 	}
 
 	//going to forgot password scene
@@ -277,10 +349,13 @@ public class LoginInfoController {
          controller.setParentController(this);
  
          Stage stage = new Stage();
+         stage.initStyle(StageStyle.UTILITY);
          stage.setScene(new Scene(root));
          stage.show();
 		
     }
+
+	
 	
 	
 }
