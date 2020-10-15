@@ -1,17 +1,28 @@
 package entity;
 
 public class Window {
-    private int position;
+    private Position position;
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
+    /**
+     * Constructor for class Window
+     *
+     * @param position
+     */
+    public Window(Position position) {
         this.position = position;
     }
 
-    public Window(int position) {
+    /**
+     * @return position of the window
+     */
+    public Position getPosition() {
+        return position;
+    }
+
+    /**
+     * @param position position of the window
+     */
+    public void setPosition(Position position) {
         this.position = position;
     }
 }
