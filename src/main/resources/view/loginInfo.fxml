@@ -166,7 +166,6 @@
                                           <BorderPane layoutY="26.0" prefHeight="326.0" prefWidth="256.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <center>
                                                  <Canvas fx:id="houseRender" height="286.0" width="355.0" />
-<!--                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />-->
                                              </center>
                                              <bottom>
                                                 <Label text="House" BorderPane.alignment="CENTER" />

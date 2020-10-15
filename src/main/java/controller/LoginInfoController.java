@@ -32,10 +32,8 @@ public class LoginInfoController {
 	@FXML private Label time;
 
 	private GraphicsContext gc ;
-
 	private double xOffset = 0;
 	private double yOffset = 0;
-
 	private final int ROOM_SIZE = 75;
 	private final int DOOR_SIZE = ROOM_SIZE - 55;
 
@@ -219,6 +217,11 @@ public class LoginInfoController {
 		gc.setStroke(Color.BLACK);
 	}
 
+	/**
+	 * @param x x coordinate of the light
+	 * @param y y coordinate of the light
+	 * @param on boolean value for lights on/off
+	 */
 	public void drawLight(int x, int y, boolean on) {
 		if(on)
 			gc.setFill(Color.GOLD);
