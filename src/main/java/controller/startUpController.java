@@ -1,7 +1,5 @@
 package controller;
 
-import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,59 +7,41 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import service.LoginService;
 
-public class LoginInfoController {
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Objects;
+
+public class startUpController {
 	/**
 	 * declaring variables
 	 */
-	@FXML private Label user;
-	@FXML private Label date;
+	@FXML private TextField userD;
+	@FXML private PasswordField passD;
+	@FXML private Label displayMessage;
 
 	private double xOffset = 0;
 	private double yOffset = 0;
-	
-	public void setUser(String s) {
-		user.setText(s);
-	}
-	
-	public void setDate(String s) {
-		date.setText(s);
-	}
 
 	/**
-	 * This function loads the start up page(scene) into the window(stage)
+	 * This function loads the login info page(scene) into the window(stage)
 	 * @param event
 	 * @throws IOException
 	 */
-	public void goToStartUp(ActionEvent event) throws IOException {
-		Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
-		Scene startUpScene = new Scene(startUp);
+	public void goToLoginInfo(ActionEvent event) throws IOException {
+		Parent loginInfo = FXMLLoader.load(getClass().getResource("/view/loginInfo.fxml"));
+		Scene loginInfoScene = new Scene(loginInfo);
 
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setScene(startUpScene);
-		window.show();
-	}
-
-	/**
-	 * This function loads the user roles page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
-	 */
-	public void goToUserSettings(ActionEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
-		Parent userRoles = loader.load();
-		Scene userRolesScene = new Scene(userRoles);
-
-		UserRolesController controller = loader.getController();
-		controller.setUsername(user.getText());
-
-		// stage info
-		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setScene(userRolesScene);
+		window.setScene(loginInfoScene);
 		window.show();
 	}
 
