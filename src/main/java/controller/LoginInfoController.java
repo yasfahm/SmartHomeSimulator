@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,7 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class LoginInfoController {
 	/**
@@ -18,6 +22,7 @@ public class LoginInfoController {
 	 */
 	@FXML private Label user;
 	@FXML private Label date;
+	@FXML private Label time;
 
 	private double xOffset = 0;
 	private double yOffset = 0;
@@ -29,6 +34,13 @@ public class LoginInfoController {
 	public void setDate(String s) {
 		date.setText(s);
 	}
+	
+	public void setTime(String s) {
+		time.setText(s);
+	}
+	
+	
+
 
 	/**
 	 * This function loads the login page(scene) into the window(stage)
@@ -92,4 +104,26 @@ public class LoginInfoController {
 		window.setX(event.getScreenX() - xOffset);
 		window.setY(event.getScreenY() - yOffset);
 	}
+	
+	/**
+	 * This function loads the user roles page(scene) into the window(stage)
+	 * @param event
+	 * @throws IOException
+	 */
+    public void bt_changeDateTimeOnClick(ActionEvent event)  throws IOException {
+		System.out.println("bt_changeDateTimeOnClick()");
+	
+		 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+         Parent root = loader.load();
+
+         ChangeDateTimeController controller = loader.getController();
+         controller.setParentController(this);
+ 
+         Stage stage = new Stage();
+         stage.setScene(new Scene(root));
+         stage.show();
+		
+    }
+	
+	
 }
