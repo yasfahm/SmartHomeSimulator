@@ -85,8 +85,8 @@ public class LoginController {
 
 		if (Objects.nonNull(userInfo)) {
 			controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
-			controller.setDate(date);
-			controller.setTime(time);
+			//controller.setDate(date);
+			//controller.setTime(time);
 			// stage info
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 			window.setScene(loginScene);
