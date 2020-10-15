@@ -12,13 +12,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import service.LoginService;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Controller responsible for the control and flow of the Login scene
+ */
 public class LoginController {
 	/**
 	 * declaring variables
@@ -69,27 +71,29 @@ public class LoginController {
 		loader.setLocation(getClass().getResource("/view/loginInfo.fxml"));
 		Parent login = loader.load();
 		
+		System.out.println("Location:=" + loader.getLocation());
+		
 		Scene loginScene = new Scene(login);
 		
 		LoginInfoController controller = loader.getController();
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDateTime now = LocalDateTime.now();
-		System.out.println(dtf.format(now));
 		String date = dtf.format(now);
+		
+		String time = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
 
 		Map<String, Object> userInfo = LoginService.login(userD.getText(), passD.getText());
 
 		if (Objects.nonNull(userInfo)) {
 			controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
 			controller.setDate(date);
-
+			controller.setTime(time);
 			// stage info
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 			window.setScene(loginScene);
 			window.show();
-		}
-		else {
+		} else {
 			// Create Popup with no user correlating to given username and password
 			displayMessage.setText("Incorrect username and password");
 		}
