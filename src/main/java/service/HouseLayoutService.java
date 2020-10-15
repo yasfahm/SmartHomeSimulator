@@ -14,6 +14,13 @@ import java.util.ArrayList;
 
 public class HouseLayoutService {
 
+    /**
+     * Method creating the rooms for the house
+     *
+     * @param file The file used to describe the house's rooms
+     * @return An array of {@link Room} that comprises the house
+     * @throws IOException Thrown if the file cannot be read
+     */
     public static Room[] parseHouseLayout(File file) throws IOException {
         String marshalled = Files.readString(file.toPath(), StandardCharsets.US_ASCII);
 

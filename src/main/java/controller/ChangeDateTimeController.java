@@ -1,5 +1,12 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
@@ -9,16 +16,13 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.stage.Stage;
 
+/**
+ * Controller responsible for the control and flow of the Date Time Popup scene
+ */
 public class ChangeDateTimeController implements Initializable{
 	
+
 	/**
 	 * declaring variables
 	 */
@@ -87,7 +91,7 @@ public class ChangeDateTimeController implements Initializable{
 		this.parentController = loginInfoController;
 	}
 
-    
+
 	/**
 	 * This function submit the change to parent controller
 	 * @param event
@@ -104,13 +108,14 @@ public class ChangeDateTimeController implements Initializable{
     	System.out.println("Changing date to [" + date + "]");
     	System.out.println("Changing time to [" + time + "]");
     	
-		parentController.setDate(date);
-		parentController.setTime(LocalTime.parse(time));
-		
-		Stage stage = (Stage) cb_year.getScene().getWindow();
-		stage.close();
+      parentController.setDate(date);
+      parentController.setTime(LocalTime.parse(time));
+
+      Stage stage = (Stage) cb_year.getScene().getWindow();
+      stage.close();
     }
     
+
     /**
 	 * This function simply close the pane without any change
 	 * @param event
@@ -121,6 +126,7 @@ public class ChangeDateTimeController implements Initializable{
         stage.close();
     }
     
+
     /**
    	 * This function set dynamic date as month change
    	 * @param event
@@ -129,6 +135,7 @@ public class ChangeDateTimeController implements Initializable{
     	li_date = getDateList();
 		cb_date.setItems(li_date);
     }
+
 
     /**
 	 * This function assigns the proper years range to List
@@ -153,14 +160,18 @@ public class ChangeDateTimeController implements Initializable{
 	private ObservableList<Integer> getDateList(){
 		int length;
 		int month = Month.valueOf(cb_month.getValue().toUpperCase()).getValue();
-		if (month == 4 || month == 6 || month == 9 || month == 11)  length = 30; 
-		else if (month == 2) length = 29; 
-		else length = 31;
+		if (month == 4 || month == 6 || month == 9 || month == 11)  {
+			length = 30;
+		} else if (month == 2) {
+			length = 29;
+		} else {
+			length = 31;
+		}
 		Integer[] arr = IntStream.of(IntStream.range(1, length+1).toArray()).boxed().toArray( Integer[]::new );
 		return FXCollections.observableArrayList(arr);
 	}
 	
-	
+
  
 
 }

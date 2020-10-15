@@ -1,21 +1,24 @@
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import java.io.IOException;
 
-
+/**
+ * Controller that will load the starting screen of the JavaFX application
+ */
 public class JavaFXController extends Application implements EventHandler<ActionEvent> {
 
+	/**
+	 * Method starting up the application and loads in the first scene
+	 *
+	 * @param primaryStage The first stage of the application
+	 * @throws IOException Exception thrown when the application is unable to find the view files
+	 */
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
@@ -32,15 +35,21 @@ public class JavaFXController extends Application implements EventHandler<Action
 
 	/**
 	 * Main method which runs the program.
-	 * @param
+	 *
+	 * @param args Console arguments
 	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	/**
+	 * Overwrites the default handle method to prevent its use in the JavaFXController
+	 *
+	 * @param event The event that triggered this method
+	 */
 	@Override
-	public void handle(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void handle(ActionEvent event) {
+		// Do Nothing
 
 	}
 }

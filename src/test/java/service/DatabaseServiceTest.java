@@ -4,6 +4,7 @@ import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import constants.UserRoles;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -90,5 +91,16 @@ public class DatabaseServiceTest {
                 assertEquals(UserRoles.GUEST.toString(), r.getRole().toString());
             }
         });
+    }
+
+    @Test
+    public void create_and_delete_a_user() throws SQLException {
+        DatabaseService.createNewUser("testUser4", "testPassword", "testName", "testName");
+        assertEquals(1, DatabaseService.GetNumberOfUsername("testUser4").size());
+        int numOfAccounts = DatabaseService.query("SELECT username FROM users", new ColumnListHandler<>()).size();
+
+        DatabaseService.deleteUser("testUser4");
+        int numOfAccountsAfter = DatabaseService.query("SELECT username FROM users", new ColumnListHandler<>()).size();
+        assertEquals(numOfAccounts - 1, numOfAccountsAfter);
     }
 }

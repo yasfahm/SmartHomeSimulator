@@ -12,13 +12,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import service.LoginService;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Controller responsible for the control and flow of the Login scene
+ */
 public class LoginController {
 	/**
 	 * declaring variables
@@ -91,8 +93,7 @@ public class LoginController {
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 			window.setScene(loginScene);
 			window.show();
-		}
-		else {
+		} else {
 			// Create Popup with no user correlating to given username and password
 			displayMessage.setText("Incorrect username and password");
 		}
