@@ -38,7 +38,7 @@ public class LoginController {
 	public void goToForgotPassword(ActionEvent event) throws IOException {
 		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/forgotPassword.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
-		
+
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 		window.setScene(forgotPasswordScene);

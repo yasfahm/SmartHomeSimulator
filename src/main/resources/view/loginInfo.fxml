@@ -82,7 +82,7 @@
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#goToLoginPage" text="Log Out" />
+                        <Button mnemonicParsing="false" onAction="#goToStartUp" text="Log Out" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" top="10.0" />

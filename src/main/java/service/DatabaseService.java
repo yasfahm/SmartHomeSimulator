@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Database Service which is responsible for all queries to the database.
+ */
 public class DatabaseService {
     private static Connection databaseConnection;
     private static QueryRunner queryRunner;

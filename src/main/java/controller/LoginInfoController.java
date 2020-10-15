@@ -43,17 +43,17 @@ public class LoginInfoController {
 
 
 	/**
-	 * This function loads the login page(scene) into the window(stage)
+	 * This function loads the start up page(scene) into the window(stage)
 	 * @param event
 	 * @throws IOException
 	 */
-	public void goToLoginPage(ActionEvent event) throws IOException {
-		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-		Scene forgotPasswordScene = new Scene(forgotPassword);
-		
+	public void goToStartUp(ActionEvent event) throws IOException {
+		Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
+		Scene startUpScene = new Scene(startUp);
+
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setScene(forgotPasswordScene);
+		window.setScene(startUpScene);
 		window.show();
 	}
 
