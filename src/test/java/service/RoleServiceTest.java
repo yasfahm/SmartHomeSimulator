@@ -3,7 +3,6 @@ package service;
 import constants.UserRoles;
 import org.apache.commons.lang3.EnumUtils;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,6 +17,7 @@ public class RoleServiceTest {
     public void should_not_allow_non_role_value() {
         assertFalse(EnumUtils.isValidEnum(UserRoles.class, "incorrect"));
     }
+
     @Test
     public void should_not_allow_role_with_incorrect_capitalization() {
         assertFalse(EnumUtils.isValidEnum(UserRoles.class, "Guest"));

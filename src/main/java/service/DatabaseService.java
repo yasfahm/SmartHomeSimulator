@@ -33,6 +33,7 @@ public class DatabaseService {
 
     /**
      * Update SQL command syntax
+     *
      * @param command The SQL command
      * @return The number of rows updated
      * @throws SQLException Thrown if the command has a syntax error
@@ -43,6 +44,7 @@ public class DatabaseService {
 
     /**
      * Insert SQL command syntax
+     *
      * @param command The SQL command
      * @return The rows added
      * @throws SQLException Thrown if the command has a syntax error
@@ -53,6 +55,7 @@ public class DatabaseService {
 
     /**
      * Query SQL command syntax
+     *
      * @param command The SQL command
      * @return The number of rows queried
      * @throws SQLException Thrown if the command has a syntax error
@@ -87,10 +90,10 @@ public class DatabaseService {
     /**
      * The SQL command for user creation
      *
-     * @param username New user's username
-     * @param password New user's password
+     * @param username  New user's username
+     * @param password  New user's password
      * @param firstname New user's first name
-     * @param lastname New user's last name
+     * @param lastname  New user's last name
      * @return List of Strings containing information about the new user
      * @throws SQLException Thrown if the command has a syntax error
      */
@@ -124,7 +127,7 @@ public class DatabaseService {
      * The SQL command for creating a new user role
      *
      * @param username The given username
-     * @param role The username's first role
+     * @param role     The username's first role
      * @return A list of affected rows in the database
      * @throws SQLException Thrown if the command has a syntax error
      */
@@ -136,7 +139,7 @@ public class DatabaseService {
      * The SQL command for updating the user's role
      *
      * @param username The given username
-     * @param role The username's new role
+     * @param role     The username's new role
      * @return The number of affected rows in the database
      * @throws SQLException Thrown if the command has a syntax error
      */

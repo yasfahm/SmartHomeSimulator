@@ -2,9 +2,8 @@ import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import org.apache.commons.lang3.SystemUtils;
-import service.DatabaseService;
 import org.flywaydb.core.Flyway;
-
+import service.DatabaseService;
 import java.sql.SQLException;
 
 public class MainApplication {
@@ -15,7 +14,7 @@ public class MainApplication {
      *
      * @param args Console arguments
      * @throws ManagedProcessException Exception thrown if the DB unexpectedly crashes
-     * @throws SQLException Exception thrown if the DB is unable to start
+     * @throws SQLException            Exception thrown if the DB is unable to start
      */
     public static void main(String[] args) throws ManagedProcessException, SQLException {
         SetupDatabase();
@@ -25,8 +24,9 @@ public class MainApplication {
     /**
      * Sets up the DB for this program and migrates all tables automatically from resources/db/migration.
      * Data directory is on the drive's root in a folder named mariaDB
+     *
      * @throws ManagedProcessException Exception thrown if the DB unexpectedly crashes
-     * @throws SQLException Exception thrown if the DB is unable to start
+     * @throws SQLException            Exception thrown if the DB is unable to start
      */
     private static void SetupDatabase() throws ManagedProcessException, SQLException {
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();

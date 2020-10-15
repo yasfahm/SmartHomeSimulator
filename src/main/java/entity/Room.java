@@ -12,9 +12,9 @@ public class Room {
     /**
      * Constructor for class Room
      *
-     * @param name name of the room
-     * @param windows windows in the room
-     * @param doors doors in the room
+     * @param name        name of the room
+     * @param windows     windows in the room
+     * @param doors       doors in the room
      * @param lightsTotal total lights in the room
      */
     public Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal) {
