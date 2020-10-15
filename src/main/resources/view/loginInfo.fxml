@@ -45,6 +45,10 @@
                     <children>
                         <VBox alignment="CENTER" prefHeight="373.0" prefWidth="172.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
+                                <Label fx:id="date" layoutX="14.0" layoutY="187.0" text="Date" />
+                                <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="25.0" prefWidth="120.0" text="User" />
+                                <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLogin" text="Log Out" />
+                                <Button layoutX="17.0" layoutY="286.0" mnemonicParsing="false" onAction="#goToUserSettings" prefHeight="25.0" prefWidth="113.0" text="User Control" />
                                 <Label fx:id="user" text="User Group" />
                                 <Button mnemonicParsing="false" onAction="#goToUserSettings" text="User Control">
                                     <VBox.margin>

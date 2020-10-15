@@ -133,8 +133,8 @@ public class LoginInfoController implements Initializable {
      * @param event The event that called this function
      * @throws IOException Thrown if the file cannot be read
      */
-    public void goToStartUp(ActionEvent event) throws IOException {
-        Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
+    public void goToLogin(ActionEvent event) throws IOException {
+        Parent startUp = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         Scene startUpScene = new Scene(startUp);
 
         // stage info
