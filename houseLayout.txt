@@ -1,0 +1,55 @@
+{"rooms": [
+	{
+		"name": "Bathroom",
+		"windows": [
+			{ "position": 2 },
+		],
+		"doors": [
+			{ "position": 1, "connection": "Living Room" },
+		],
+		"lights": 1
+	},
+	{
+		"name": "Living Room",
+		"windows": [],
+		"doors": [
+			{ "position": 3, "connection": "Bathroom" },
+			{ "position": 2, "connection": "Bedroom 1" },
+			{ "position": 1, "connection": "Kitchen" },
+			{ "position": 4, "connection": "Bedroom 2" },
+		],
+		"lights": 1
+	},
+	{
+		"name": "Bedroom 1",
+		"windows": [
+			{ "position": 1 }
+		],
+		"doors": [
+			{ "position": 4, "connection": "Living Room" }
+		],
+		"lights": 1
+	},
+	{
+		"name": "Kitchen",
+		"windows": [
+			{ "position": 1 }
+		],
+		"doors": [
+			{ "position": 3, "connection": "Living Room" }
+		],
+		"lights": 1
+	},
+	{
+		"name": "Bedroom 2",
+		"windows": [
+			{ "position": 1 },
+			{ "position": 4 },
+			{ "position": 3 }
+		],
+		"doors": [
+			{ "position": 2, "connection": "Living Room" }
+		],
+		"lights": 1
+	}
+]}
