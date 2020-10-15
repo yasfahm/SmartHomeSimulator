@@ -21,6 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.json.*;
+import service.HouseLayoutService;
 
 public class LoginInfoController {
 	/**
@@ -101,77 +102,20 @@ public class LoginInfoController {
 		fileChooser.setTitle("Open Resource File");
 		File file = fileChooser.showOpenDialog(window);
 
-		String marshalled = Files.readString(file.toPath(), StandardCharsets.US_ASCII);
-
-		JSONObject parsed = new JSONObject(marshalled);
-
-		JSONArray roomsJSON = parsed.getJSONArray("rooms");
-		Room[] roomsArray = new Room[roomsJSON.length()];
-
-		for (int i=0; i<roomsJSON.length(); i++){
-			JSONObject room = roomsJSON.getJSONObject(i);
-			String name = roomsJSON.getJSONObject(i).getString("name");
-			int lightsTotal = roomsJSON.getJSONObject(i).getInt("lights");
-
-			JSONArray windowsJSON = room.getJSONArray("windows");
-			ArrayList<Window> windows = new ArrayList<Window>();
-
-			JSONArray doorsJSON = room.getJSONArray("doors");
-			ArrayList<Door> doors = new ArrayList<Door>();
-
-			for (int j=0; j<windowsJSON.length();j++){
-				int position = windowsJSON.getJSONObject(j).getInt("position");
-				windows.add(new Window(getPosition(position)));
-			}
-
-			for (int j=0; j<doorsJSON.length();j++){
-				int position = doorsJSON.getJSONObject(j).getInt("position");
-				String connection = doorsJSON.getJSONObject(j).getString("connection");
-				switch (position) {
-					case 0:
-						doors.add(new Door(Position.NONE, connection));
-						break;
-					case 1:
-						doors.add(new Door(Position.TOP, connection));
-					case 2:
-						doors.add(new Door(Position.RIGHT, connection));
-						break;
-					case 3:
-						doors.add(new Door(Position.BOTTOM, connection));
-						break;
-					case 4:
-						doors.add(new Door(Position.LEFT, connection));
-						break;
-				}
-			}
-			roomsArray[i] = new Room(name, windows, doors, lightsTotal);
+		Room[] roomsArray = HouseLayoutService.parseHouseLayout(file);
+		
+		HashMap<String, Room> rooms = new HashMap<>();
+		for (Room room : roomsArray) {
+			rooms.put(room.getName(), room);
 		}
 
-		HashMap<String, Room> rooms = new HashMap<String, Room>();
-		for (Room room : roomsArray) rooms.put(room.getName(), room);
-
-		Set<Room> traversed = new HashSet<Room>();
+		Set<Room> traversed = new HashSet<>();
 
 		gc = houseRender.getGraphicsContext2D();
 		gc.setFont(new Font(10));
 
 		int lastX = 90, lastY = 170;
 		drawRoom(rooms, roomsArray[0], traversed, Position.NONE, lastX, lastY);
-	}
-
-	/**
-	 * @param x position index
-	 * @return Position enum value
-	 */
-	public Position getPosition(int x) {
-		switch (x){
-			case 0 -> {return Position.NONE;}
-			case 1 -> {return Position.TOP;}
-			case 2 -> {return Position.RIGHT;}
-			case 3 -> {return Position.BOTTOM;}
-			case 4 -> {return Position.LEFT;}
-		}
-		return Position.NONE;
 	}
 
 	/**
@@ -223,8 +167,9 @@ public class LoginInfoController {
 	 * @param on boolean value for lights on/off
 	 */
 	public void drawLight(int x, int y, boolean on) {
-		if(on)
+		if(on) {
 			gc.setFill(Color.GOLD);
+		}
 	}
 
 	/**
