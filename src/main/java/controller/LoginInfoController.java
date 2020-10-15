@@ -1,12 +1,10 @@
 package controller;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
-
 import entity.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
 import org.json.*;
 
 public class LoginInfoController {
@@ -36,13 +33,11 @@ public class LoginInfoController {
 
 	private GraphicsContext gc ;
 
-	private Desktop desktop = Desktop.getDesktop();
-
 	private double xOffset = 0;
 	private double yOffset = 0;
 
-	int ROOM_SIZE = 75;
-	int DOOR_SIZE = (ROOM_SIZE - 55);
+	private final int ROOM_SIZE = 75;
+	private final int DOOR_SIZE = ROOM_SIZE - 55;
 
 	public void setUser(String s) {
 		user.setText(s);
@@ -55,9 +50,6 @@ public class LoginInfoController {
 	public void setTime(String s) {
 		time.setText(s);
 	}
-	
-	
-
 
 	//going to forgot password scene
 	/**
@@ -158,8 +150,7 @@ public class LoginInfoController {
 		}
 
 		HashMap<String, Room> rooms = new HashMap<String, Room>();
-		for (int i=0; i<roomsArray.length; i++)
-			rooms.put(roomsArray[i].getName(), roomsArray[i]);
+		for (Room room : roomsArray) rooms.put(room.getName(), room);
 
 		Set<Room> traversed = new HashSet<Room>();
 
@@ -170,6 +161,10 @@ public class LoginInfoController {
 		drawRoom(rooms, roomsArray[0], traversed, Position.NONE, lastX, lastY);
 	}
 
+	/**
+	 * @param x position index
+	 * @return Position enum value
+	 */
 	public Position getPosition(int x) {
 		switch (x){
 			case 0 -> {return Position.NONE;}
@@ -181,29 +176,42 @@ public class LoginInfoController {
 		return Position.NONE;
 	}
 
+	/**
+	 * @param x first x coordinate of the door
+	 * @param y second x coordinate of the door
+	 * @param x2 first y coordinate of the door
+	 * @param y2 second y coordinate of the door
+	 */
 	public void drawDoor(int x, int y, int x2, int y2) {
 		gc.setLineWidth(3);
 		gc.strokeLine(x, y, x2, y2);
 		gc.setLineWidth(1);
 	}
 
-	public void drawWindows(Room room, int px, int py){
+	/**
+	 * This function draws windows on the house layout
+	 *
+	 * @param room room where window is drawn
+	 * @param x x coordinate of top left corner of the room
+	 * @param y y coordinate top left corner of the room
+	 */
+	public void drawWindows(Room room, int x, int y){
 		gc.setLineWidth(3);
 		gc.setStroke(Color.LIGHTBLUE);
 		for (Window window : room.getWindows()) {
 			switch (window.getPosition()){
 				case NONE -> {}
 				case BOTTOM -> {
-					gc.strokeLine(px + (ROOM_SIZE - DOOR_SIZE) / 2, py + ROOM_SIZE, px + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, py + ROOM_SIZE);
+					gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
 				}
 				case RIGHT -> {
-					gc.strokeLine(px + ROOM_SIZE, py + (ROOM_SIZE - DOOR_SIZE) / 2, px + ROOM_SIZE, py + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+					gc.strokeLine(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
 				}
 				case TOP -> {
-					gc.strokeLine(px + (ROOM_SIZE - DOOR_SIZE) / 2, py, px + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, py);
+					gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
 				}
 				case LEFT -> {
-					gc.strokeLine(px, py + (ROOM_SIZE - DOOR_SIZE) / 2, px, py + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+					gc.strokeLine(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
 				}
 			}
 		}
@@ -211,52 +219,58 @@ public class LoginInfoController {
 		gc.setStroke(Color.BLACK);
 	}
 
-	public void drawLight(double x, double y, boolean on) {
+	public void drawLight(int x, int y, boolean on) {
 		if(on)
 			gc.setFill(Color.GOLD);
-		gc.fillOval(x, y, 10, 10);
-		gc.setFill(Color.BLACK);
 	}
 
-	public void drawRoom(HashMap<String, Room> dict, Room room, Set<Room> traversed, Position parent, int px, int py) {
-		traversed.add(room);
-		switch (parent) {
+	/**
+	 * @param roomHashMap
+	 * @param room room to draw
+	 * @param visited rooms that have been visited
+	 * @param previous position of the previously visited room
+	 * @param x x coordinate of the previously visited room
+	 * @param y y coordinate of the previously visited room
+	 */
+	public void drawRoom(HashMap<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
+		visited.add(room);
+		switch (previous) {
 			case NONE -> {
-				gc.strokeRect(px, py, ROOM_SIZE, ROOM_SIZE);
-				gc.fillText(room.getName(), px + 10, py + 15);
-				drawDoor(px + (ROOM_SIZE - DOOR_SIZE) / 2, py + ROOM_SIZE, px + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, py + ROOM_SIZE);
+				gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+				gc.fillText(room.getName(), x + 10, y + 15);
+				drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
 			}
 			case BOTTOM -> {
-				drawDoor(px + (ROOM_SIZE - DOOR_SIZE) / 2, py, px + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, py);
-				py += ROOM_SIZE;
-				gc.strokeRect(px, py, ROOM_SIZE, ROOM_SIZE);
-				gc.fillText(room.getName(), px + 10, py + 15);
+				drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
+				y += ROOM_SIZE;
+				gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+				gc.fillText(room.getName(), x + 10, y + 15);
 			}
 			case RIGHT -> {
-				drawDoor(px + ROOM_SIZE, py + (ROOM_SIZE - DOOR_SIZE) / 2, px + ROOM_SIZE, py + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-				px += ROOM_SIZE;
-				gc.strokeRect(px, py, ROOM_SIZE, ROOM_SIZE);
-				gc.fillText(room.getName(), px + 10, py + 15);
+				drawDoor(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+				x += ROOM_SIZE;
+				gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+				gc.fillText(room.getName(), x + 10, y + 15);
 			}
 			case TOP -> {
-				drawDoor(px + (ROOM_SIZE - DOOR_SIZE) / 2, py, px + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, py);
-				py -= ROOM_SIZE;
-				gc.strokeRect(px, py, ROOM_SIZE, ROOM_SIZE);
-				gc.fillText(room.getName(), px + 10, py + 15);
+				drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
+				y -= ROOM_SIZE;
+				gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+				gc.fillText(room.getName(), x + 10, y + 15);
 			}
 			case LEFT -> {
-				drawDoor(px, py + (ROOM_SIZE - DOOR_SIZE) / 2, px, py + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-				px -= ROOM_SIZE;
-				gc.strokeRect(px, py, ROOM_SIZE, ROOM_SIZE);
-				gc.fillText(room.getName(), px + 10, py + 15);
+				drawDoor(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+				x -= ROOM_SIZE;
+				gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+				gc.fillText(room.getName(), x + 10, y + 15);
 			}
 		}
-		drawWindows(room, px, py);
-//		drawLight(px + ROOM_SIZE/2 - 5, py + ROOM_SIZE/2 - 5, true);
+		drawWindows(room, x, y);
+		drawLight((int) x + ROOM_SIZE/2 - 5, (int) y + ROOM_SIZE/2 - 5, false);
 		for (Door child: room.getDoors()){
-			Room nextRoom = dict.get(child.getConnection());
-			if(!traversed.contains(nextRoom))
-				drawRoom(dict, nextRoom, traversed, child.getPosition(), px, py);
+			Room nextRoom = roomHashMap.get(child.getConnection());
+			if(!visited.contains(nextRoom))
+				drawRoom(roomHashMap, nextRoom, visited, child.getPosition(), x, y);
 		}
 	}
 

@@ -43,18 +43,8 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-<!--<<<<<<< HEAD-->
-<!--                  <Label fx:id="date" layoutX="14.0" layoutY="187.0" text="Date" />-->
-<!--                  <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLoginPage" text="Log Out" />-->
-<!--                  <Button layoutX="17.0" layoutY="286.0" mnemonicParsing="false" onAction="#goToUserSettings" prefHeight="25.0" prefWidth="113.0" text="User Control" />-->
-<!--                  <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="17.0" prefWidth="32.0" text="User" />-->
-<!--                  <Label fx:id="pass" layoutX="14.0" layoutY="246.0" prefHeight="17.0" prefWidth="58.0" text="Password" />-->
-<!--                   <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" prefHeight="17.0" onAction = "#addHouseLayout" text="Add House Layout" />-->
-<!--                   <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLoginPage" text="Log Out" />-->
-<!--=======-->
                   <VBox alignment="CENTER" prefHeight="373.0" prefWidth="172.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-<!--                        <ImageView fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" />-->
                         <Label fx:id="user" text="User Group" />
                         <Button mnemonicParsing="false" onAction="#goToUserSettings" text="User Control">
                            <VBox.margin>
@@ -99,7 +89,6 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </VBox>
-<!--&gt;>>>>>> 89e1053d79563bf789e63d2745e184901e5e1d10-->
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
