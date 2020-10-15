@@ -7,7 +7,7 @@ public class Door {
     /**
      * Constructor for class Door
      *
-     * @param position position of the door
+     * @param position   position of the door
      * @param connection room the door connects to
      */
     public Door(Position position, String connection) {

@@ -29,7 +29,7 @@ public class HouseLayoutService {
         JSONArray roomsJSON = parsed.getJSONArray("rooms");
         Room[] roomsArray = new Room[roomsJSON.length()];
 
-        for (int i=0; i<roomsJSON.length(); i++){
+        for (int i = 0; i < roomsJSON.length(); i++) {
             JSONObject room = roomsJSON.getJSONObject(i);
             String name = roomsJSON.getJSONObject(i).getString("name");
             int lightsTotal = roomsJSON.getJSONObject(i).getInt("lights");
@@ -40,12 +40,12 @@ public class HouseLayoutService {
             JSONArray doorsJSON = room.getJSONArray("doors");
             ArrayList<Door> doors = new ArrayList<>();
 
-            for (int j=0; j<windowsJSON.length();j++){
+            for (int j = 0; j < windowsJSON.length(); j++) {
                 int position = windowsJSON.getJSONObject(j).getInt("position");
                 windows.add(new Window(getPosition(position)));
             }
 
-            for (int j=0; j<doorsJSON.length();j++){
+            for (int j = 0; j < doorsJSON.length(); j++) {
                 int position = doorsJSON.getJSONObject(j).getInt("position");
                 String connection = doorsJSON.getJSONObject(j).getString("connection");
                 switch (position) {
@@ -75,12 +75,22 @@ public class HouseLayoutService {
      * @return Position enum value
      */
     public static Position getPosition(int x) {
-        switch (x){
-            case 0 -> {return Position.NONE;}
-            case 1 -> {return Position.TOP;}
-            case 2 -> {return Position.RIGHT;}
-            case 3 -> {return Position.BOTTOM;}
-            case 4 -> {return Position.LEFT;}
+        switch (x) {
+            case 0 -> {
+                return Position.NONE;
+            }
+            case 1 -> {
+                return Position.TOP;
+            }
+            case 2 -> {
+                return Position.RIGHT;
+            }
+            case 3 -> {
+                return Position.BOTTOM;
+            }
+            case 4 -> {
+                return Position.LEFT;
+            }
         }
         return Position.NONE;
     }

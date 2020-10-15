@@ -13,43 +13,43 @@ import java.io.IOException;
  */
 public class JavaFXController extends Application implements EventHandler<ActionEvent> {
 
-	/**
-	 * Method starting up the application and loads in the first scene
-	 *
-	 * @param primaryStage The first stage of the application
-	 * @throws IOException Exception thrown when the application is unable to find the view files
-	 */
-	@Override
-	public void start(Stage primaryStage) throws IOException {
+    /**
+     * Method starting up the application and loads in the first scene
+     *
+     * @param primaryStage The first stage of the application
+     * @throws IOException Exception thrown when the application is unable to find the view files
+     */
+    @Override
+    public void start(Stage primaryStage) throws IOException {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-		Scene scene = new Scene(root,700,400);
-		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
+        Parent root = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
+        Scene scene = new Scene(root, 700, 400);
+        scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
 
-		//removing title bar from the window(stage)
-		primaryStage.initStyle(StageStyle.UNDECORATED);
+        //removing title bar from the window(stage)
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
-	/**
-	 * Main method which runs the program.
-	 *
-	 * @param args Console arguments
-	 */
-	public static void main(String[] args) {
-		launch(args);
-	}
+    /**
+     * Main method which runs the program.
+     *
+     * @param args Console arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-	/**
-	 * Overwrites the default handle method to prevent its use in the JavaFXController
-	 *
-	 * @param event The event that triggered this method
-	 */
-	@Override
-	public void handle(ActionEvent event) {
-		// Do Nothing
+    /**
+     * Overwrites the default handle method to prevent its use in the JavaFXController
+     *
+     * @param event The event that triggered this method
+     */
+    @Override
+    public void handle(ActionEvent event) {
+        // Do Nothing
 
-	}
+    }
 }
