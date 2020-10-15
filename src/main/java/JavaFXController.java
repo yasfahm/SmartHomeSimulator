@@ -19,7 +19,7 @@ public class JavaFXController extends Application implements EventHandler<Action
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
 		Scene scene = new Scene(root,700,400);
 		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
 

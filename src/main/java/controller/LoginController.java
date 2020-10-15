@@ -38,7 +38,7 @@ public class LoginController {
 	public void goToForgotPassword(ActionEvent event) throws IOException {
 		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/forgotPassword.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
-		
+
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 		window.setScene(forgotPasswordScene);
@@ -69,21 +69,24 @@ public class LoginController {
 		loader.setLocation(getClass().getResource("/view/loginInfo.fxml"));
 		Parent login = loader.load();
 		
+		System.out.println("Location:=" + loader.getLocation());
+		
 		Scene loginScene = new Scene(login);
 		
 		LoginInfoController controller = loader.getController();
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDateTime now = LocalDateTime.now();
-		System.out.println(dtf.format(now));
 		String date = dtf.format(now);
+		
+		String time = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
 
 		Map<String, Object> userInfo = LoginService.login(userD.getText(), passD.getText());
 
 		if (Objects.nonNull(userInfo)) {
 			controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
 			controller.setDate(date);
-
+			controller.setTime(time);
 			// stage info
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 			window.setScene(loginScene);

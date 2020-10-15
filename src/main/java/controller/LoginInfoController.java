@@ -32,6 +32,8 @@ public class LoginInfoController {
 	@FXML private Label user;
 	@FXML private Label date;
 	@FXML private Canvas houseRender;
+	@FXML private Label time;
+
 	private GraphicsContext gc ;
 
 	private Desktop desktop = Desktop.getDesktop();
@@ -49,20 +51,27 @@ public class LoginInfoController {
 	public void setDate(String s) {
 		date.setText(s);
 	}
+	
+	public void setTime(String s) {
+		time.setText(s);
+	}
+	
+	
+
 
 	//going to forgot password scene
 	/**
-	 * This function loads the login page(scene) into the window(stage)
+	 * This function loads the start up page(scene) into the window(stage)
 	 * @param event
 	 * @throws IOException
 	 */
-	public void goToLoginPage(ActionEvent event) throws IOException {
-		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-		Scene forgotPasswordScene = new Scene(forgotPassword);
-		
+	public void goToStartUp(ActionEvent event) throws IOException {
+		Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
+		Scene startUpScene = new Scene(startUp);
+
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setScene(forgotPasswordScene);
+		window.setScene(startUpScene);
 		window.show();
 	}
 
@@ -278,4 +287,26 @@ public class LoginInfoController {
 		window.setX(event.getScreenX() - xOffset);
 		window.setY(event.getScreenY() - yOffset);
 	}
+	
+	/**
+	 * This function loads the user roles page(scene) into the window(stage)
+	 * @param event
+	 * @throws IOException
+	 */
+    public void bt_changeDateTimeOnClick(ActionEvent event)  throws IOException {
+		System.out.println("bt_changeDateTimeOnClick()");
+	
+		 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+         Parent root = loader.load();
+
+         ChangeDateTimeController controller = loader.getController();
+         controller.setParentController(this);
+ 
+         Stage stage = new Stage();
+         stage.setScene(new Scene(root));
+         stage.show();
+		
+    }
+	
+	
 }

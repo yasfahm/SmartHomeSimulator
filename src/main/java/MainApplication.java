@@ -9,7 +9,14 @@ import java.sql.SQLException;
 
 public class MainApplication {
 
-
+    /**
+     * Main method of the project.
+     * This will call the method to set up the DB, then it will call the JavaFX controller to start the application
+     *
+     * @param args Console arguments
+     * @throws ManagedProcessException Exception thrown if the DB unexpectedly crashes
+     * @throws SQLException Exception thrown if the DB is unable to start
+     */
     public static void main(String[] args) throws ManagedProcessException, SQLException {
         SetupDatabase();
         JavaFXController.main(args);
@@ -18,15 +25,15 @@ public class MainApplication {
     /**
      * Sets up the DB for this program and migrates all tables automatically from resources/db/migration.
      * Data directory is on the drive's root in a folder named mariaDB
-     * @throws ManagedProcessException
+     * @throws ManagedProcessException Exception thrown if the DB unexpectedly crashes
+     * @throws SQLException Exception thrown if the DB is unable to start
      */
     private static void SetupDatabase() throws ManagedProcessException, SQLException {
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
         config.setPort(0);
         if (SystemUtils.IS_OS_WINDOWS) {
             config.setDataDir("/mariaDB/backup");
-        }
-        else {
+        } else {
             config.setDataDir("~/mariaDB/backup");
         }
 
