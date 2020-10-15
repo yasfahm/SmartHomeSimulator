@@ -1,2 +1,50 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
-.test {-fx-background-color: white;}
+*{
+
+    dark-primary-color:#616161;
+    default-primary-color:#9E9E9E;
+    light-primary-color:#F5F5F5 ;
+    text-primary-color:#212121;
+    accent-color: #212121;
+    secondary-text-color:#757575;
+    divider-color: #BDBDBD;
+}
+
+.root{
+    -fx-background-color: default-primary-color;
+}
+
+.title{
+    -fx-font-size: 35px;
+    -fx-font-family: "Courier New";
+    -fx-text-fill: text-primary-color;
+}
+
+.button{
+    -fx-background-color: accent-color;
+    -fx-background-radius: 30;
+    -fx-background-insets: 0,1,1;
+    -fx-text-fill: light-primary-color;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+    -fx-padding: 10;
+    -fx-font-family: "Tahoma";
+}
+.button:hover{
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 30;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: center;
+    -fx-content-display: left;
+    -fx-padding: 10;
+}
+
+.text-box{
+    -fx-padding: 10;
+}
+
+.link{
+    -fx-color: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}

@@ -10,20 +10,20 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-radius: 5;" styleClass="test" stylesheets="@application.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
    <children>
-      <AnchorPane onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="400.0" prefWidth="700.0" styleClass="test">
+      <AnchorPane onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="400.0" prefWidth="700.0" styleClass="root" stylesheets="@application.css">
          <children>
-            <Button layoutX="326.0" layoutY="298.0" mnemonicParsing="false" onAction="#loginInfo" text="Login" />
-            <TextField fx:id="userD" layoutX="270.0" layoutY="132.0" promptText="Username" />
-            <PasswordField fx:id="passD" layoutX="270.0" layoutY="173.0" promptText="password" />
-            <Hyperlink layoutX="299.0" layoutY="256.0" onAction="#goToForgotPassword" text="Forgot Password" />
-            <Label layoutX="335.0" layoutY="75.0" text="Sign In" />
-            <Label layoutX="680.0" onMouseClicked="#close" text="X">
+            <Button layoutX="324.0" layoutY="276.0" mnemonicParsing="false" onAction="#loginInfo" stylesheets="@application.css" text="Login" />
+            <TextField fx:id="userD" layoutX="270.0" layoutY="132.0" promptText="username" styleClass="text-box" stylesheets="@application.css" />
+            <PasswordField fx:id="passD" layoutX="270.0" layoutY="173.0" promptText="password" styleClass="text-box" stylesheets="@application.css" />
+            <Hyperlink layoutX="281.0" layoutY="210.0" onAction="#goToForgotPassword" styleClass="link" stylesheets="@application.css" text="Forgot Password?" textAlignment="CENTER" textFill="#4f99d7" />
+            <Label layoutX="680.0" onMouseClicked="#close" stylesheets="@application.css" text="X">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Button layoutX="321.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToSignUp" text="SignUp" />
-            <Label fx:id="displayMessage" layoutX="271.0" layoutY="222.0" prefHeight="17.0" prefWidth="256.0" textFill="#f50101" />
+            <Button layoutX="317.0" layoutY="324.0" mnemonicParsing="false" onAction="#goToSignUp" stylesheets="@application.css" text="Sign Up" />
+            <Label fx:id="displayMessage" layoutX="228.0" layoutY="240.0" prefHeight="17.0" prefWidth="256.0" styleClass="root" stylesheets="@application.css" textAlignment="CENTER" textFill="#f50101" />
+            <Label layoutX="293.0" layoutY="66.0" styleClass="title" text="LOGIN" />
          </children>
       </AnchorPane>
    </children>

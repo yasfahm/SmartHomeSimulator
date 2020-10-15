@@ -35,13 +35,13 @@ public class LoginInfoController {
 	 * @param event
 	 * @throws IOException
 	 */
-	public void goToStartUp(ActionEvent event) throws IOException {
-		Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
-		Scene startUpScene = new Scene(startUp);
+	public void goToLogin(ActionEvent event) throws IOException {
+		Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Scene loginScene = new Scene(login);
 
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-		window.setScene(startUpScene);
+		window.setScene(loginScene);
 		window.show();
 	}
 
