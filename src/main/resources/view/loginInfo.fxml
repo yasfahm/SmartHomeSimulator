@@ -11,7 +11,7 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -45,7 +45,6 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="373.0" prefWidth="172.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ImageView fitHeight="85.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" />
                         <Label fx:id="user" text="User Group" />
                         <Button mnemonicParsing="false" onAction="#goToUserSettings" text="User Control">
                            <VBox.margin>
@@ -82,7 +81,9 @@
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#goToStartUp" text="Log Out" />
+                         <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" prefHeight="17.0" onAction = "#addHouseLayout" text="Add House Layout" />
+
+                         <Button mnemonicParsing="false" onAction="#goToStartUp" text="Log Out" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" top="10.0" />
@@ -164,10 +165,10 @@
                                        <children>
                                           <BorderPane layoutY="26.0" prefHeight="326.0" prefWidth="256.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <center>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                                                 <Canvas fx:id="houseRender" height="286.0" width="355.0" />
                                              </center>
                                              <bottom>
-                                                <Label text="Hous" BorderPane.alignment="CENTER" />
+                                                <Label text="House" BorderPane.alignment="CENTER" />
                                              </bottom>
                                           </BorderPane>
                                        </children>

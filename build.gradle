@@ -39,6 +39,7 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.12'
     implementation 'commons-dbutils:commons-dbutils:1.6'
     implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'org.json:json:20200518'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
 }
