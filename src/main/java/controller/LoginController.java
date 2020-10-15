@@ -38,7 +38,7 @@ public class LoginController {
 	public void goToForgotPassword(ActionEvent event) throws IOException {
 		Parent forgotPassword = FXMLLoader.load(getClass().getResource("/view/forgotPassword.fxml"));
 		Scene forgotPasswordScene = new Scene(forgotPassword);
-		
+
 		// stage info
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 		window.setScene(forgotPasswordScene);
@@ -88,7 +88,8 @@ public class LoginController {
 			Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 			window.setScene(loginScene);
 			window.show();
-		} else {
+		}
+		else {
 			// Create Popup with no user correlating to given username and password
 			displayMessage.setText("Incorrect username and password");
 		}

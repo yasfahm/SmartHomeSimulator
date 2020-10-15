@@ -1,22 +1,25 @@
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.fxml.FXMLLoader;
 import javafx.stage.StageStyle;
-import java.io.IOException;
 
-/**
- * Controller that will load the starting screen of the JavaFX application
- */
+
 public class JavaFXController extends Application implements EventHandler<ActionEvent> {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
 		Scene scene = new Scene(root,700,400);
 		scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
 
@@ -29,19 +32,15 @@ public class JavaFXController extends Application implements EventHandler<Action
 
 	/**
 	 * Main method which runs the program.
-	 * @param args Console arguments
+	 * @param
 	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
-	/**
-	 * Overwrites the default handle method to prevent its functionality on the JavaFX controller
-	 *
-	 * @param arg0 Event that calls this method
-	 */
 	@Override
 	public void handle(ActionEvent arg0) {
-		// Do nothing
+		// TODO Auto-generated method stub
+
 	}
 }
