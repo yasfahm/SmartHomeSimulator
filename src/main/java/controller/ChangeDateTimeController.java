@@ -1,5 +1,13 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
@@ -10,23 +18,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
+/**
+ * Controller responsible for the control and flow of the Date Time Popup scene
+ */
 public class ChangeDateTimeController implements Initializable{
 	
 	private LoginInfoController parentController;
 	
 	public void setParentController(LoginInfoController loginInfoController) {
-		System.out.println("setController()");
 		this.parentController = loginInfoController;
 	}
 	
@@ -63,8 +63,6 @@ public class ChangeDateTimeController implements Initializable{
 
     @FXML
     void bt_onChangeClick(ActionEvent event) throws IOException {
-    	System.out.println("bt_onChangeClick()");
-    	
     	String date = cb_year.getValue() + "/" + cb_month.getValue() + "/" + cb_date.getValue();
     	String time = cb_hour.getValue() + ":" + cb_minute.getValue() + " " + cb_ampm.getValue();
     	
@@ -82,21 +80,18 @@ public class ChangeDateTimeController implements Initializable{
     
     @FXML
     void bt_onCancelClick(ActionEvent event) {
-    	System.out.println("bt_onCancelClick()");
     	Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
     
     @FXML
     void cb_onMonthChange(ActionEvent event) {
-    	System.out.println("cb_onMonthChange()");
     	li_date = getDateList();
 		cb_date.setItems(li_date);
     }
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		System.out.println("initialize()");
 		setDefaultValue();
 		li_year = getYearList();
 		cb_year.setItems(li_year);
@@ -122,13 +117,15 @@ public class ChangeDateTimeController implements Initializable{
 	}
 	
 	private ObservableList<Integer> getDateList(){
-		System.out.println("getDateList() " + cb_month.getValue());
-		
 		int length;
 		int month = Month.valueOf(cb_month.getValue().toUpperCase()).getValue();
-		if (month == 4 || month == 6 || month == 9 || month == 11)  length = 30; 
-		else if (month == 2) length = 29; 
-		else length = 31;
+		if (month == 4 || month == 6 || month == 9 || month == 11)  {
+			length = 30;
+		} else if (month == 2) {
+			length = 29;
+		} else {
+			length = 31;
+		}
 		Integer[] arr = IntStream.of(IntStream.range(1, length+1).toArray()).boxed().toArray( Integer[]::new );
 		return FXCollections.observableArrayList(arr);
 	}
@@ -137,10 +134,10 @@ public class ChangeDateTimeController implements Initializable{
 	 * This function will set default value of the pane
 	 */
 	private void setDefaultValue() {
-		LocalDate currentdate = LocalDate.now();
-		cb_year.setValue(Integer.toString(currentdate.getYear()));
-		cb_month.setValue(new DateFormatSymbols().getMonths()[currentdate.getMonthValue()-1]);
-		cb_date.setValue(currentdate.getDayOfMonth()); 
+		LocalDate currentDate = LocalDate.now();
+		cb_year.setValue(Integer.toString(currentDate.getYear()));
+		cb_month.setValue(new DateFormatSymbols().getMonths()[currentDate.getMonthValue()-1]);
+		cb_date.setValue(currentDate.getDayOfMonth());
 		cb_hour.setValue(Integer.parseInt(new SimpleDateFormat("hh").format(new Date())));
 		cb_minute.setValue(Integer.parseInt(new SimpleDateFormat("mm").format(new Date())));
 		cb_ampm.setValue(new SimpleDateFormat("a").format(new Date()));

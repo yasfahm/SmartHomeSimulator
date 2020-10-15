@@ -1,7 +1,5 @@
 package controller;
 
-import java.io.IOException;
-
 import constants.RegistrationStatus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,12 +7,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import service.RegistrationService;
+import java.io.IOException;
 
+/**
+ * Controller responsible for the control and flow of the SignUp scene
+ */
 public class SignUpController {
 	/**
 	 * declaring variables

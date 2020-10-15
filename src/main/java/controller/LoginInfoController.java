@@ -1,11 +1,9 @@
 package controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.*;
-import entity.*;
+import entity.Door;
+import entity.Position;
+import entity.Room;
+import entity.Window;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +18,16 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.json.*;
 import service.HouseLayoutService;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * Controller responsible for the control and flow of the main, loginInfo, scene
+ */
 public class LoginInfoController {
 	/**
 	 * declaring variables
@@ -53,8 +58,8 @@ public class LoginInfoController {
 	//going to forgot password scene
 	/**
 	 * This function loads the start up page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
+	 * @param event The event that called this function
+	 * @throws IOException Thrown if the file cannot be read
 	 */
 	public void goToStartUp(ActionEvent event) throws IOException {
 		Parent startUp = FXMLLoader.load(getClass().getResource("/view/startUp.fxml"));
@@ -68,8 +73,8 @@ public class LoginInfoController {
 
 	/**
 	 * This function loads the user roles page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
+	 * @param event The event that called this function
+	 * @throws IOException Thrown if the file cannot be read
 	 */
 	public void goToUserSettings(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -89,8 +94,8 @@ public class LoginInfoController {
 	/**
 	 * This function allows the user to add a house layout text file and parses the JSON data obtained
 	 *
-	 * @param event
-	 * @throws IOException
+	 * @param event The event that called this function
+	 * @throws IOException Thrown if the file cannot be read
 	 */
 	public void addHouseLayout(ActionEvent event) throws IOException {
 
@@ -162,6 +167,8 @@ public class LoginInfoController {
 	}
 
 	/**
+	 * Method responsible for drawing the lights in a room
+	 *
 	 * @param x x coordinate of the light
 	 * @param y y coordinate of the light
 	 * @param on boolean value for lights on/off
@@ -173,7 +180,9 @@ public class LoginInfoController {
 	}
 
 	/**
-	 * @param roomHashMap
+	 * Method responsible for drawing the rooms in their correct location
+	 *
+	 * @param roomHashMap A map of the rooms and their names as the key
 	 * @param room room to draw
 	 * @param visited rooms that have been visited
 	 * @param previous position of the previously visited room
@@ -224,16 +233,17 @@ public class LoginInfoController {
 
 	/**
 	 * This function will close the application
-	 * @param event
-	 * @throws IOException
+	 *
+	 * @param event The event that called this function
 	 */
-	public void close(MouseEvent event) throws IOException {
+	public void close(MouseEvent event) {
 		System.exit(0);
 	}
 
 	/**
 	 * Gets the location of a mouse.
-	 * @param event
+	 *
+	 * @param event The event that called this function
 	 */
 	public void getLocation(MouseEvent event) {
 		xOffset = event.getSceneX();
@@ -241,8 +251,9 @@ public class LoginInfoController {
 	}
 
 	/**
-	 * Changes the location of the window(stage) based on the mouse location..
-	 * @param event
+	 * Changes the location of the window(stage) based on the mouse location.
+	 *
+	 * @param event The event that called this function
 	 */
 	public void move(MouseEvent event) {
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -252,8 +263,9 @@ public class LoginInfoController {
 	
 	/**
 	 * This function loads the user roles page(scene) into the window(stage)
-	 * @param event
-	 * @throws IOException
+	 *
+	 * @param event The event that called this function
+	 * @throws IOException Thrown if the scene file cannot be read
 	 */
     public void bt_changeDateTimeOnClick(ActionEvent event)  throws IOException {
 		System.out.println("bt_changeDateTimeOnClick()");
