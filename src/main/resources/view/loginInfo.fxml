@@ -4,6 +4,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -20,7 +21,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
-        <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -41,53 +42,39 @@
         </MenuBar>
         <SplitPane dividerPositions="0.25034965034965034" layoutY="25.0" prefHeight="459.0" prefWidth="717.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="root">
                     <children>
-                        <VBox alignment="CENTER" prefHeight="373.0" prefWidth="172.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox alignment="CENTER" layoutX="2.0" layoutY="129.0" prefHeight="373.0" prefWidth="169.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                             <children>
+                        <Button mnemonicParsing="false" onAction="#goToEdit" text="Edit" />
                                 <Label fx:id="date" layoutX="14.0" layoutY="187.0" text="Date" />
                                 <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="25.0" prefWidth="120.0" text="User" />
-                                <Button layoutX="45.0" layoutY="320.0" mnemonicParsing="false" onAction="#goToLogin" text="Log Out" />
-                                <Button layoutX="17.0" layoutY="286.0" mnemonicParsing="false" onAction="#goToUserSettings" prefHeight="25.0" prefWidth="113.0" text="User Control" />
-                                <Label fx:id="user" text="User Group" />
-                                <Button mnemonicParsing="false" onAction="#goToUserSettings" text="User Control">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin></Button>
-                                <Label text="Location:" />
-                                <Label text="_location" textAlignment="CENTER" textFill="#2b75ff">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin></Label>
-                                <Label prefWidth="112.0" text="Outside Temp. 15°C">
+                                <Label prefHeight="18.0" prefWidth="63.0" text="Location:" />
+                        <Hyperlink fx:id="loc" onAction="#goToEdit" text="location" />
+                                <Label prefHeight="15.0" prefWidth="127.0" text="Outside Temp. 15°C">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                     <VBox.margin>
                                         <Insets bottom="10.0" />
-                                    </VBox.margin></Label>
+                                    </VBox.margin>
+                        </Label>
                                 <Label fx:id="date" text="_date">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
-                                    </font></Label>
+                                    </font>
+                        </Label>
                                 <Label fx:id="time" text="_time">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                     <VBox.margin>
                                         <Insets />
-                                    </VBox.margin></Label>
-                                <Button mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" prefWidth="112.0" text="Change date and time">
-                                    <font>
-                                        <Font size="10.0" />
-                                    </font>
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
                                     </VBox.margin>
-                                </Button>
-                                <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" onAction="#addHouseLayout" prefHeight="17.0" text="Add House Layout" />
-
-                                <Button mnemonicParsing="false" onAction="#goToLogin" text="Log Out" />
+                        </Label>
+                                <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" onAction="#addHouseLayout" prefHeight="30.0" prefWidth="125.0" text="Add House Layout" />
+      
+                                            <Button mnemonicParsing="false" onAction="#goToLogin" text="Log Out" />
                             </children>
                             <padding>
                                 <Insets bottom="10.0" top="10.0" />
@@ -96,7 +83,7 @@
                     </children></AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <children>
-                        <SplitPane dividerPositions="0.7274725274725274" layoutX="33.0" layoutY="52.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="533.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.7274725274725274" layoutX="-10.0" layoutY="52.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="529.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
@@ -108,7 +95,20 @@
                                                             <tabs>
                                                                 <Tab text="SHS">
                                                                     <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane prefHeight="204.0" prefWidth="264.0">
+                                                               <children>
+                                                                          <Button layoutX="157.0" layoutY="23.0" mnemonicParsing="false" onAction="#goToUserSettings" text="User Control" />
+                                                                          <Label fx:id="user" layoutX="17.0" layoutY="30.0" text="User Group" />
+                                                                          <Button layoutX="110.0" layoutY="77.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" prefHeight="32.0" prefWidth="150.0" text="Modify Date and Time">
+                                                                              <font>
+                                                                                  <Font size="10.0" />
+                                                                              </font>
+                                                                          </Button>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children></AnchorPane>
                                                                     </content>
                                                                 </Tab>
                                                                 <Tab text="SHC">
