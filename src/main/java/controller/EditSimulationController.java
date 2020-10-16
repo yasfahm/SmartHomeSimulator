@@ -20,16 +20,13 @@ public class EditSimulationController implements Initializable {
      * declaring variables
      */
     @FXML
-    private ChoiceBox rooms;
-    @FXML
-    private ComboBox<String> test;
+    private ComboBox <String> rooms;
     private double xOffset = 0;
     private double yOffset = 0;
 
     /**
      * This function loads the login info page(scene) into the window(stage)
-     *
-     * @param event
+     * @param event The event that called this function
      * @throws IOException
      */
     public void goToLoginInfo(ActionEvent event) throws IOException {
@@ -44,8 +41,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * This function will close the application
-     *
-     * @param event
+     * @param event The event that called this function
      * @throws IOException
      */
     public void close(MouseEvent event) throws IOException {
@@ -64,8 +60,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Changes the location of the window(stage) based on the mouse location..
-     *
-     * @param event
+     * @param event The event that called this function
      */
     public void move(MouseEvent event) {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -73,18 +68,22 @@ public class EditSimulationController implements Initializable {
         window.setY(event.getScreenY() - yOffset);
     }
 
-    public void initialize(URL location, ResourceBundle resources) {
-        test.getItems().add("Living Room");
-        test.getItems().add("Bedroom 1");
-        test.getItems().add("Bedroom 2");
-        test.getItems().add("Bathroom");
-        test.getItems().add("Kitchen");
+    /**
+     * This function will add the rooms to the combobox(
+     * @param location
+     * @param resources
+     */
+    public void initialize(URL location, ResourceBundle resources){
+        rooms.getItems().add("Living Room");
+        rooms.getItems().add("Bedroom 1");
+        rooms.getItems().add("Bedroom 2");
+        rooms.getItems().add("Bathroom");
+        rooms.getItems().add("Kitchen");
     }
 
     /**
      * This function loads the change location page(scene) into the window(stage)
-     *
-     * @param event
+     * @param event The event that called this function
      * @throws IOException
      */
     public void changeLocation(ActionEvent event) throws IOException {
@@ -94,7 +93,7 @@ public class EditSimulationController implements Initializable {
         Scene loginInfoScene = new Scene(loginInfo);
         LoginInfoController controller = loader.getController();
 
-        String choice = test.getSelectionModel().getSelectedItem();
+        String choice = rooms.getSelectionModel().getSelectedItem();
         controller.setLoc(choice);
 
         // stage info
