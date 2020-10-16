@@ -26,16 +26,11 @@ public class ChangeDateTimeController implements Initializable {
     /**
      * declaring variables
      */
-    @FXML
-    private ComboBox<String> cb_year;
-    @FXML
-    private ComboBox<String> cb_month;
-    @FXML
-    private ComboBox<Integer> cb_date;
-    @FXML
-    private ComboBox<Integer> cb_hour;
-    @FXML
-    private ComboBox<Integer> cb_minute;
+    @FXML private ComboBox<String> cb_year;
+    @FXML private ComboBox<String> cb_month;
+    @FXML private ComboBox<Integer> cb_date;
+    @FXML private ComboBox<Integer> cb_hour;
+    @FXML private ComboBox<Integer> cb_minute;
 
     private LoginInfoController parentController;
     private ObservableList<String> li_year;
@@ -46,11 +41,10 @@ public class ChangeDateTimeController implements Initializable {
     private final ObservableList<Integer> li_hour = FXCollections.observableArrayList(
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
     private final ObservableList<Integer> li_minute = FXCollections.observableArrayList(
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
             20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
             36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-            52, 53, 54, 55, 56, 57, 58, 59, 60);
-
+            52, 53, 54, 55, 56, 57, 58, 59);
 
     /**
      * Function from interface Initializable, initialize default actions
@@ -67,10 +61,10 @@ public class ChangeDateTimeController implements Initializable {
      * This function will assign items to combo box
      */
     private void setComboBoxValue() {
-        li_year = getYearList();
+        li_year = getYearList(); // get dynamic year list
         cb_year.setItems(li_year);
         cb_month.setItems(li_month);
-        li_date = getDateList();
+        li_date = getDateList(); // get dynamic date list
         cb_date.setItems(li_date);
         cb_hour.setItems(li_hour);
         cb_minute.setItems(li_minute);
@@ -98,14 +92,13 @@ public class ChangeDateTimeController implements Initializable {
         this.parentController = loginInfoController;
     }
 
-
     /**
      * This function submit the change to parent controller
      *
      * @param event
      * @throws IOException
      */
-    public void bt_onChangeClick(ActionEvent event) throws IOException {
+    public void bt_onChangeClick(ActionEvent event) {
         System.out.println("bt_onChangeClick()");
 
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();
@@ -113,16 +106,12 @@ public class ChangeDateTimeController implements Initializable {
         LocalTime currentTime = LocalTime.now();
         String time = String.format("%02d:%02d:%02d", cb_hour.getValue(), cb_minute.getValue(), currentTime.getSecond());
 
-        System.out.println("Changing date to [" + date + "]");
-        System.out.println("Changing time to [" + time + "]");
-
-        parentController.setDate(date);
-        parentController.setTime(LocalTime.parse(time));
+        String result = date + " " + time; // in the format "yyyy - MMMM - dd HH:mm:ss"
+        parentController.setTime(result);
 
         Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
-
 
     /**
      * This function simply close the pane without any change
@@ -145,7 +134,6 @@ public class ChangeDateTimeController implements Initializable {
         li_date = getDateList();
         cb_date.setItems(li_date);
     }
-
 
     /**
      * This function assigns the proper years range to List
@@ -182,6 +170,4 @@ public class ChangeDateTimeController implements Initializable {
         Integer[] arr = IntStream.of(IntStream.range(1, length + 1).toArray()).boxed().toArray(Integer[]::new);
         return FXCollections.observableArrayList(arr);
     }
-
-
 }
