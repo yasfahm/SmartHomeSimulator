@@ -126,11 +126,11 @@ public class LoginInfoController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
         SimpleDateFormat formatTime= new SimpleDateFormat("HH:mm:ss");
-		    long sysmillis = System.currentTimeMillis();
-		    this.timeInMillis = sysmillis;
-		    Date d = new Date(sysmillis);
-		    this.date.setText(formatDate.format(d));
-		    this.time.setText(formatTime.format(d));
+	long sysmillis = System.currentTimeMillis();
+	this.timeInMillis = sysmillis;
+	Date d = new Date(sysmillis);
+	this.date.setText(formatDate.format(d));
+	this.time.setText(formatTime.format(d));
 
         // Clock animation
         Timeline clock = new Timeline(
