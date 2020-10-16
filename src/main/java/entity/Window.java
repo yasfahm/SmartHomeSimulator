@@ -1,5 +1,10 @@
 package entity;
 
+import constants.Position;
+
+/**
+ * class Window to represent a Window object in the house
+ */
 public class Window {
     private Position position;
 
@@ -13,6 +18,8 @@ public class Window {
     }
 
     /**
+     * Get the position of the window
+     *
      * @return position of the window
      */
     public Position getPosition() {
@@ -20,6 +27,8 @@ public class Window {
     }
 
     /**
+     * Set the position of the window
+     *
      * @param position position of the window
      */
     public void setPosition(Position position) {

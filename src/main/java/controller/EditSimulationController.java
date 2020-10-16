@@ -7,17 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import service.LoginService;
-
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditSimulationController implements Initializable {
@@ -39,8 +34,9 @@ public class EditSimulationController implements Initializable {
         Scene loginInfoScene = new Scene(loginInfo);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(loginInfoScene);window.show();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(loginInfoScene);
+        window.show();
     }
 
     /**
@@ -54,6 +50,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Gets the location of a mouse.
+     *
      * @param event
      */
     public void getLocation(MouseEvent event) {
@@ -66,7 +63,7 @@ public class EditSimulationController implements Initializable {
      * @param event The event that called this function
      */
     public void move(MouseEvent event) {
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setX(event.getScreenX() - xOffset);
         window.setY(event.getScreenY() - yOffset);
     }
@@ -100,7 +97,7 @@ public class EditSimulationController implements Initializable {
         controller.setLoc(choice);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(loginInfoScene);
         window.show();
     }

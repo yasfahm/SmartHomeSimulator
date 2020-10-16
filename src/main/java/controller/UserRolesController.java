@@ -37,16 +37,19 @@ public class UserRolesController {
      */
     @FXML
     public AnchorPane values;
+
     /**
      * Cached value for the name displayed in the main menu
      */
     private String username;
+    private String parentUser;
 
     /**
      * On initialization, add the grid of information into values
      */
     @FXML
     public void initialize() {
+        parentUser = LoginInfoController.getUserParent();
         values.getChildren().add(processRows());
     }
 
@@ -64,6 +67,26 @@ public class UserRolesController {
 
         LoginInfoController controller = loader.getController();
         controller.setUser(username);
+
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(loginScene);
+        window.show();
+    }
+
+    /**
+     * Button function to go back to the User Role creation scene
+     *
+     * @param event The event that triggered this method
+     * @throws IOException Thrown if the method is unable to locate the view resource
+     */
+    public void goToCreate(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/newUserRole.fxml"));
+        Parent login = loader.load();
+        Scene loginScene = new Scene(login);
+
+        NewUserRoleController controller = loader.getController();
+        controller.setUsername(username);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(loginScene);
@@ -89,7 +112,7 @@ public class UserRolesController {
         AtomicInteger index = new AtomicInteger();
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
-        List<UserRole> userRoles = RoleService.getRoles();
+        List<UserRole> userRoles = RoleService.getRoles(parentUser);
         if (Objects.nonNull(userRoles)) {
             userRoles.forEach(result -> {
                 gridPane.addRow(gridPane.getRowCount(), createUserLabel(result.getUsername(), index.get()), createRoleComboBox(result.getRole().toString(), index.get()), createDeleteButton(index.get()));
@@ -130,7 +153,7 @@ public class UserRolesController {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (Objects.nonNull(newValue) && !newValue.equals(oldValue)) {
                     String userLabelName = ((Label) values.lookup("#gridLabel" + index)).getText();
-                    RoleService.changeRole(userLabelName, newValue);
+                    RoleService.changeRole(parentUser, userLabelName, newValue);
                 }
             }
         });
@@ -148,7 +171,7 @@ public class UserRolesController {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete user " + userToDelete.getText() + "?", ButtonType.YES, ButtonType.NO);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.YES) {
-                    RegistrationService.deleteUser(userToDelete.getText());
+                    RegistrationService.deleteUser(parentUser, userToDelete.getText());
                     userToDelete.setTextFill(Color.LIGHTGRAY);
                     comboBoxToDelete.setDisable(true);
                     deleteButton.setText("This user has been deleted");

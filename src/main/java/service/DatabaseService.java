@@ -73,7 +73,7 @@ public class DatabaseService {
      * @throws SQLException Thrown if the command has a syntax error
      */
     public static Map<String, Object> verifyLogin(final String username, final String password) throws SQLException {
-        return query("SELECT firstname, lastname FROM users WHERE username = \"" + username + "\" AND password = \"" + password + "\"", new MapHandler());
+        return query("SELECT username, firstname, lastname FROM users WHERE username = \"" + username + "\" AND password = \"" + password + "\"", new MapHandler());
     }
 
     /**
@@ -119,8 +119,8 @@ public class DatabaseService {
      * @return A list of {@link UserRole} which contains information about the username and their role
      * @throws SQLException Thrown if the command has a syntax error
      */
-    public static List<UserRole> getAllUserRoles() throws SQLException {
-        return query("SELECT username, role FROM roles", new BeanListHandler<UserRole>(UserRole.class));
+    public static List<UserRole> getAllUserRoles(final String userParent) throws SQLException {
+        return query("SELECT parentUser, username, role FROM roles WHERE parentUser LIKE \"" + userParent + "\"", new BeanListHandler<UserRole>(UserRole.class));
     }
 
     /**
@@ -131,8 +131,8 @@ public class DatabaseService {
      * @return A list of affected rows in the database
      * @throws SQLException Thrown if the command has a syntax error
      */
-    public static List<String> createNewUserRole(final String username, final String role) throws SQLException {
-        return insert("INSERT INTO roles VALUES (\"" + username + "\", \"" + role + "\")", new ColumnListHandler<>());
+    public static List<String> createNewUserRole(final String userParent, final String username, final String role) throws SQLException {
+        return insert("INSERT INTO roles VALUES (\"" + userParent + "\", \"" + username + "\", \"" + role + "\")", new ColumnListHandler<>());
     }
 
     /**
@@ -143,19 +143,17 @@ public class DatabaseService {
      * @return The number of affected rows in the database
      * @throws SQLException Thrown if the command has a syntax error
      */
-    public static int updateUserRole(final String username, final String role) throws SQLException {
-        return update("UPDATE roles SET role = \"" + role + "\" WHERE username LIKE \"" + username + "\"");
+    public static int updateUserRole(final String userParent, final String username, final String role) throws SQLException {
+        return update("UPDATE roles SET role = \"" + role + "\" WHERE username LIKE \"" + username + "\" AND parentUser LIKE \"" + userParent + "\"");
     }
 
     /**
      * The SQL command for deleting a user from both users and roles tables
      *
      * @param username The to be deleted username
-     * @return returns the number of affected rows
      * @throws SQLException Thrown if the command has a syntax error
      */
-    public static Integer deleteUser(final String username) throws SQLException {
-        query("DELETE FROM users WHERE username LIKE \"" + username + "\"", new ScalarHandler<Integer>());
-        return query("DELETE FROM roles WHERE username LIKE \"" + username + "\"", new ScalarHandler<Integer>());
+    public static void deleteUser(final String userParent, final String username) throws SQLException {
+        query("DELETE FROM roles WHERE username LIKE \"" + username + "\" AND parentUser LIKE \"" + userParent + "\"", new ScalarHandler<Integer>());
     }
 }

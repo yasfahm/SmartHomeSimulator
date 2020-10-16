@@ -31,7 +31,7 @@ public class RegistrationService {
 
             if (DatabaseService.GetNumberOfUsername(username).size() < 1) {
                 DatabaseService.createNewUser(username, password, firstname, lastname);
-                DatabaseService.createNewUserRole(username, UserRoles.STRANGER.toString());
+                DatabaseService.createNewUserRole(username, username, UserRoles.PARENT.toString());
                 return RegistrationStatus.USER_CREATED;
             } else {
                 return RegistrationStatus.NOT_UNIQUE_USERNAME;
@@ -74,9 +74,9 @@ public class RegistrationService {
      *
      * @param username Username related to Profile to delete
      */
-    public static void deleteUser(final String username) {
+    public static void deleteUser(final String userParent, final String username) {
         try {
-            DatabaseService.deleteUser(username);
+            DatabaseService.deleteUser(userParent, username);
         } catch (SQLException e) {
             System.out.println("Username does not exist");
         }

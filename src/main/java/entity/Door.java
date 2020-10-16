@@ -1,5 +1,10 @@
 package entity;
 
+import constants.Position;
+
+/**
+ * class Door to represent a Door object in the house
+ */
 public class Door {
     private Position position;
     private String connection;
