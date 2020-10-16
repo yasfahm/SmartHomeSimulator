@@ -70,31 +70,31 @@ public class LoginInfoController implements Initializable {
 
     /**
      * Function to set the user's location
-     * @param s
+     * @param place the String that is the name of the location that will be passed to this function.
      */
-    public void setLoc(String s) { loc.setText(s); }
+    public void setLoc(String place) { loc.setText(place); }
 
     /**
      * Function to set the user
-     * @param s
+     * @param username the username that will be passed to this function.
      */
-    public void setUser(String s) { user.setText(s); }
+    public void setUser(String username) { user.setText(username); }
 
     /**
      * Function to set the date
-     * @param s
+     * @param dateTime the time and date that will be passed to this function
      */
-    public void setDate(String s) { date.setText(s); }
+    public void setDate(String dateTime) { date.setText(dateTime); }
 
     /**
      * Function to setting new time label
      *
-     * @param s
+     * @param dateTime the time and date that will be passed to this function
      */
-    public void setTime(String s) {
+    public void setTime(String dateTime) {
     	SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss"); 
     	try {
-    		Date d = formatFull.parse(s);
+    		Date d = formatFull.parse(dateTime);
         	this.timeInMillis = d.getTime();
     	} catch (ParseException e) {
 			e.printStackTrace();
@@ -122,12 +122,12 @@ public class LoginInfoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
-        SimpleDateFormat farmatTime= new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatTime= new SimpleDateFormat("HH:mm:ss");
 		long sysmillis = System.currentTimeMillis();
 		this.timeInMillis = sysmillis;
 		Date d = new Date(sysmillis);
 		this.date.setText(formatDate.format(d));
-		this.time.setText(farmatTime.format(d));
+		this.time.setText(formatTime.format(d));
 
         // Clock animation
         Timeline clock = new Timeline(
