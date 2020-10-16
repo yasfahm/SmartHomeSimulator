@@ -75,16 +75,16 @@ public class DatabaseServiceTest {
 
     @Test
     public void create_and_update_user_role() throws SQLException {
-        DatabaseService.createNewUserRole("testUser3", UserRoles.STRANGER.toString());
+        DatabaseService.createNewUserRole("testUser3", "testUser3", UserRoles.STRANGER.toString());
 
-        DatabaseService.getAllUserRoles().forEach(r -> {
+        DatabaseService.getAllUserRoles("testUser3").forEach(r -> {
             if (r.getUsername().equals("testUser3")) {
                 assertEquals(UserRoles.STRANGER.toString(), r.getRole().toString());
             }
         });
 
-        DatabaseService.updateUserRole("testUser3", UserRoles.GUEST.toString());
-        DatabaseService.getAllUserRoles().forEach(r -> {
+        DatabaseService.updateUserRole("testUser3", "testUser3", UserRoles.GUEST.toString());
+        DatabaseService.getAllUserRoles("testUser3").forEach(r -> {
             if (r.getUsername().equals("testUser3")) {
                 assertEquals(UserRoles.GUEST.toString(), r.getRole().toString());
             }
@@ -93,12 +93,12 @@ public class DatabaseServiceTest {
 
     @Test
     public void create_and_delete_a_user() throws SQLException {
-        DatabaseService.createNewUser("testUser4", "testPassword", "testName", "testName");
-        assertEquals(1, DatabaseService.GetNumberOfUsername("testUser4").size());
+        DatabaseService.createNewUserRole("testUser4", "testUser4", "PARENT");
+        assertEquals(1, DatabaseService.getAllUserRoles("testUser4").size());
         int numOfAccounts = DatabaseService.query("SELECT username FROM users", new ColumnListHandler<>()).size();
 
-        DatabaseService.deleteUser("testUser4");
-        int numOfAccountsAfter = DatabaseService.query("SELECT username FROM users", new ColumnListHandler<>()).size();
+        DatabaseService.deleteUser("testUser4", "testUser4");
+        int numOfAccountsAfter = DatabaseService.getAllUserRoles("testUser4").size();
         assertEquals(numOfAccounts - 1, numOfAccountsAfter);
     }
 }

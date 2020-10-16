@@ -26,11 +26,16 @@ public class ChangeDateTimeController implements Initializable {
     /**
      * declaring variables
      */
-    @FXML private ComboBox<String> cb_year;
-    @FXML private ComboBox<String> cb_month;
-    @FXML private ComboBox<Integer> cb_date;
-    @FXML private ComboBox<Integer> cb_hour;
-    @FXML private ComboBox<Integer> cb_minute;
+    @FXML
+    private ComboBox<String> cb_year;
+    @FXML
+    private ComboBox<String> cb_month;
+    @FXML
+    private ComboBox<Integer> cb_date;
+    @FXML
+    private ComboBox<Integer> cb_hour;
+    @FXML
+    private ComboBox<Integer> cb_minute;
 
     private LoginInfoController parentController;
     private ObservableList<String> li_year;
@@ -48,11 +53,8 @@ public class ChangeDateTimeController implements Initializable {
 
     /**
      * Function from interface Initializable, initialize default actions
-     *
-     * @param location, resources
      */
     public void initialize(URL arg0, ResourceBundle arg1) {
-        System.out.println("initialize()");
         setDefaultValue();
         setComboBoxValue();
     }
@@ -98,8 +100,7 @@ public class ChangeDateTimeController implements Initializable {
      * @param event
      * @throws IOException
      */
-    public void bt_onChangeClick(ActionEvent event) {
-        System.out.println("bt_onChangeClick()");
+    public void bt_onChangeClick(ActionEvent event) throws IOException {
 
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();
 
@@ -119,7 +120,6 @@ public class ChangeDateTimeController implements Initializable {
      * @param event
      */
     public void bt_onCancelClick(ActionEvent event) {
-        System.out.println("bt_onCancelClick()");
         Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
@@ -137,8 +137,6 @@ public class ChangeDateTimeController implements Initializable {
 
     /**
      * This function assigns the proper years range to List
-     *
-     * @param event
      */
     private ObservableList<String> getYearList() {
         int range = 10;        // range of year +- range
@@ -154,8 +152,6 @@ public class ChangeDateTimeController implements Initializable {
 
     /**
      * This function assigns the proper date range to List
-     *
-     * @param event
      */
     private ObservableList<Integer> getDateList() {
         int length;

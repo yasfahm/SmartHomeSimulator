@@ -7,17 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import service.LoginService;
-
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditSimulationController implements Initializable {
@@ -27,12 +22,13 @@ public class EditSimulationController implements Initializable {
     @FXML
     private ChoiceBox rooms;
     @FXML
-    private ComboBox <String> test;
+    private ComboBox<String> test;
     private double xOffset = 0;
     private double yOffset = 0;
 
     /**
      * This function loads the login info page(scene) into the window(stage)
+     *
      * @param event
      * @throws IOException
      */
@@ -41,12 +37,14 @@ public class EditSimulationController implements Initializable {
         Scene loginInfoScene = new Scene(loginInfo);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(loginInfoScene);window.show();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(loginInfoScene);
+        window.show();
     }
 
     /**
      * This function will close the application
+     *
      * @param event
      * @throws IOException
      */
@@ -56,6 +54,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Gets the location of a mouse.
+     *
      * @param event
      */
     public void getLocation(MouseEvent event) {
@@ -65,15 +64,16 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Changes the location of the window(stage) based on the mouse location..
+     *
      * @param event
      */
     public void move(MouseEvent event) {
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setX(event.getScreenX() - xOffset);
         window.setY(event.getScreenY() - yOffset);
     }
 
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         test.getItems().add("Living Room");
         test.getItems().add("Bedroom 1");
         test.getItems().add("Bedroom 2");
@@ -83,6 +83,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * This function loads the change location page(scene) into the window(stage)
+     *
      * @param event
      * @throws IOException
      */
@@ -97,7 +98,7 @@ public class EditSimulationController implements Initializable {
         controller.setLoc(choice);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(loginInfoScene);
         window.show();
     }

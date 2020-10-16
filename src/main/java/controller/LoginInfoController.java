@@ -7,8 +7,6 @@ import entity.Window;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -34,16 +31,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class LoginInfoController implements Initializable {
 
@@ -61,6 +54,8 @@ public class LoginInfoController implements Initializable {
     @FXML
     private Hyperlink loc;
 
+    private static String userParent;
+
     private GraphicsContext gc;
     private double xOffset = 0;
     private double yOffset = 0;
@@ -70,21 +65,30 @@ public class LoginInfoController implements Initializable {
 
     /**
      * Function to set the user's location
+     *
      * @param s
      */
-    public void setLoc(String s) { loc.setText(s); }
+    public void setLoc(String s) {
+        loc.setText(s);
+    }
 
     /**
      * Function to set the user
+     *
      * @param s
      */
-    public void setUser(String s) { user.setText(s); }
+    public void setUser(String s) {
+        user.setText(s);
+    }
 
     /**
      * Function to set the date
+     *
      * @param s
      */
-    public void setDate(String s) { date.setText(s); }
+    public void setDate(String s) {
+        date.setText(s);
+    }
 
     /**
      * Function to setting new time label
@@ -92,26 +96,34 @@ public class LoginInfoController implements Initializable {
      * @param s
      */
     public void setTime(String s) {
-    	SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss"); 
-    	try {
-    		Date d = formatFull.parse(s);
-        	this.timeInMillis = d.getTime();
-    	} catch (ParseException e) {
-			e.printStackTrace();
-		}
+        SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss");
+        try {
+            Date d = formatFull.parse(s);
+            this.timeInMillis = d.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setUserParent(String userParent) {
+        LoginInfoController.userParent = userParent;
+    }
+
+    public static String getUserParent() {
+        return userParent;
     }
 
     /**
      * Animation controller for the clock
      */
-    private void moveClock() {       
-    	SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
-    	SimpleDateFormat farmatTime= new SimpleDateFormat("HH:mm:ss");
-    	Calendar cal = Calendar.getInstance();
-    	this.timeInMillis += 1000;
-    	cal.setTimeInMillis(timeInMillis);
-    	date.setText(formatDate.format(cal.getTime()));
-    	time.setText(farmatTime.format(cal.getTime()));
+    private void moveClock() {
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        this.timeInMillis += 1000;
+        cal.setTimeInMillis(timeInMillis);
+        date.setText(formatDate.format(cal.getTime()));
+        time.setText(formatTime.format(cal.getTime()));
     }
 
     /**
@@ -121,13 +133,13 @@ public class LoginInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
-        SimpleDateFormat farmatTime= new SimpleDateFormat("HH:mm:ss");
-		long sysmillis = System.currentTimeMillis();
-		this.timeInMillis = sysmillis;
-		Date d = new Date(sysmillis);
-		this.date.setText(formatDate.format(d));
-		this.time.setText(farmatTime.format(d));
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+        SimpleDateFormat farmatTime = new SimpleDateFormat("HH:mm:ss");
+        long sysmillis = System.currentTimeMillis();
+        this.timeInMillis = sysmillis;
+        Date d = new Date(sysmillis);
+        this.date.setText(formatDate.format(d));
+        this.time.setText(farmatTime.format(d));
 
         // Clock animation
         Timeline clock = new Timeline(
@@ -355,8 +367,6 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-        System.out.println("bt_changeDateTimeOnClick()");
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
         Parent root = loader.load();
 

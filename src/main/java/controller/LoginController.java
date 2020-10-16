@@ -12,10 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import service.LoginService;
-
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,15 +20,19 @@ public class LoginController {
     /**
      * declaring variables
      */
-    @FXML private TextField userD;
-    @FXML private PasswordField passD;
-    @FXML private Label displayMessage;
+    @FXML
+    private TextField userD;
+    @FXML
+    private PasswordField passD;
+    @FXML
+    private Label displayMessage;
 
     private double xOffset = 0;
     private double yOffset = 0;
 
     /**
      * This function loads the forgot password page(scene) into the window(stage)
+     *
      * @param event
      * @throws IOException
      */
@@ -40,13 +41,14 @@ public class LoginController {
         Scene forgotPasswordScene = new Scene(forgotPassword);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(forgotPasswordScene);
         window.show();
     }
 
     /**
      * This function loads the sign up page(scene) into the window(stage)
+     *
      * @param event
      * @throws IOException
      */
@@ -55,12 +57,14 @@ public class LoginController {
         Scene signUpScene = new Scene(signUp);
 
         // stage info
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(signUpScene);window.show();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(signUpScene);
+        window.show();
     }
 
     /**
      * This function loads the loginInfo page(scene) into the window(stage)
+     *
      * @param event
      * @throws IOException
      */
@@ -72,18 +76,17 @@ public class LoginController {
         Scene loginScene = new Scene(login);
 
         LoginInfoController controller = loader.getController();
-
         Map<String, Object> userInfo = LoginService.login(userD.getText(), passD.getText());
 
         if (Objects.nonNull(userInfo)) {
+            controller.setUserParent(userInfo.get("username").toString());
             controller.setUser(userInfo.get("firstname").toString() + " " + userInfo.get("lastname").toString());
 
             // stage info
-            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
             window.setScene(loginScene);
             window.show();
-        }
-        else {
+        } else {
             // Create Popup with no user correlating to given username and password
             displayMessage.setText("Incorrect username and password");
         }
@@ -92,6 +95,7 @@ public class LoginController {
 
     /**
      * This function will close the application
+     *
      * @param event
      * @throws IOException
      */
@@ -101,6 +105,7 @@ public class LoginController {
 
     /**
      * Gets the location of a mouse.
+     *
      * @param event
      */
     public void getLocation(MouseEvent event) {
@@ -110,10 +115,11 @@ public class LoginController {
 
     /**
      * Changes the location of the window(stage) based on the mouse location..
+     *
      * @param event
      */
     public void move(MouseEvent event) {
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setX(event.getScreenX() - xOffset);
         window.setY(event.getScreenY() - yOffset);
     }

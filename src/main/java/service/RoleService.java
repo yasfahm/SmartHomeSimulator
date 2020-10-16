@@ -32,9 +32,9 @@ public class RoleService {
      *
      * @return A list of username and their user roles in {@link UserRole}
      */
-    public static List<UserRole> getRoles() {
+    public static List<UserRole> getRoles(final String userParent) {
         try {
-            return DatabaseService.getAllUserRoles();
+            return DatabaseService.getAllUserRoles(userParent);
         } catch (SQLException e) {
             System.out.println("There are no user roles");
         }
@@ -47,10 +47,10 @@ public class RoleService {
      * @param username User Profile's username whose role will change
      * @param role     The chosen role to change into. Must be of type {@link UserRoles}
      */
-    public static void changeRole(final String username, final String role) {
+    public static void changeRole(final String userParent, final String username, final String role) {
         try {
             if (EnumUtils.isValidEnum(UserRoles.class, role)) {
-                DatabaseService.updateUserRole(username, role);
+                DatabaseService.updateUserRole(userParent, username, role);
             } else {
                 System.out.println("Invalid Enum Used");
             }
