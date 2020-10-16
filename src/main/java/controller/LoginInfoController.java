@@ -37,7 +37,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class LoginInfoController implements Initializable {
 
@@ -83,34 +89,29 @@ public class LoginInfoController implements Initializable {
     /**
      * Function to setting new time label
      *
-     * @param lt
+     * @param s
      */
-    public void setTime(LocalTime lt) {
-        System.out.println("setTime()");
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String strTime = dtf.format(lt);
-        System.out.println(strTime);
-        time.setText(strTime);
-
-        // setting variable for durationInMillis
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        try {
-            Date date = sdf.parse(strTime);
-            this.timeInMillis = date.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public void setTime(String s) {
+    	SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss"); 
+    	try {
+    		Date d = formatFull.parse(s);
+        	this.timeInMillis = d.getTime();
+    	} catch (ParseException e) {
+			e.printStackTrace();
+		}
     }
 
     /**
-     * Animation controller for clock
+     * Animation controller for the clock
      */
-    private void moveClock() {
-        this.timeInMillis += 1000;
-        long second = (timeInMillis / 1000) % 60;
-        long minute = (timeInMillis / (1000 * 60)) % 60;
-        long hour = (timeInMillis / (1000 * 60 * 60)) % 24 - 5;
-        time.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+    private void moveClock() {       
+    	SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
+    	SimpleDateFormat farmatTime= new SimpleDateFormat("HH:mm:ss");
+    	Calendar cal = Calendar.getInstance();
+    	this.timeInMillis += 1000;
+    	cal.setTimeInMillis(timeInMillis);
+    	date.setText(formatDate.format(cal.getTime()));
+    	time.setText(farmatTime.format(cal.getTime()));
     }
 
     /**
@@ -120,12 +121,15 @@ public class LoginInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String date = DateTimeFormatter.ofPattern("yyyy - MMMM - dd").format(LocalDateTime.now());
-        this.setDate(date);
-        LocalTime currentTime = LocalTime.now();
-        this.setTime(currentTime);
+        SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
+        SimpleDateFormat farmatTime= new SimpleDateFormat("HH:mm:ss");
+		long sysmillis = System.currentTimeMillis();
+		this.timeInMillis = sysmillis;
+		Date d = new Date(sysmillis);
+		this.date.setText(formatDate.format(d));
+		this.time.setText(farmatTime.format(d));
 
-        // Calling animation on clock
+        // Clock animation
         Timeline clock = new Timeline(
                 new KeyFrame(Duration.ZERO,
                         e -> moveClock()
