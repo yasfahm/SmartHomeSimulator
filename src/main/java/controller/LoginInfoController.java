@@ -7,6 +7,8 @@ import entity.Window;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -46,10 +50,16 @@ public class LoginInfoController implements Initializable {
     /**
      * declaring variables
      */
-    @FXML private Label user;
-    @FXML private Label date;
-    @FXML private Canvas houseRender;
-    @FXML private Label time;
+    @FXML
+    private Label user;
+    @FXML
+    private Label date;
+    @FXML
+    private Canvas houseRender;
+    @FXML
+    private Label time;
+    @FXML
+    private Hyperlink loc;
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -58,13 +68,23 @@ public class LoginInfoController implements Initializable {
     private final int DOOR_SIZE = ROOM_SIZE - 55;
     private long timeInMillis;
 
-    public void setUser(String s) {
-        user.setText(s);
-    }
+    /**
+     * Function to set the user's location
+     * @param s
+     */
+    public void setLoc(String s) { loc.setText(s); }
 
-    public void setDate(String s) {
-        date.setText(s);
-    }
+    /**
+     * Function to set the user
+     * @param s
+     */
+    public void setUser(String s) { user.setText(s); }
+
+    /**
+     * Function to set the date
+     * @param s
+     */
+    public void setDate(String s) { date.setText(s); }
 
     /**
      * Function to setting new time label
@@ -120,21 +140,19 @@ public class LoginInfoController implements Initializable {
         clock.play();
     }
 
-    //going to forgot password scene
-
     /**
-     * This function loads the start up page(scene) into the window(stage)
+     * This function loads the login page(scene) into the window(stage)
      *
      * @param event The event that called this function
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToLogin(ActionEvent event) throws IOException {
-        Parent startUp = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-        Scene startUpScene = new Scene(startUp);
+        Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        Scene loginScene = new Scene(login);
 
         // stage info
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(startUpScene);
+        window.setScene(loginScene);
         window.show();
     }
 
@@ -349,7 +367,22 @@ public class LoginInfoController implements Initializable {
         stage.initStyle(StageStyle.UTILITY);
         stage.setScene(new Scene(root));
         stage.show();
+    }
 
+    /**
+     * This function loads the edit(scene) into the window(stage)
+     *
+     * @param event The event that called this function
+     * @throws IOException Thrown if the file cannot be read
+     */
+    public void goToEdit(ActionEvent event) throws IOException {
+        Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+        Scene editScene = new Scene(edit);
+
+        // stage info
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(editScene);
+        window.show();
     }
 
 
