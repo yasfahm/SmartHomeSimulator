@@ -22,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -60,6 +61,8 @@ public class LoginInfoController implements Initializable {
     private Label time;
     @FXML
     private Hyperlink loc;
+    @FXML
+    private TextArea console;
     @FXML
     private ComboBox<String> selectedUser;
     @FXML
@@ -226,6 +229,14 @@ public class LoginInfoController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(loginScene);
         window.show();
+    }
+    
+    /**
+     * This function appends text onto the console
+     * @param str 	String to appened on console
+     */
+    public void consoleLog(String str) {
+        this.console.appendText("[" + this.time.getText() + "] " + str + "\n");
     }
 
     /**

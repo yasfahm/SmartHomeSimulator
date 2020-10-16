@@ -108,6 +108,7 @@ public class ChangeDateTimeController implements Initializable {
         String time = String.format("%02d:%02d:%02d", cb_hour.getValue(), cb_minute.getValue(), currentTime.getSecond());
 
         String result = date + " " + time; // in the format "yyyy - MMMM - dd HH:mm:ss"
+        parentController.consoleLog("Changing date and time to " + date.replace(" ", "") + ", " + time + ".");
         parentController.setTime(result);
 
         Stage stage = (Stage) cb_year.getScene().getWindow();
@@ -123,7 +124,6 @@ public class ChangeDateTimeController implements Initializable {
         Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
-
 
     /**
      * This function set dynamic date as month change
