@@ -2,6 +2,9 @@ package entity;
 
 import java.util.ArrayList;
 
+/**
+ * class Room to represent Room objects in the house
+ */
 public class Room {
     private String name;
     private ArrayList<Window> windows;

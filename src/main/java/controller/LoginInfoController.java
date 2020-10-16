@@ -1,7 +1,7 @@
 package controller;
 
 import entity.Door;
-import entity.Position;
+import constants.Position;
 import entity.Room;
 import entity.Window;
 import javafx.animation.Animation;
@@ -190,7 +190,8 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
-     * This function allows the user to add a house layout text file and parses the JSON data obtained
+     * This function allows the user to add a house layout text file, calls the function to parse the json
+     * and calls the function to draw the house with rooms, doors, windows and lights
      *
      * @param event The event that called this function
      * @throws IOException Thrown if the file cannot be read
@@ -222,9 +223,11 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
+     * This function draws doors on the house layout
+     *
      * @param x  first x coordinate of the door
-     * @param y  second x coordinate of the door
-     * @param x2 first y coordinate of the door
+     * @param y  first y coordinate of the door
+     * @param x2 second x coordinate of the door
      * @param y2 second y coordinate of the door
      */
     public void drawDoor(int x, int y, int x2, int y2) {

@@ -1,7 +1,7 @@
 package service;
 
 import entity.Door;
-import entity.Position;
+import constants.Position;
 import entity.Room;
 import entity.Window;
 import org.json.JSONArray;
@@ -12,10 +12,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+/**
+ * HouseLayoutService class for parsing house layout file
+ */
 public class HouseLayoutService {
 
     /**
-     * Method creating the rooms for the house
+     * Method creating the rooms for the house with doors, windows, and lights.
+     * This method parses the json file inputted by the user
      *
      * @param file The file used to describe the house's rooms
      * @return An array of {@link Room} that comprises the house
@@ -48,22 +52,7 @@ public class HouseLayoutService {
             for (int j = 0; j < doorsJSON.length(); j++) {
                 int position = doorsJSON.getJSONObject(j).getInt("position");
                 String connection = doorsJSON.getJSONObject(j).getString("connection");
-                switch (position) {
-                    case 0:
-                        doors.add(new Door(Position.NONE, connection));
-                        break;
-                    case 1:
-                        doors.add(new Door(Position.TOP, connection));
-                    case 2:
-                        doors.add(new Door(Position.RIGHT, connection));
-                        break;
-                    case 3:
-                        doors.add(new Door(Position.BOTTOM, connection));
-                        break;
-                    case 4:
-                        doors.add(new Door(Position.LEFT, connection));
-                        break;
-                }
+                doors.add(new Door (getPosition(position), connection));
             }
             roomsArray[i] = new Room(name, windows, doors, lightsTotal);
         }
@@ -71,7 +60,9 @@ public class HouseLayoutService {
     }
 
     /**
-     * @param x position index
+     * This function makes an association between an int from 0 to 4 and a Position enum value
+     *
+     * @param x position index of the door or window
      * @return Position enum value
      */
     public static Position getPosition(int x) {
