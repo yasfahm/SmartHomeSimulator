@@ -1,5 +1,8 @@
 package entity;
 
+/**
+ * class House to represent a House object
+ */
 public class House {
     private Room[] rooms;
 
