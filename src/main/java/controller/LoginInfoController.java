@@ -1,12 +1,14 @@
 package controller;
 
-import entity.Door;
 import constants.Position;
+import entity.Door;
 import entity.Room;
 import entity.Window;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -27,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import service.HouseLayoutService;
+import service.RoleService;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -56,8 +63,15 @@ public class LoginInfoController implements Initializable {
     private Hyperlink loc;
     @FXML
     private TextArea console;
+    @FXML
+    private ComboBox<String> selectedUser;
+    @FXML
+    private Label userRole;
 
     private static String userParent;
+    private static Map<String, Room> house;
+    private static Room[] roomArray;
+    private static String username;
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -67,22 +81,42 @@ public class LoginInfoController implements Initializable {
     private long timeInMillis;
 
     /**
+     * Sets up the logged in user as the active user
+     *
+     * @param userParent The active user's username
+     */
+    public void setSelectedUser(String userParent) {
+        selectedUser.getSelectionModel().select(userParent);
+        username = userParent;
+        setupCurrentUser();
+    }
+
+    /**
      * Function to set the user's location
+     *
      * @param place the String that is the name of the location that will be passed to this function.
      */
-    public void setLoc(String place) { loc.setText(place); }
+    public void setLoc(String place) {
+        loc.setText(place);
+    }
 
     /**
      * Function to set the user
+     *
      * @param username the username that will be passed to this function.
      */
-    public void setUser(String username) { user.setText(username); }
+    public void setUser(String username) {
+        user.setText(username);
+    }
 
     /**
      * Function to set the date
+     *
      * @param dateTime the time and date that will be passed to this function
      */
-    public void setDate(String dateTime) { date.setText(dateTime); }
+    public void setDate(String dateTime) {
+        date.setText(dateTime);
+    }
 
     /**
      * Function to setting new time label
@@ -90,13 +124,13 @@ public class LoginInfoController implements Initializable {
      * @param dateTime the time and date that will be passed to this function
      */
     public void setTime(String dateTime) {
-    	SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss"); 
-    	try {
-    		Date d = formatFull.parse(dateTime);
-        	this.timeInMillis = d.getTime();
-    	} catch (ParseException e) {
-			e.printStackTrace();
-		}
+        SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss");
+        try {
+            Date d = formatFull.parse(dateTime);
+            this.timeInMillis = d.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setUserParent(String userParent) {
@@ -105,6 +139,10 @@ public class LoginInfoController implements Initializable {
 
     public static String getUserParent() {
         return userParent;
+    }
+
+    public static String getUsername() {
+        return username;
     }
 
     /**
@@ -127,23 +165,51 @@ public class LoginInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SimpleDateFormat formatDate= new SimpleDateFormat("yyyy - MMMM - dd");
-        SimpleDateFormat formatTime= new SimpleDateFormat("HH:mm:ss");
-	long sysmillis = System.currentTimeMillis();
-	this.timeInMillis = sysmillis;
-	Date d = new Date(sysmillis);
-	this.date.setText(formatDate.format(d));
-	this.time.setText(formatTime.format(d));
+        setupCurrentUser();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+        long sysmillis = System.currentTimeMillis();
+        this.timeInMillis = sysmillis;
+        Date d = new Date(sysmillis);
+        this.date.setText(formatDate.format(d));
+        this.time.setText(formatTime.format(d));
 
         // Clock animation
         Timeline clock = new Timeline(
-                new KeyFrame(Duration.ZERO,
-                        e -> moveClock()
-                ),
-                new KeyFrame(Duration.seconds(1))
+                new KeyFrame(Duration.ZERO, e -> {
+                    moveClock();
+                }), new KeyFrame(Duration.seconds(1))
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+
+        if (Objects.nonNull(house)) {
+            drawRoomFromCache();
+        }
+        selectedUser.getSelectionModel().select(username);
+        Map userLocs = EditSimulationController.getUserLocations();
+        loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+    }
+
+    /**
+     * Sets up the current active user and all possible options
+     */
+    private void setupCurrentUser() {
+        Map<String, String> listOfUsers = RoleService.findRole(userParent);
+        userRole.setText(listOfUsers.get(username));
+        selectedUser.getItems().addAll(listOfUsers.keySet());
+        selectedUser.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (Objects.nonNull(newValue) && !newValue.equals(oldValue)) {
+                    username = newValue;
+                    selectedUser.getSelectionModel().select(newValue);
+                    userRole.setText(listOfUsers.get(newValue));
+                    Map userLocs = EditSimulationController.getUserLocations();
+                    loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+                }
+            }
+        });
     }
 
     /**
@@ -155,6 +221,9 @@ public class LoginInfoController implements Initializable {
     public void goToLogin(ActionEvent event) throws IOException {
         Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         Scene loginScene = new Scene(login);
+
+        deleteHouse();
+        EditSimulationController.deleteLocations();
 
         // stage info
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -208,10 +277,10 @@ public class LoginInfoController implements Initializable {
         fileChooser.setTitle("Open Resource File");
         File file = fileChooser.showOpenDialog(window);
 
-        Room[] roomsArray = HouseLayoutService.parseHouseLayout(file);
+        roomArray = HouseLayoutService.parseHouseLayout(file);
 
         HashMap<String, Room> rooms = new HashMap<>();
-        for (Room room : roomsArray) {
+        for (Room room : roomArray) {
             rooms.put(room.getName(), room);
         }
 
@@ -221,7 +290,17 @@ public class LoginInfoController implements Initializable {
         gc.setFont(new Font(10));
 
         int lastX = 90, lastY = 170;
-        drawRoom(rooms, roomsArray[0], traversed, Position.NONE, lastX, lastY);
+        house = rooms;
+        drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
+    }
+
+    /**
+     * Draws the room based on the cached static variables after this file has been submitted
+     */
+    public void drawRoomFromCache() {
+        gc = houseRender.getGraphicsContext2D();
+        gc.setFont(new Font(10));
+        drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 90, 170);
     }
 
     /**
@@ -293,7 +372,7 @@ public class LoginInfoController implements Initializable {
      * @param x           x coordinate of the previously visited room
      * @param y           y coordinate of the previously visited room
      */
-    public void drawRoom(HashMap<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
+    public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
         switch (previous) {
             case NONE -> {
@@ -391,14 +470,26 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToEdit(ActionEvent event) throws IOException {
-        Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
-        Scene editScene = new Scene(edit);
+        if (Objects.nonNull(house)) {
+            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+            Scene editScene = new Scene(edit);
 
-        // stage info
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(editScene);
-        window.show();
+            // stage info
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(editScene);
+            window.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
+            alert.showAndWait();
+        }
+
     }
 
+    public static Map<String, Room> getHouse() {
+        return house;
+    }
 
+    public static void deleteHouse() {
+        LoginInfoController.house = null;
+    }
 }

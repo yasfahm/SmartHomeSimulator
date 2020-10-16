@@ -7,6 +7,8 @@ import javafx.collections.ObservableList;
 import org.apache.commons.lang3.EnumUtils;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service layer for the updating and selection of roles
@@ -57,5 +59,24 @@ public class RoleService {
         } catch (SQLException e) {
             System.out.println("Invalid values used");
         }
+    }
+
+    /**
+     * Finds the role of the given username
+     *
+     * @param parentUser Username's main account
+     * @return Map of username as keys and roles as values
+     */
+    public static Map<String, String> findRole(final String parentUser) {
+        try {
+            List<UserRole> listOfUsers = DatabaseService.getAllUserRoles(parentUser);
+            return listOfUsers.stream().collect(Collectors.toMap(
+                    UserRole::getUsername,
+                    user -> user.getRole().toString()
+            ));
+        } catch (SQLException e) {
+            System.out.println("There are no user roles");
+        }
+        return null;
     }
 }
