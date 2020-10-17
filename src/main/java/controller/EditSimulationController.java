@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -46,6 +47,8 @@ public class EditSimulationController implements Initializable {
     private Label windowToBlock;
     @FXML
     private AnchorPane locationDisplay;
+    @FXML
+    private TextArea windowNote;
     private Map<String, Room> house;
     private String username;
     private double xOffset = 0;
@@ -114,7 +117,7 @@ public class EditSimulationController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username = LoginInfoController.getUsername();
-        userToMove.setText("Move " + username + " To:");
+        userToMove.setText("Move " + username + " to:");
         house = LoginInfoController.getHouse();
         if (Objects.nonNull(house)) {
             roomsMove.getItems().addAll(house.keySet());
@@ -139,6 +142,55 @@ public class EditSimulationController implements Initializable {
                 }
             });
             windows.getSelectionModel().selectFirst();
+        }
+    }
+
+    /**
+     * This function will return a list containing blocking status of windows
+     *
+     * @param room the room passed to function
+     * @return list of blocked status of windows
+     */
+    public String[] windowsList(Room room) {
+        String[] list = new String[room.getWindows().size()];
+        for(int i = 0; i < room.getWindows().size(); i++) {
+            if(room.getWindows().get(i).getBlocking()){
+                list[i] = room.getWindows().get(i).getPosition().toString() + ": " + "true";
+            }
+            else {
+                list[i] = room.getWindows().get(i).getPosition().toString() + ": " + "false";
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Function responsible for blocking windows
+     * @param event The event that called this function
+     */
+    public void windowsBlocked(ActionEvent event) {
+        String message = "The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.\n";
+        String log = windowNote.getText();
+        windowNote.setText(log + message);
+
+        int selectedWindow = 0;
+        for(int i = 0; i < room.getWindows().size(); i++) {
+            if (room.getWindows().get(i).getPosition().toString().equals(windows.getValue())) {
+                selectedWindow = i;
+                room.getWindows().get(selectedWindow).setBlocking(true);
+            }
+        }
+    }
+
+    /**
+     * Function responsible for blocking windows
+     * @param event The event that called this function
+     */
+    public void getWindowsBlocking(ActionEvent event) {
+        String[] list = windowsList(room);
+        System.out.println(room.getName());
+        for (int i = 0; i < windowsList(room).length; i++) {
+            System.out.println("\t"+list[i]);
         }
     }
 
