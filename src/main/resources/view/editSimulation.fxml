@@ -34,7 +34,7 @@
             <Label layoutX="19.0" layoutY="165.0" prefHeight="17.0" prefWidth="123.0" text="Select window:" />
             <Button layoutX="249.0" layoutY="201.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Confirm" />
             <TextArea fx:id="windowNote" layoutX="24.0" layoutY="244.0" prefHeight="91.0" prefWidth="646.0" />
-            <Button layoutX="24.0" layoutY="338.0" mnemonicParsing="false" onAction="#getWindowsBlocking" text="test" />
+            <Button layoutX="24.0" layoutY="338.0" mnemonicParsing="false" onAction="#getWindowsBlocking" text="Display on console" />
          </children>
       </AnchorPane>
    </children>
