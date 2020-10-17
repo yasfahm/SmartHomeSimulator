@@ -50,6 +50,7 @@ public class EditSimulationController implements Initializable {
     private String username;
     private double xOffset = 0;
     private double yOffset = 0;
+    private static Room room;
 
     private static Map<String, String> userLocations;
 
@@ -124,20 +125,19 @@ public class EditSimulationController implements Initializable {
         }
         locationDisplay.getChildren().add(processRows());
 
-        windowToBlock.setText("Block window movement");
+        windowToBlock.setText("Select room: ");
         if (Objects.nonNull(house)) {
             roomsBlock.getItems().addAll(house.keySet());
             roomsBlock.getSelectionModel().selectFirst();
 
             roomsBlock.setOnAction(event -> {
                 String roomName = roomsBlock.getValue();
-                Room room = house.get(roomName);
-                for (Window window: room.getWindows()){
-                    System.out.println(window);
+                room = house.get(roomName);
+                windows.getItems().clear();
+                for (Window window: room.getWindows()) {
                     windows.getItems().add(window.getPosition().toString());
                 }
             });
-
             windows.getSelectionModel().selectFirst();
         }
     }
