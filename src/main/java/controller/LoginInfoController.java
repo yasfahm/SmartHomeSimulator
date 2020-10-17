@@ -78,7 +78,9 @@ public class LoginInfoController implements Initializable {
     private double yOffset = 0;
     private final int ROOM_SIZE = 75;
     private final int DOOR_SIZE = ROOM_SIZE - 55;
-    private long timeInMillis;
+    private static long timeInMillis;
+    private static Timeline clock;
+    private static boolean firstLaunch = true;
 
     /**
      * Sets up the logged in user as the active user
@@ -132,6 +134,20 @@ public class LoginInfoController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Function return the text for date label
+     */
+    public String getDate() { 
+    	return this.date.getText(); 
+    }
+    
+    /**
+     * Function return the text for time label
+     */
+    public String getTime() { 
+    	return this.time.getText(); 
+    }
 
     public static void setUserParent(String userParent) {
         LoginInfoController.userParent = userParent;
@@ -154,8 +170,8 @@ public class LoginInfoController implements Initializable {
         Calendar cal = Calendar.getInstance();
         this.timeInMillis += 1000;
         cal.setTimeInMillis(timeInMillis);
-        date.setText(formatDate.format(cal.getTime()));
-        time.setText(formatTime.format(cal.getTime()));
+        this.date.setText(formatDate.format(cal.getTime()));
+        this.time.setText(formatTime.format(cal.getTime()));
     }
 
     /**
@@ -165,24 +181,33 @@ public class LoginInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setupCurrentUser();
-        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
-        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-        long sysmillis = System.currentTimeMillis();
-        this.timeInMillis = sysmillis;
-        Date d = new Date(sysmillis);
-        this.date.setText(formatDate.format(d));
-        this.time.setText(formatTime.format(d));
-
+    	// any action at the first initialization
+    	if(this.firstLaunch == true) {
+    		this.firstLaunch = false;
+    		
+    		ChangeDateTimeController.setParentController(this);
+    		
+			SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+	        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+	        long sysmillis = System.currentTimeMillis();
+	        this.timeInMillis = sysmillis;
+	        Date d = new Date(sysmillis);
+	        this.date.setText(formatDate.format(d));
+	        this.time.setText(formatTime.format(d));
+	        
+    	}
+    	
         // Clock animation
-        Timeline clock = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> {
-                    moveClock();
-                }), new KeyFrame(Duration.seconds(1))
+    	if(clock != null) clock.getKeyFrames().clear();
+		this.clock = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {moveClock();}), 
+                new KeyFrame(Duration.seconds(1))
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-
+    	
+        setupCurrentUser();
+        
         if (Objects.nonNull(house)) {
             drawRoomFromCache();
         }
@@ -445,20 +470,16 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
-     * This function loads the user roles page(scene) into the window(stage)
+     * This function loads the change date and time page(scene) into the window(stage)
      *
      * @param event The event that called this function
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
         Parent root = loader.load();
-
-        ChangeDateTimeController controller = loader.getController();
-        controller.setParentController(this);
-
         Stage stage = new Stage();
-        stage.initStyle(StageStyle.UTILITY);
+        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(new Scene(root));
         stage.show();
     }
