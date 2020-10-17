@@ -7,14 +7,15 @@ import constants.Position;
  */
 public class Window {
     private Position position;
-
+    private boolean blocking;
     /**
      * Constructor for class Window
      *
      * @param position
      */
-    public Window(Position position) {
+    public Window(Position position, boolean blocking) {
         this.position = position;
+        this.blocking = blocking;
     }
 
     /**
@@ -34,4 +35,20 @@ public class Window {
     public void setPosition(Position position) {
         this.position = position;
     }
+    /**
+     * Set the blocking of the window
+     *
+     * @param blocking blocking  of the window
+     */
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
+    }
+
+    /**
+     * Get the blocking of the window
+     *
+     * @return blocking of the window
+     */
+    public boolean getBlocking() { return blocking; }
+
 }

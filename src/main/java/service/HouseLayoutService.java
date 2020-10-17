@@ -46,7 +46,7 @@ public class HouseLayoutService {
 
             for (int j = 0; j < windowsJSON.length(); j++) {
                 int position = windowsJSON.getJSONObject(j).getInt("position");
-                windows.add(new Window(getPosition(position)));
+                windows.add(new Window(getPosition(position), false));
             }
 
             for (int j = 0; j < doorsJSON.length(); j++) {
