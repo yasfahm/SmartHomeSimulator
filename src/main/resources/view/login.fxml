@@ -23,7 +23,7 @@
             </Label>
             <Button layoutX="317.0" layoutY="324.0" mnemonicParsing="false" onAction="#goToSignUp" stylesheets="@application.css" text="Sign Up" />
             <Label fx:id="displayMessage" layoutX="228.0" layoutY="240.0" prefHeight="17.0" prefWidth="256.0" styleClass="root" stylesheets="@application.css" textAlignment="CENTER" textFill="#f50101" />
-            <Label layoutX="293.0" layoutY="66.0" styleClass="title" text="LOGIN" />
+            <Label layoutX="213.0" layoutY="58.0" styleClass="title" text="Smart Home Simulator" />
          </children>
       </AnchorPane>
    </children>

@@ -13,8 +13,8 @@
       <PasswordField fx:id="passwordVerification" layoutX="270.0" layoutY="213.0" promptText="Password" styleClass="text-box" stylesheets="@application.css" />
       <PasswordField fx:id="password" layoutX="270.0" layoutY="259.0" promptText="New Password" styleClass="text-box" stylesheets="@application.css" />
       <TextField fx:id="username" layoutX="270.0" layoutY="75.0" promptText="Username" styleClass="text-box" stylesheets="@application.css" />
-      <Button layoutX="319.0" layoutY="320.0" mnemonicParsing="false" onAction="#processRegistration" text="Sign Up" />
-      <Label layoutX="276.0" layoutY="15.0" styleClass="title" stylesheets="@application.css" text="Sign Up" />
+      <Button layoutX="319.0" layoutY="320.0" mnemonicParsing="false" onAction="#processRegistration" text="Register" />
+      <Label layoutX="304.0" layoutY="23.0" styleClass="title" stylesheets="@application.css" text="Register" />
       <TextField fx:id="firstname" layoutX="270.0" layoutY="123.0" promptText="First Name" styleClass="text-box" stylesheets="@application.css" />
       <TextField fx:id="lastname" layoutX="270.0" layoutY="169.0" promptText="Last Name" styleClass="text-box" stylesheets="@application.css" />
       <Label layoutX="680.0" onMouseClicked="#close" text="X">
