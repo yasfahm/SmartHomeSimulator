@@ -2,6 +2,7 @@ package controller;
 
 import entity.Room;
 import entity.UserRole;
+import entity.Window;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,9 +35,15 @@ public class EditSimulationController implements Initializable {
      * declaring variables
      */
     @FXML
-    private ComboBox<String> rooms;
+    private ComboBox<String> roomsMove;
+    @FXML
+    private ComboBox<String> roomsBlock;
+    @FXML
+    private ComboBox<String> windows;
     @FXML
     private Label userToMove;
+    @FXML
+    private Label windowToBlock;
     @FXML
     private AnchorPane locationDisplay;
     private Map<String, Room> house;
@@ -106,16 +113,33 @@ public class EditSimulationController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username = LoginInfoController.getUsername();
-        userToMove.setText("Move " + LoginInfoController.getUsername() + " To:");
+        userToMove.setText("Move " + username + " To:");
         house = LoginInfoController.getHouse();
         if (Objects.nonNull(house)) {
-            rooms.getItems().addAll(house.keySet());
-            rooms.getItems().add("Outside");
-            rooms.getSelectionModel().select("Outside");
+            roomsMove.getItems().addAll(house.keySet());
+            roomsMove.getItems().add("Outside");
+            roomsMove.getSelectionModel().select("Outside");
         } else {
-            rooms.getItems().add("Unknown");
+            roomsMove.getItems().add("Unknown");
         }
         locationDisplay.getChildren().add(processRows());
+
+        windowToBlock.setText("Block window movement");
+        if (Objects.nonNull(house)) {
+            roomsBlock.getItems().addAll(house.keySet());
+            roomsBlock.getSelectionModel().selectFirst();
+
+            roomsBlock.setOnAction(event -> {
+                String roomName = roomsBlock.getValue();
+                Room room = house.get(roomName);
+                for (Window window: room.getWindows()){
+                    System.out.println(window);
+                    windows.getItems().add(window.getPosition().toString());
+                }
+            });
+
+            windows.getSelectionModel().selectFirst();
+        }
     }
 
     /**
@@ -162,7 +186,7 @@ public class EditSimulationController implements Initializable {
      * @param event The event that called this function
      */
     public void changeLocation(ActionEvent event) {
-        String chosenLocation = rooms.getSelectionModel().getSelectedItem();
+        String chosenLocation = roomsMove.getSelectionModel().getSelectedItem();
         if (StringUtils.isNotEmpty(chosenLocation)) {
             userLocations.put(username, chosenLocation);
             ((Label) locationDisplay.lookup("#" + username + "Location")).setText(chosenLocation);
