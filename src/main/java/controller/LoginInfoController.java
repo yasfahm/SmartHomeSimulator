@@ -96,6 +96,7 @@ public class LoginInfoController implements Initializable {
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
+    private Text text = new Text();
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -253,7 +254,7 @@ public class LoginInfoController implements Initializable {
         toggle.setTranslateX(60);
         toggle.setTranslateY(30);
 
-        Text text = new Text();
+        //Text text = new Text();
         text.setFont(Font.font(13));
         text.setFill(Color.WHITE);
         text.setTranslateX(60);
@@ -393,30 +394,35 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void addHouseLayout(ActionEvent event) throws IOException {
+        if (text.getText().equals("ON")) {
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter =
+                    new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extFilter);
+            fileChooser.setTitle("Open Resource File");
+            File file = fileChooser.showOpenDialog(window);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter =
-                new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(window);
+            roomArray = HouseLayoutService.parseHouseLayout(file);
 
-        roomArray = HouseLayoutService.parseHouseLayout(file);
+            HashMap<String, Room> rooms = new HashMap<>();
+            for (Room room : roomArray) {
+                rooms.put(room.getName(), room);
+            }
 
-        HashMap<String, Room> rooms = new HashMap<>();
-        for (Room room : roomArray) {
-            rooms.put(room.getName(), room);
+            Set<Room> traversed = new HashSet<>();
+
+            gc = houseRender.getGraphicsContext2D();
+            gc.setFont(new Font(11));
+            gc.setFill(Color.WHITE);
+            int lastX = 130, lastY = 190;
+            house = rooms;
+            drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
         }
-
-        Set<Room> traversed = new HashSet<>();
-
-        gc = houseRender.getGraphicsContext2D();
-        gc.setFont(new Font(11));
-        gc.setFill(Color.WHITE);
-        int lastX = 130, lastY = 190;
-        house = rooms;
-        drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
+        else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
+            alert.showAndWait();
+        }
     }
 
     /**
