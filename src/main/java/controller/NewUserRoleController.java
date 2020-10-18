@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import service.DatabaseService;
 import service.RoleService;
@@ -33,6 +34,15 @@ public class NewUserRoleController {
         parentUser = LoginInfoController.getUserParent();
         roles.getItems().addAll(RoleService.getAllRoles());
         roles.getSelectionModel().select(UserRoles.STRANGER.ordinal());
+    }
+
+    /**
+     * This function will close the application
+     *
+     * @param event The event that called this function
+     */
+    public void close(MouseEvent event) {
+        System.exit(0);
     }
 
     /**

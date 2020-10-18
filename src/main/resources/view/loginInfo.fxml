@@ -16,124 +16,88 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="744.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-color: #455A64;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
-        <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" styleClass="root" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" style="-fx-background-color: #455A64;" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" style="-fx-background-color: #455A64;" text="Close" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" style="-fx-background-color: #455A64;" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" style="-fx-background-color: #455A64;" text="Delete" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" style="-fx-background-color: #455A64;" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" style="-fx-background-color: #455A64;" text="About" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
         <SplitPane dividerPositions="0.25034965034965034" layoutY="25.0" prefHeight="459.0" prefWidth="717.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" styleClass="root">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #455A64;" styleClass="root">
+               <children>
+                  <AnchorPane prefHeight="725.0" prefWidth="221.0" style="-fx-background-color: #607D8B;" styleClass="simulation-box" stylesheets="@application.css">
+                     <children>
+                        <Button layoutX="114.0" layoutY="685.0" mnemonicParsing="false" onAction="#goToLogin" style="-fx-background-color: white; -fx-text-fill: black;" text="Log Out" />
+                        <Button fx:id="addHouse" layoutX="57.0" layoutY="147.0" mnemonicParsing="false" onAction="#addHouseLayout" style="-fx-background-color: white; -fx-text-fill: black;" text="Add Layout" />
+                        <Button layoutX="56.0" layoutY="212.0" mnemonicParsing="false" onAction="#goToEdit" style="-fx-background-color: white; -fx-text-fill: black;" text="Edit" />
+                        <Label fx:id="date" layoutX="16.0" layoutY="426.0" stylesheets="@application.css" text="_date" />
+                        <Label fx:id="time" layoutX="16.0" layoutY="453.0" stylesheets="@application.css" text="_time" />
+                        <Label layoutX="15.0" layoutY="354.0" style="-fx-font-size: 18px;" stylesheets="@application.css" text="Location:" />
+                        <Hyperlink fx:id="loc" layoutX="14.0" layoutY="377.0" onAction="#goToEdit" text="location" />
+                        <Label fx:id="user" layoutX="16.0" layoutY="14.0" style="-fx-font-size: 20px;" stylesheets="@application.css" text="user" />
+                        <Label layoutX="15.0" layoutY="289.0" style="-fx-font-size: 18px;" styleClass="title" stylesheets="@application.css" text="Outside Temperature: " />
+                        <Label layoutX="23.0" layoutY="312.0" prefHeight="18.0" prefWidth="39.0" stylesheets="@application.css" text="15 °C" />
+                        <Button layoutX="61.0" layoutY="488.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
+                        <ToggleButton layoutX="59.0" layoutY="66.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Start">
+                           <effect>
+                              <DropShadow />
+                           </effect></ToggleButton>
+                        <ToggleButton layoutX="106.0" layoutY="66.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Stop">
+                           <effect>
+                              <DropShadow />
+                           </effect></ToggleButton>
+                     </children>
+                  </AnchorPane>
+               </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="729.0" prefWidth="668.0" style="-fx-background-color: #455A64;">
                     <children>
-                        <VBox alignment="CENTER" layoutX="2.0" layoutY="129.0" prefHeight="373.0" prefWidth="169.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
-                            <children>
-                        <ToggleButton mnemonicParsing="false" text="Start">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin></ToggleButton>
-                        <Button mnemonicParsing="false" onAction="#goToEdit" text="Edit" />
-                                <Label fx:id="user" layoutX="14.0" layoutY="216.0" prefHeight="25.0" prefWidth="120.0" text="User">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin></Label>
-                                <Label prefHeight="18.0" prefWidth="63.0" text="Location:" />
-                        <Hyperlink fx:id="loc" onAction="#goToEdit" text="location">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin></Hyperlink>
-                        <HBox alignment="CENTER" prefHeight="19.0" prefWidth="179.0">
-                           <children>
-                                      <Label text="Outside Temp. ">
-                                          <font>
-                                              <Font name="System Bold" size="12.0" />
-                                          </font>
-                              </Label>
-                              <Label text="15" />
-                              <Label text="°C" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="48.0" prefWidth="179.0">
-                           <children>
-                              <VBox alignment="CENTER" prefWidth="144.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                            <Label fx:id="date" text="_date">
-                                                <font>
-                                                    <Font name="System Bold" size="12.0" />
-                                                </font>
-                                    </Label>
-                                            <Label fx:id="time" text="_time">
-                                                <font>
-                                                    <Font name="System Bold" size="12.0" />
-                                                </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <Region prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" prefHeight="25.0" prefWidth="20.0" text="edit" />
-                           </children>
-                           <padding>
-                              <Insets left="5.0" right="5.0" />
-                           </padding>
-                        </HBox>
-                                <Button fx:id="addHouse" layoutX="14.0" layoutY="246.0" onAction="#addHouseLayout" prefHeight="30.0" prefWidth="125.0" text="Add House Layout" />
-      
-                                            <Button mnemonicParsing="false" onAction="#goToLogin" text="Log Out" />
-                            </children>
-                            <padding>
-                                <Insets bottom="10.0" top="10.0" />
-                            </padding>
-                        </VBox>
-                    </children></AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                    <children>
-                        <SplitPane dividerPositions="0.7274725274725274" layoutX="-10.0" layoutY="52.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="529.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.8307905686546463" layoutX="-10.0" layoutY="52.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="529.0" style="-fx-background-color: #455A64;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #455A64;">
                                     <children>
-                                        <SplitPane dividerPositions="0.5103969754253308" layoutX="98.0" layoutY="62.0" prefHeight="328.0" prefWidth="531.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <SplitPane dividerPositions="0.5103969754253308" layoutX="98.0" layoutY="62.0" prefHeight="328.0" prefWidth="531.0" style="-fx-background-color: #455A64;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <items>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" stylesheets="@application.css">
                                                     <children>
-                                                        <TabPane layoutX="8.0" layoutY="7.0" prefHeight="326.0" prefWidth="267.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <TabPane layoutX="8.0" layoutY="7.0" prefHeight="326.0" prefWidth="267.0" styleClass="root" stylesheets="@application.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <tabs>
-                                                                <Tab text="SHS">
+                                                                <Tab style="-fx-background-color: #FF5722;" text="SHS">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                          <children>
-                                                            <AnchorPane prefHeight="204.0" prefWidth="264.0">
+                                                            <AnchorPane layoutX="9.0" prefHeight="534.0" prefWidth="332.0" stylesheets="@application.css">
                                                                <children>
-                                                                          <Button layoutX="157.0" layoutY="23.0" mnemonicParsing="false" onAction="#goToUserSettings" text="User Control" />
-                                                                          <Label fx:id="userRole" layoutX="44.0" layoutY="57.0" text="User Group" />
-                                                                  <ComboBox fx:id="selectedUser" layoutX="15.0" layoutY="23.0" prefHeight="25.0" prefWidth="120.0" />
+                                                                          <Button layoutX="214.0" layoutY="84.0" mnemonicParsing="false" onAction="#goToUserSettings" style="-fx-background-color: white; -fx-text-fill: black;" text="User Control" />
+                                                                          <Label fx:id="userRole" layoutX="48.0" layoutY="35.0" text="User Group" />
+                                                                  <ComboBox fx:id="selectedUser" layoutX="184.0" layoutY="30.0" prefHeight="25.0" prefWidth="120.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children></AnchorPane>
                                                                     </content>
                                                                 </Tab>
-                                                                <Tab text="SHC">
+                                                                <Tab style="-fx-background-color: #FF9800;" text="SHC">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                             <children>
@@ -141,19 +105,19 @@
                                                                                     <items>
                                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                                             <children>
-                                                                                                <ListView layoutX="23.0" layoutY="-20.0" prefHeight="145.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                                <ListView layoutX="23.0" layoutY="-20.0" prefHeight="145.0" prefWidth="265.0" style="-fx-background-color: #455A64;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                                             </children>
                                                                                         </AnchorPane>
                                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                                             <children>
                                                                                                 <SplitPane dividerPositions="0.7464788732394366" layoutX="44.0" layoutY="-56.0" orientation="VERTICAL" prefHeight="144.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                                     <items>
-                                                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #455A64;" />
                                                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                                                             <children>
-                                                                                                                <HBox layoutY="-36.0" prefHeight="33.0" prefWidth="263.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                                                <HBox layoutY="-36.0" prefHeight="33.0" prefWidth="263.0" style="-fx-background-color: #455A64;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                                                     <children>
-                                                                                                                        <CheckBox mnemonicParsing="false" text="Select All" />
+                                                                                                                        <CheckBox mnemonicParsing="false" styleClass="label" stylesheets="@application.css" text="Select All" />
                                                                                                                     </children>
                                                                                                                 </HBox>
                                                                                                             </children>
@@ -168,17 +132,12 @@
                                                                         </AnchorPane>
                                                                     </content>
                                                                 </Tab>
-                                                                <Tab text="SHP">
+                                                                <Tab style="-fx-background-color: #FFC107;" text="SHP">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                                                     </content>
                                                                 </Tab>
-                                                                <Tab text="SHH">
-                                                                    <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                                    </content>
-                                                                </Tab>
-                                                                <Tab text="+">
+                                                                <Tab style="-fx-background-color: #FFEB3B;" text="SHH">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                                                     </content>
@@ -189,13 +148,13 @@
                                                 </AnchorPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <BorderPane layoutY="26.0" prefHeight="326.0" prefWidth="256.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <BorderPane layoutY="26.0" prefHeight="595.0" prefWidth="326.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <center>
                                                                 <Canvas fx:id="houseRender" height="286.0" width="355.0" />
                                                             </center>
-                                                            <bottom>
-                                                                <Label text="House" BorderPane.alignment="CENTER" />
-                                                            </bottom>
+                                             <top>
+                                                                <Label style="-fx-font-size: 20px;" stylesheets="@application.css" text="House" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                                             </top>
                                                         </BorderPane>
                                                     </children>
                                                 </AnchorPane>
@@ -203,9 +162,9 @@
                                         </SplitPane>
                                     </children>
                                 </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="135.0" prefWidth="677.0">
                            <children>
-                              <TextArea fx:id="console" editable="false" layoutX="27.0" layoutY="-51.0" prefHeight="98.0" prefWidth="561.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextArea fx:id="console" editable="false" layoutX="8.0" layoutY="-3.0" prefHeight="137.0" prefWidth="665.0" styleClass="custom" stylesheets="@application.css" wrapText="true">
                                  <padding>
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
@@ -217,7 +176,7 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-        <Label layoutX="680.0" onMouseClicked="#close" prefHeight="25.0" prefWidth="20.0" text="X">
+        <Label layoutX="874.0" onMouseClicked="#close" prefHeight="25.0" prefWidth="20.0" text="X">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>

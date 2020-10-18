@@ -76,8 +76,8 @@ public class LoginInfoController implements Initializable {
     private GraphicsContext gc;
     private double xOffset = 0;
     private double yOffset = 0;
-    private final int ROOM_SIZE = 75;
-    private final int DOOR_SIZE = ROOM_SIZE - 55;
+    private final int ROOM_SIZE = 90;
+    private final int DOOR_SIZE = ROOM_SIZE - 66;
     private static long timeInMillis;
     private static Timeline clock;
     private static boolean firstLaunch = true;
@@ -312,9 +312,9 @@ public class LoginInfoController implements Initializable {
         Set<Room> traversed = new HashSet<>();
 
         gc = houseRender.getGraphicsContext2D();
-        gc.setFont(new Font(10));
-
-        int lastX = 90, lastY = 170;
+        gc.setFont(new Font(11));
+        gc.setFill(Color.WHITE);
+        int lastX = 130, lastY = 190;
         house = rooms;
         drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
     }
@@ -324,8 +324,8 @@ public class LoginInfoController implements Initializable {
      */
     public void drawRoomFromCache() {
         gc = houseRender.getGraphicsContext2D();
-        gc.setFont(new Font(10));
-        drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 90, 170);
+        gc.setFont(new Font(11));
+        drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
     }
 
     /**

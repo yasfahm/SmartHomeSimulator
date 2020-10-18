@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -51,6 +52,15 @@ public class UserRolesController {
     public void initialize() {
         parentUser = LoginInfoController.getUserParent();
         values.getChildren().add(processRows());
+    }
+
+    /**
+     * This function will close the application
+     *
+     * @param event The event that called this function
+     */
+    public void close(MouseEvent event) {
+        System.exit(0);
     }
 
     /**

@@ -23,7 +23,7 @@ public class JavaFXController extends Application implements EventHandler<Action
     public void start(Stage primaryStage) throws IOException {
 
         Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-        Scene scene = new Scene(root, 700, 400);
+        Scene scene = new Scene(root, 900, 750);
         scene.getStylesheets().add(getClass().getResource("/view/application.css").toExternalForm());
 
         //removing title bar from the window(stage)
