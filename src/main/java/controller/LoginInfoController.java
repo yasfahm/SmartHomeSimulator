@@ -23,9 +23,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -74,13 +76,9 @@ public class LoginInfoController implements Initializable {
      * declaring variables
      */
     @FXML
-    private Label user;
-    @FXML
-    private Label date;
-    @FXML
     private Canvas houseRender;
     @FXML
-    private Label time;
+    private Label time, date, user, temperature;
     @FXML
     private Hyperlink loc;
     @FXML
@@ -91,6 +89,10 @@ public class LoginInfoController implements Initializable {
     private Label userRole;
     @FXML
     private AnchorPane anchorToggle;
+    @FXML 
+    private HBox invisible_container, hbox_temperature;
+    @FXML 
+    private TextField textfield_temperature;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -106,6 +108,7 @@ public class LoginInfoController implements Initializable {
     private static long timeInMillis;
     private static Timeline clock;
     private static boolean firstLaunch = true;
+    private static int temperatureInInt = 15;
 
     /**
      * Sets up the logged in user as the active user
@@ -227,7 +230,11 @@ public class LoginInfoController implements Initializable {
 	        this.date.setText(formatDate.format(d));
 	        this.time.setText(formatTime.format(d));
 	        
+	        
     	}
+    	
+    	// Temperature
+    	this.temperature.setText(Integer.toString(temperatureInInt));
     	
         // Clock animation
     	if(clock != null) clock.getKeyFrames().clear();
@@ -262,6 +269,34 @@ public class LoginInfoController implements Initializable {
 
         root.getChildren().addAll(toggle, toggleText);
 
+    }
+    
+    
+    public void temperatureOnClick(MouseEvent event) {
+    	invisible_container.getChildren().add(temperature);
+    	textfield_temperature.setText(temperature.getText());
+    	textfield_temperature.setPrefWidth(20 + (temperature.getText().length() * 5));
+    	hbox_temperature.getChildren().add(0, textfield_temperature);
+    	
+    	textfield_temperature.requestFocus();
+    	
+    	textfield_temperature.setOnAction(e -> {  // on enter key
+    		boolean isNumeric = textfield_temperature.getText().chars().allMatch( Character::isDigit );
+    		
+    		if (textfield_temperature.getText().matches("-?\\d+") && textfield_temperature.getText().length() != 0) {
+    			
+    			int new_temp = Integer.parseInt(textfield_temperature.getText());
+    			System.out.println("its an integer " + new_temp);
+    			
+    			invisible_container.getChildren().add(textfield_temperature);
+    			hbox_temperature.getChildren().add(0, temperature);
+            	temperature.setText(textfield_temperature.getText());
+            	textfield_temperature.clear();
+            	temperatureInInt = Integer.parseInt(temperature.getText());
+    		} else {
+    			consoleLog("Please enter a valid temperature input.");
+    		}
+	    });
     }
 
     /**
