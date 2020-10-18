@@ -18,13 +18,13 @@
             </Label>
             <Button fx:id="button" layoutX="258.0" layoutY="139.0" mnemonicParsing="false" onAction="#changeLocation" stylesheets="@application.css" text="Confirm" />
             <Button fx:id="button" layoutX="775.0" layoutY="695.0" mnemonicParsing="false" onAction="#goToLoginInfo" text="Go Back" />
-            <Label fx:id="userToMove" layoutX="14.0" layoutY="59.0" text="Edit User's Location" />
-            <Label fx:id="windowToBlock" layoutX="19.0" layoutY="475.0" text="Room to block window:" />
+            <Label fx:id="userToMove" layoutX="15.0" layoutY="82.0" text="Edit User's Location" />
+            <Label fx:id="windowToBlock" layoutX="19.0" layoutY="468.0" text="Room to block window:" />
             <ComboBox fx:id="roomsMove" layoutX="208.0" layoutY="85.0" prefWidth="150.0" />
 
             <ComboBox fx:id="roomsBlock" layoutX="208.0" layoutY="427.0" prefWidth="150.0" />
             <ComboBox fx:id="windows" layoutX="208.0" layoutY="470.0" prefWidth="150.0" />
-            <Label layoutX="19.0" layoutY="440.0" prefHeight="17.0" prefWidth="123.0" text="Select window:" />
+            <Label layoutX="19.0" layoutY="424.0" prefHeight="17.0" prefWidth="123.0" text="Select window:" />
             <Button fx:id="button" layoutX="258.0" layoutY="521.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Confirm" />
             <Button fx:id="button" layoutX="258.0" layoutY="562.0" mnemonicParsing="false" onAction="#getWindowsBlocking" stylesheets="@application.css" text="Display" />
             <AnchorPane fx:id="locationDisplay" layoutX="464.0" layoutY="69.0" prefHeight="215.0" prefWidth="415.0" />

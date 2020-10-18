@@ -78,9 +78,8 @@ public class UserRolesController {
         LoginInfoController controller = loader.getController();
         controller.setUser(username);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(loginScene);
-        window.show();
+        Stage stage = (Stage) values.getScene().getWindow();
+        stage.close();
     }
 
     /**

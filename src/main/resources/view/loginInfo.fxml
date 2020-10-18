@@ -15,8 +15,6 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -60,14 +58,7 @@
                         <Label layoutX="15.0" layoutY="289.0" style="-fx-font-size: 18px;" styleClass="title" stylesheets="@application.css" text="Outside Temperature: " />
                         <Label layoutX="23.0" layoutY="312.0" prefHeight="18.0" prefWidth="39.0" stylesheets="@application.css" text="15 °C" />
                         <Button layoutX="61.0" layoutY="488.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
-                        <ToggleButton layoutX="59.0" layoutY="66.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Start">
-                           <effect>
-                              <DropShadow />
-                           </effect></ToggleButton>
-                        <ToggleButton layoutX="106.0" layoutY="66.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Stop">
-                           <effect>
-                              <DropShadow />
-                           </effect></ToggleButton>
+                        <AnchorPane fx:id="anchorToggle" layoutX="18.0" layoutY="42.0" prefHeight="94.0" prefWidth="188.0" />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
@@ -176,7 +167,7 @@
                 </AnchorPane>
             </items>
         </SplitPane>
-        <Label layoutX="874.0" onMouseClicked="#close" prefHeight="25.0" prefWidth="20.0" text="X">
+        <Label layoutX="881.0" onMouseClicked="#close" prefHeight="25.0" prefWidth="20.0" stylesheets="@application.css" text="X">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>

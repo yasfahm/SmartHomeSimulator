@@ -4,9 +4,9 @@ import constants.Position;
 import entity.Door;
 import entity.Room;
 import entity.Window;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -23,12 +23,34 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import javafx.animation.FillTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -67,6 +89,8 @@ public class LoginInfoController implements Initializable {
     private ComboBox<String> selectedUser;
     @FXML
     private Label userRole;
+    @FXML
+    private AnchorPane anchorToggle;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -141,7 +165,14 @@ public class LoginInfoController implements Initializable {
     public String getDate() { 
     	return this.date.getText(); 
     }
-    
+
+    /**
+     * Function return the AnchorPane
+     */
+    public AnchorPane getAnc() {
+        return anchorToggle;
+    }
+
     /**
      * Function return the text for time label
      */
@@ -214,7 +245,78 @@ public class LoginInfoController implements Initializable {
         selectedUser.getSelectionModel().select(username);
         Map userLocs = EditSimulationController.getUserLocations();
         loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+
+        // toggleSwitch
+        Pane root = getAnc();
+
+        ToggleSwitch toggle = new ToggleSwitch();
+        toggle.setTranslateX(60);
+        toggle.setTranslateY(30);
+
+        Text text = new Text();
+        text.setFont(Font.font(13));
+        text.setFill(Color.WHITE);
+        text.setTranslateX(60);
+        text.setTranslateY(30);
+        text.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
+
+        root.getChildren().addAll(toggle, text);
+
     }
+
+    /**
+     * This class creates a toggle switch.
+     */
+    private static class ToggleSwitch extends Parent {
+
+        private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
+
+        private TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
+        private FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
+
+        private ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
+
+        public BooleanProperty switchedOnProperty() {
+            return switchedOn;
+        }
+
+        public ToggleSwitch() {
+            Rectangle background = new Rectangle(60, 30);
+            background.setArcWidth(30);
+            background.setArcHeight(30);
+            background.setFill(Color.WHITE);
+            background.setStroke(Color.LIGHTGRAY);
+
+            Circle trigger = new Circle(15);
+            trigger.setCenterX(15);
+            trigger.setCenterY(15);
+            trigger.setFill(Color.WHITE);
+            trigger.setStroke(Color.LIGHTGRAY);
+
+            DropShadow shadow = new DropShadow();
+            shadow.setRadius(2);
+            trigger.setEffect(shadow);
+
+            translateAnimation.setNode(trigger);
+            fillAnimation.setShape(background);
+
+            getChildren().addAll(background, trigger);
+
+            switchedOn.addListener((obs, oldState, newState) -> {
+                boolean isOn = newState.booleanValue();
+                translateAnimation.setToX(isOn ? 60 - 30 : 0);
+                fillAnimation.setFromValue(isOn ? Color.RED : Color.GREEN);
+                fillAnimation.setToValue(isOn ? Color.GREEN : Color.RED);
+
+                animation.play();
+            });
+
+            setOnMouseClicked(event -> {
+                switchedOn.set(!switchedOn.get());
+            });
+        }
+    }
+
 
     /**
      * Sets up the current active user and all possible options
@@ -271,18 +373,16 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToUserSettings(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
-        Parent userRoles = loader.load();
-        Scene userRolesScene = new Scene(userRoles);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userRoles.fxml"));
+        Parent root = loader.load();
 
         UserRolesController controller = loader.getController();
         controller.setUsername(user.getText());
 
-        // stage info
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(userRolesScene);
-        window.show();
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     /**
@@ -492,13 +592,14 @@ public class LoginInfoController implements Initializable {
      */
     public void goToEdit(ActionEvent event) throws IOException {
         if (Objects.nonNull(house)) {
-            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
-            Scene editScene = new Scene(edit);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+            Parent root = loader.load();
 
-            // stage info
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            window.setScene(editScene);
-            window.show();
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setScene(new Scene(root));
+            stage.show();
+
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
             alert.showAndWait();
