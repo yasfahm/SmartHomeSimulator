@@ -15,6 +15,24 @@ import service.LoginService;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import javafx.animation.FillTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class LoginController {
     /**
@@ -76,6 +94,7 @@ public class LoginController {
         Scene loginScene = new Scene(login);
 
         LoginInfoController controller = loader.getController();
+
         Map<String, Object> userInfo = LoginService.login(userD.getText(), passD.getText());
 
         if (Objects.nonNull(userInfo)) {
@@ -91,8 +110,61 @@ public class LoginController {
             // Create Popup with no user correlating to given username and password
             displayMessage.setText("Incorrect username and password");
         }
-
     }
+
+    /**
+     * This class creates a toggle switch.
+     */
+    private static class ToggleSwitch extends Parent {
+
+        private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
+
+        private TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
+        private FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
+
+        private ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
+
+        public BooleanProperty switchedOnProperty() {
+            return switchedOn;
+        }
+
+        public ToggleSwitch() {
+            Rectangle background = new Rectangle(60, 30);
+            background.setArcWidth(30);
+            background.setArcHeight(30);
+            background.setFill(Color.WHITE);
+            background.setStroke(Color.LIGHTGRAY);
+
+            Circle trigger = new Circle(15);
+            trigger.setCenterX(15);
+            trigger.setCenterY(15);
+            trigger.setFill(Color.WHITE);
+            trigger.setStroke(Color.LIGHTGRAY);
+
+            DropShadow shadow = new DropShadow();
+            shadow.setRadius(2);
+            trigger.setEffect(shadow);
+
+            translateAnimation.setNode(trigger);
+            fillAnimation.setShape(background);
+
+            getChildren().addAll(background, trigger);
+
+            switchedOn.addListener((obs, oldState, newState) -> {
+                boolean isOn = newState.booleanValue();
+                translateAnimation.setToX(isOn ? 60 - 30 : 0);
+                fillAnimation.setFromValue(isOn ? Color.RED : Color.GREEN);
+                fillAnimation.setToValue(isOn ? Color.GREEN : Color.RED);
+
+                animation.play();
+            });
+
+            setOnMouseClicked(event -> {
+                switchedOn.set(!switchedOn.get());
+            });
+        }
+    }
+
 
     /**
      * This function will close the application

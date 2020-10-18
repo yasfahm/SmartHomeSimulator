@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -54,6 +55,15 @@ public class UserRolesController {
     }
 
     /**
+     * This function will close the application
+     *
+     * @param event The event that called this function
+     */
+    public void close(MouseEvent event) {
+        System.exit(0);
+    }
+
+    /**
      * Button function to go back to the Main Menu
      *
      * @param event The event that triggered this method
@@ -68,9 +78,8 @@ public class UserRolesController {
         LoginInfoController controller = loader.getController();
         controller.setUser(username);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(loginScene);
-        window.show();
+        Stage stage = (Stage) values.getScene().getWindow();
+        stage.close();
     }
 
     /**

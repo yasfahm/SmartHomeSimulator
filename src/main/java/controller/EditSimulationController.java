@@ -71,10 +71,8 @@ public class EditSimulationController implements Initializable {
         Parent loginInfo = FXMLLoader.load(getClass().getResource("/view/loginInfo.fxml"));
         Scene loginInfoScene = new Scene(loginInfo);
 
-        // stage info
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(loginInfoScene);
-        window.show();
+        Stage stage = (Stage) windows.getScene().getWindow();
+        stage.close();
     }
 
     /**

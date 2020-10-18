@@ -7,27 +7,30 @@
     accent-color: #00BCD4;
     secondary-text-color:#757575;
     divider-color: #BDBDBD;
+    dark-background: #455A64;
 }
 
 .root{
-    -fx-background-color: dark-primary-color;
+    -fx-background-color: dark-background;
 }
 
-.title{
+.label-title{
     -fx-font-size: 30px;
     -fx-font-family: "Tahoma";
     -fx-text-fill: text-primary-color;
 }
 
 .button{
-    -fx-background-color: accent-color;
+    -fx-background-color: white;
     -fx-background-radius: 10;
     -fx-background-insets: 0,1,1;
-    -fx-text-fill: light-primary-color;
+    -fx-text-fill: black;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
-    -fx-padding: 10;
+    -fx-padding: 5;
     -fx-font-family: "Tahoma";
+    -fx-pref-width: 100px;
 }
+
 .button:hover{
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
@@ -36,7 +39,9 @@
     -fx-text-fill: -fx-text-base-color;
     -fx-alignment: center;
     -fx-content-display: left;
-    -fx-padding: 10;
+    -fx-padding: 5;
+    -fx-pref-width: 100px;
+
 }
 
 .text-box{
@@ -48,3 +53,95 @@
     -fx-font-size: 15px;
     -fx-font-weight: bold;
 }
+
+.label{
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-family: "Tahoma";
+}
+
+#button{
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0,1,1;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+    -fx-padding: 5;
+    -fx-font-family: "Tahoma";
+    -fx-pref-width: 100px;
+
+}
+
+#button:hover{
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 10;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: center;
+    -fx-content-display: left;
+    -fx-padding: 5;
+    -fx-pref-width: 100px;
+
+}
+
+#windowNote{
+    -fx-background-color: dark-background;
+}
+
+#locationDisplay{
+    -fx-text-fill: black;
+    -fx-background-color: dark-background;
+}
+
+#title{
+    -fx-font-size: 30px;
+    -fx-font-family: "Tahoma";
+    -fx-text-fill: text-primary-color;
+}
+
+#displayMessage{
+    -fx-text-fill: red;
+}
+
+#menu{
+    -fx-background-color: dark-background;
+    -fx-text-fill: black;
+}
+
+.tab {
+    -fx-pref-width: 80;
+}
+
+.custom {
+    -fx-control-inner-background: dark-background;
+    -fx-background-color: dark-background;
+}
+
+/*.toggle-switch input[type=checkbox] {*/
+/*    -fx-display:none*/
+/*}*/
+/*.toggle-switch label {*/
+/*    -fx-cursor:pointer;*/
+/*}*/
+/*.toggle-switch label .toggle-track {*/
+/*    -fx-display:block;height:40px;width:80px;background:#eee;border-radius:20px;*/
+/*    -fx-position:relative;*/
+/*    -fx-margin-bottom:15px;border:1px solid #ccc;*/
+/*}*/
+
+/*.toggle-switch .toggle-track:before{*/
+/*    -fx-content:'';*/
+/*    -fx-display:inline-block;height:40px;width:40px;background:red;*/
+/*    -fx-border-radius:20px;*/
+/*    -fx-position:absolute;*/
+/*    -fx-top:0;*/
+/*    -fx-right:0;*/
+/*    -fx-transition:right .2s ease-in;*/
+/*}*/
+
+/*.toggle-switch input[type="checkbox"]:checked + label .toggle-track:before{*/
+/*    -fx-background:green;*/
+/*    -fx-right:40px;*/
+/*}*/
+
