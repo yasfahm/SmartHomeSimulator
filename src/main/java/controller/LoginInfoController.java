@@ -96,7 +96,7 @@ public class LoginInfoController implements Initializable {
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
-    private Text text = new Text();
+    private Text toggleText = new Text();
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -254,14 +254,13 @@ public class LoginInfoController implements Initializable {
         toggle.setTranslateX(60);
         toggle.setTranslateY(30);
 
-        //Text text = new Text();
-        text.setFont(Font.font(13));
-        text.setFill(Color.WHITE);
-        text.setTranslateX(60);
-        text.setTranslateY(30);
-        text.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
+        toggleText.setFont(Font.font(13));
+        toggleText.setFill(Color.WHITE);
+        toggleText.setTranslateX(60);
+        toggleText.setTranslateY(30);
+        toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
 
-        root.getChildren().addAll(toggle, text);
+        root.getChildren().addAll(toggle, toggleText);
 
     }
 
@@ -394,7 +393,7 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void addHouseLayout(ActionEvent event) throws IOException {
-        if (text.getText().equals("ON")) {
+        if (toggleText.getText().equals("ON")) {
             Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extFilter =
