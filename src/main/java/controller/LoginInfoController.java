@@ -4,7 +4,13 @@ import constants.Position;
 import entity.Door;
 import entity.Room;
 import entity.Window;
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.FillTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -28,31 +34,15 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import javafx.animation.FillTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -89,16 +79,16 @@ public class LoginInfoController implements Initializable {
     private Label userRole;
     @FXML
     private AnchorPane anchorToggle;
-    @FXML 
-    private HBox invisible_container, hbox_temperature;
-    @FXML 
-    private TextField textfield_temperature;
+    @FXML
+    private HBox invisibleContainer, hBoxTemperature;
+    @FXML
+    private TextField textFieldTemperature;
 
     private static String userParent;
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
-    private Text toggleText = new Text();
+    private final Text toggleText = new Text();
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -116,9 +106,9 @@ public class LoginInfoController implements Initializable {
      * @param userParent The active user's username
      */
     public void setSelectedUser(String userParent) {
+        setupCurrentUser();
         selectedUser.getSelectionModel().select(userParent);
         username = userParent;
-        setupCurrentUser();
     }
 
     /**
@@ -157,17 +147,17 @@ public class LoginInfoController implements Initializable {
         SimpleDateFormat formatFull = new SimpleDateFormat("yyyy - MMMM - dd HH:mm:ss");
         try {
             Date d = formatFull.parse(dateTime);
-            this.timeInMillis = d.getTime();
+            timeInMillis = d.getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Function return the text for date label
      */
-    public String getDate() { 
-    	return this.date.getText(); 
+    public String getDate() {
+        return this.date.getText();
     }
 
     /**
@@ -180,8 +170,8 @@ public class LoginInfoController implements Initializable {
     /**
      * Function return the text for time label
      */
-    public String getTime() { 
-    	return this.time.getText(); 
+    public String getTime() {
+        return this.time.getText();
     }
 
     public static void setUserParent(String userParent) {
@@ -199,11 +189,11 @@ public class LoginInfoController implements Initializable {
     /**
      * Animation controller for the clock
      */
-    private void moveClock() {
+    protected void moveClock() {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        this.timeInMillis += 1000;
+        timeInMillis += 1000;
         cal.setTimeInMillis(timeInMillis);
         this.date.setText(formatDate.format(cal.getTime()));
         this.time.setText(formatTime.format(cal.getTime()));
@@ -216,37 +206,38 @@ public class LoginInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	// any action at the first initialization
-    	if(this.firstLaunch == true) {
-    		this.firstLaunch = false;
-    		
-    		ChangeDateTimeController.setParentController(this);
-    		
-			SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
-	        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-	        long sysmillis = System.currentTimeMillis();
-	        this.timeInMillis = sysmillis;
-	        Date d = new Date(sysmillis);
-	        this.date.setText(formatDate.format(d));
-	        this.time.setText(formatTime.format(d));
-	        
-	        
-    	}
-    	
-    	// Temperature
-    	this.temperature.setText(Integer.toString(temperatureInInt));
-    	
+        // any action at the first initialization
+        if (firstLaunch) {
+            firstLaunch = false;
+
+            ChangeDateTimeController.setParentController(this);
+
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+            SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+            long sysmillis = System.currentTimeMillis();
+            timeInMillis = sysmillis;
+            Date d = new Date(sysmillis);
+            this.date.setText(formatDate.format(d));
+            this.time.setText(formatTime.format(d));
+
+        }
+
+        // Temperature
+        this.temperature.setText(Integer.toString(temperatureInInt));
+
         // Clock animation
-    	if(clock != null) clock.getKeyFrames().clear();
-		this.clock = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> {moveClock();}), 
+        if (clock != null) clock.getKeyFrames().clear();
+        clock = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {
+                    moveClock();
+                }),
                 new KeyFrame(Duration.seconds(1))
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-    	
+
         setupCurrentUser();
-        
+
         if (Objects.nonNull(house)) {
             drawRoomFromCache();
         }
@@ -258,9 +249,11 @@ public class LoginInfoController implements Initializable {
         Pane root = getAnc();
 
         ToggleSwitch toggle = new ToggleSwitch();
+        toggle.setId("toggleSwitch");
         toggle.setTranslateX(60);
         toggle.setTranslateY(30);
 
+        toggleText.setId("toggleText");
         toggleText.setFont(Font.font(13));
         toggleText.setFill(Color.WHITE);
         toggleText.setTranslateX(60);
@@ -270,39 +263,37 @@ public class LoginInfoController implements Initializable {
         root.getChildren().addAll(toggle, toggleText);
 
     }
-    
-    
+
+
     public void temperatureOnClick(MouseEvent event) {
-    	invisible_container.getChildren().add(temperature);
-    	textfield_temperature.setText(temperature.getText());
-    	textfield_temperature.setPrefWidth(20 + (temperature.getText().length() * 5));
-    	hbox_temperature.getChildren().add(0, textfield_temperature);
-    	
-    	textfield_temperature.requestFocus();
-    	
-    	textfield_temperature.setOnAction(e -> {  // on enter key
-    		boolean isNumeric = textfield_temperature.getText().chars().allMatch( Character::isDigit );
-    		
-    		if (textfield_temperature.getText().matches("-?\\d+") && textfield_temperature.getText().length() != 0) {
-    			
-    			int new_temp = Integer.parseInt(textfield_temperature.getText());
-    			System.out.println("its an integer " + new_temp);
-    			
-    			invisible_container.getChildren().add(textfield_temperature);
-    			hbox_temperature.getChildren().add(0, temperature);
-            	temperature.setText(textfield_temperature.getText());
-            	textfield_temperature.clear();
-            	temperatureInInt = Integer.parseInt(temperature.getText());
-    		} else {
-    			consoleLog("Please enter a valid temperature input.");
-    		}
-	    });
+        invisibleContainer.getChildren().add(temperature);
+        textFieldTemperature.setText(temperature.getText());
+        textFieldTemperature.setPrefWidth(20 + (temperature.getText().length() * 5));
+        hBoxTemperature.getChildren().add(0, textFieldTemperature);
+
+        textFieldTemperature.requestFocus();
+
+        textFieldTemperature.setOnAction(e -> {  // on enter key
+            if (textFieldTemperature.getText().matches("-?\\d+") && textFieldTemperature.getText().length() != 0) {
+
+                int new_temp = Integer.parseInt(textFieldTemperature.getText());
+                System.out.println("its an integer " + new_temp);
+
+                invisibleContainer.getChildren().add(textFieldTemperature);
+                hBoxTemperature.getChildren().add(0, temperature);
+                temperature.setText(textFieldTemperature.getText());
+                textFieldTemperature.clear();
+                temperatureInInt = Integer.parseInt(temperature.getText());
+            } else {
+                consoleLog("Please enter a valid temperature input.");
+            }
+        });
     }
 
     /**
      * This class creates a toggle switch.
      */
-    private static class ToggleSwitch extends Parent {
+    protected static class ToggleSwitch extends Parent {
 
         private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
 
@@ -357,6 +348,7 @@ public class LoginInfoController implements Initializable {
      * Sets up the current active user and all possible options
      */
     private void setupCurrentUser() {
+        selectedUser.getItems().clear();
         Map<String, String> listOfUsers = RoleService.findRole(userParent);
         userRole.setText(listOfUsers.get(username));
         selectedUser.getItems().addAll(listOfUsers.keySet());
@@ -392,10 +384,11 @@ public class LoginInfoController implements Initializable {
         window.setScene(loginScene);
         window.show();
     }
-    
+
     /**
      * This function appends text onto the console
-     * @param str 	String to appened on console
+     *
+     * @param str String to appened on console
      */
     public void consoleLog(String str) {
         this.console.appendText("[" + this.time.getText() + "] " + str + "\n");
@@ -452,8 +445,7 @@ public class LoginInfoController implements Initializable {
             int lastX = 130, lastY = 190;
             house = rooms;
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
-        }
-        else {
+        } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
             alert.showAndWait();
         }
@@ -616,7 +608,7 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -647,10 +639,18 @@ public class LoginInfoController implements Initializable {
 
     }
 
+    /**
+     * Accessor for the current session's house plan
+     *
+     * @return Map of locations with their name as the key and the value being the individual {@link Room} plan
+     */
     public static Map<String, Room> getHouse() {
         return house;
     }
 
+    /**
+     * Deletes the current house
+     */
     public static void deleteHouse() {
         LoginInfoController.house = null;
     }

@@ -135,7 +135,7 @@ public class EditSimulationController implements Initializable {
                 String roomName = roomsBlock.getValue();
                 room = house.get(roomName);
                 windows.getItems().clear();
-                for (Window window: room.getWindows()) {
+                for (Window window : room.getWindows()) {
                     windows.getItems().add(window.getPosition().toString());
                 }
             });
@@ -151,11 +151,10 @@ public class EditSimulationController implements Initializable {
      */
     public String[] windowsList(Room room) {
         String[] list = new String[room.getWindows().size()];
-        for(int i = 0; i < room.getWindows().size(); i++) {
-            if(room.getWindows().get(i).getBlocking()){
+        for (int i = 0; i < room.getWindows().size(); i++) {
+            if (room.getWindows().get(i).getBlocking()) {
                 list[i] = room.getWindows().get(i).getPosition().toString() + ": " + "true";
-            }
-            else {
+            } else {
                 list[i] = room.getWindows().get(i).getPosition().toString() + ": " + "false";
             }
         }
@@ -164,6 +163,7 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Function responsible for blocking windows
+     *
      * @param event The event that called this function
      */
     public void windowsBlocked(ActionEvent event) {
@@ -172,7 +172,7 @@ public class EditSimulationController implements Initializable {
         windowNote.setText(log + message);
 
         int selectedWindow = 0;
-        for(int i = 0; i < room.getWindows().size(); i++) {
+        for (int i = 0; i < room.getWindows().size(); i++) {
             if (room.getWindows().get(i).getPosition().toString().equals(windows.getValue())) {
                 selectedWindow = i;
                 room.getWindows().get(selectedWindow).setBlocking(true);
@@ -182,13 +182,14 @@ public class EditSimulationController implements Initializable {
 
     /**
      * Function responsible for blocking windows
+     *
      * @param event The event that called this function
      */
     public void getWindowsBlocking(ActionEvent event) {
         String[] list = windowsList(room);
         System.out.println(room.getName());
         for (int i = 0; i < windowsList(room).length; i++) {
-            System.out.println("\t"+list[i]);
+            System.out.println("\t" + list[i]);
         }
     }
 
@@ -246,7 +247,19 @@ public class EditSimulationController implements Initializable {
         }
     }
 
+    /**
+     * Deletes the location cached variable
+     */
     public static void deleteLocations() {
         userLocations = null;
+    }
+
+    /**
+     * Sets the username for the user to move
+     *
+     * @param username The username to set it to
+     */
+    protected void setUsername(String username) {
+        this.username = username;
     }
 }

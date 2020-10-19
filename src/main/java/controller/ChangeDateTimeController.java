@@ -4,17 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormatSymbols;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Calendar;
@@ -25,7 +18,6 @@ import java.util.stream.IntStream;
  * Controller responsible for the control and flow of the Date Time Popup scene
  */
 public class ChangeDateTimeController implements Initializable {
-
 
     /**
      * declaring variables
@@ -59,13 +51,13 @@ public class ChangeDateTimeController implements Initializable {
      * Function from interface Initializable, initialize default actions
      */
     public void initialize(URL arg0, ResourceBundle arg1) {
-    	String[] date = parentController.getDate().split(" - ");
-    	cb_year.setValue(Integer.parseInt(date[0]));
-    	cb_month.setValue(date[1]);
-    	cb_date.setValue(Integer.parseInt(date[2]));
-    	String[] time = parentController.getTime().split(":");
-    	cb_hour.setValue(Integer.parseInt(time[0]));
-    	cb_minute.setValue(Integer.parseInt(time[1]));
+        String[] date = parentController.getDate().split(" - ");
+        cb_year.setValue(Integer.parseInt(date[0]));
+        cb_month.setValue(date[1]);
+        cb_date.setValue(Integer.parseInt(date[2]));
+        String[] time = parentController.getTime().split(":");
+        cb_hour.setValue(Integer.parseInt(time[0]));
+        cb_minute.setValue(Integer.parseInt(time[1]));
         setComboBoxValue();
     }
 
@@ -87,16 +79,16 @@ public class ChangeDateTimeController implements Initializable {
      *
      * @param loginInfoController
      */
-    public static void setParentController(LoginInfoController loginInfoController) { 
+    public static void setParentController(LoginInfoController loginInfoController) {
         parentController = loginInfoController;
     }
 
     /**
      * This function submit the change to parent controller
      *
-     * @param event		The event that calls this function
+     * @param event The event that calls this function
      */
-    public void bt_onChangeClick(ActionEvent event) { 
+    public void bt_onChangeClick(ActionEvent event) {
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();
 
         String time = String.format("%02d:%02d:%02d", cb_hour.getValue(), cb_minute.getValue(), LocalTime.now().getSecond());
@@ -112,7 +104,7 @@ public class ChangeDateTimeController implements Initializable {
     /**
      * This function simply close the pane without any change
      *
-     * @param event		The event that calls this function
+     * @param event The event that calls this function
      */
     public void bt_onCancelClick(ActionEvent event) {
         Stage stage = (Stage) cb_year.getScene().getWindow();
@@ -122,7 +114,7 @@ public class ChangeDateTimeController implements Initializable {
     /**
      * This function set dynamic date as month change
      *
-     * @param event		The event that calls this function
+     * @param event The event that calls this function
      */
     public void cb_onMonthChange(ActionEvent event) {
         li_date = getDateList();

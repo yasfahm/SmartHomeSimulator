@@ -1,5 +1,10 @@
 package controller;
 
+import javafx.animation.FillTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,30 +14,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import service.LoginService;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
-import javafx.animation.FillTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class LoginController {
     /**
@@ -117,12 +109,12 @@ public class LoginController {
      */
     private static class ToggleSwitch extends Parent {
 
-        private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
+        private final BooleanProperty switchedOn = new SimpleBooleanProperty(false);
 
-        private TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
-        private FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
+        private final TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
+        private final FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
 
-        private ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
+        private final ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
 
         public BooleanProperty switchedOnProperty() {
             return switchedOn;

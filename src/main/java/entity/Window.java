@@ -8,6 +8,7 @@ import constants.Position;
 public class Window {
     private Position position;
     private boolean blocking;
+
     /**
      * Constructor for class Window
      *
@@ -35,6 +36,7 @@ public class Window {
     public void setPosition(Position position) {
         this.position = position;
     }
+
     /**
      * Set the blocking of the window
      *
@@ -49,6 +51,8 @@ public class Window {
      *
      * @return blocking of the window
      */
-    public boolean getBlocking() { return blocking; }
+    public boolean getBlocking() {
+        return blocking;
+    }
 
 }

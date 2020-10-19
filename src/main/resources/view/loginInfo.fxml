@@ -57,7 +57,7 @@
                         <Hyperlink fx:id="loc" layoutX="14.0" layoutY="376.0" onAction="#goToEdit" text="location" textFill="#ff9900" />
                         <Label fx:id="user" layoutX="16.0" layoutY="14.0" style="-fx-font-size: 20px;" stylesheets="@application.css" text="user" />
                         <Label layoutX="15.0" layoutY="289.0" style="-fx-font-size: 18px;" styleClass="title" stylesheets="@application.css" text="Outside Temperature: " />
-                        <HBox fx:id="hbox_temperature" alignment="CENTER" layoutX="14.0" layoutY="312.0" prefHeight="27.0" prefWidth="169.0" spacing="5.0">
+                        <HBox fx:id="hBoxTemperature" alignment="CENTER" layoutX="14.0" layoutY="312.0" prefHeight="27.0" prefWidth="169.0" spacing="5.0">
                            <children>
                               <Label fx:id="temperature" onMouseClicked="#temperatureOnClick" stylesheets="@application.css" text="_temperature" />
                               <Label text="°C" />
@@ -65,10 +65,10 @@
                         </HBox>
                         <Button layoutX="61.0" layoutY="488.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
                         <AnchorPane fx:id="anchorToggle" layoutX="18.0" layoutY="42.0" prefHeight="94.0" prefWidth="188.0" />
-                        <HBox fx:id="invisible_container" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
+                        <HBox fx:id="invisibleContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
                            <children>
                               <Label text="this is an invisible container to do the node swapping" />
-                              <TextField fx:id="textfield_temperature" />
+                              <TextField fx:id="textFieldTemperature" />
                            </children>
                         </HBox>
                      </children>
