@@ -118,30 +118,17 @@
     -fx-background-color: dark-background;
 }
 
-/*.toggle-switch input[type=checkbox] {*/
-/*    -fx-display:none*/
-/*}*/
-/*.toggle-switch label {*/
-/*    -fx-cursor:pointer;*/
-/*}*/
-/*.toggle-switch label .toggle-track {*/
-/*    -fx-display:block;height:40px;width:80px;background:#eee;border-radius:20px;*/
-/*    -fx-position:relative;*/
-/*    -fx-margin-bottom:15px;border:1px solid #ccc;*/
-/*}*/
+.toggle-switch input[type=checkbox] {
+    -fx-display:none
+}
 
-/*.toggle-switch .toggle-track:before{*/
-/*    -fx-content:'';*/
-/*    -fx-display:inline-block;height:40px;width:40px;background:red;*/
-/*    -fx-border-radius:20px;*/
-/*    -fx-position:absolute;*/
-/*    -fx-top:0;*/
-/*    -fx-right:0;*/
-/*    -fx-transition:right .2s ease-in;*/
-/*}*/
+.toggle-switch label {
+    -fx-cursor:pointer;
+}
 
-/*.toggle-switch input[type="checkbox"]:checked + label .toggle-track:before{*/
-/*    -fx-background:green;*/
-/*    -fx-right:40px;*/
-/*}*/
+.toggle-switch label .toggle-track {
+    -fx-display:block;height:40px;width:80px;background:#eee;border-radius:20px;
+    -fx-position:relative;
+    -fx-margin-bottom:15px;border:1px solid #ccc;
+}
 
