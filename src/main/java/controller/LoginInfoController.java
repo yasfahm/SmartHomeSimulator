@@ -88,6 +88,7 @@ public class LoginInfoController implements Initializable {
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
+    private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
 
     private GraphicsContext gc;
@@ -295,22 +296,19 @@ public class LoginInfoController implements Initializable {
      */
     protected static class ToggleSwitch extends Parent {
 
-        private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
-
         private TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
         private FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
-
         private ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
 
         public BooleanProperty switchedOnProperty() {
-            return switchedOn;
+            return booleanProperty;
         }
 
         public ToggleSwitch() {
             Rectangle background = new Rectangle(60, 30);
             background.setArcWidth(30);
             background.setArcHeight(30);
-            background.setFill(Color.WHITE);
+            background.setFill(Color.RED);
             background.setStroke(Color.LIGHTGRAY);
 
             Circle trigger = new Circle(15);
@@ -328,7 +326,17 @@ public class LoginInfoController implements Initializable {
 
             getChildren().addAll(background, trigger);
 
-            switchedOn.addListener((obs, oldState, newState) -> {
+            if (Objects.isNull(booleanProperty)) {
+                booleanProperty = new SimpleBooleanProperty(false);
+            } else {
+                boolean check = booleanProperty.get();
+                translateAnimation.setToX(check ? 60 - 30 : 0);
+                fillAnimation.setFromValue(check ? Color.RED : Color.GREEN);
+                fillAnimation.setToValue(check ? Color.GREEN : Color.RED);
+                animation.play();
+            }
+
+            booleanProperty.addListener((obs, oldState, newState) -> {
                 boolean isOn = newState.booleanValue();
                 translateAnimation.setToX(isOn ? 60 - 30 : 0);
                 fillAnimation.setFromValue(isOn ? Color.RED : Color.GREEN);
@@ -338,7 +346,7 @@ public class LoginInfoController implements Initializable {
             });
 
             setOnMouseClicked(event -> {
-                switchedOn.set(!switchedOn.get());
+                booleanProperty.set(!booleanProperty.get());
             });
         }
     }

@@ -79,7 +79,8 @@ public class UserRolesController {
         controller.setUser(username);
 
         Stage stage = (Stage) values.getScene().getWindow();
-        stage.close();
+        stage.setScene(loginScene);
+        stage.show();
     }
 
     /**
