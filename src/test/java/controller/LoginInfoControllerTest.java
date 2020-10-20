@@ -66,6 +66,16 @@ public class LoginInfoControllerTest extends ApplicationTest {
     }
 
     @Test
+    public void should_change_temperature() {
+        Event.fireEvent(controller.getTemperature(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+        controller.getTemperatureField().setText("90");
+        controller.changeTemperatureOnEnter();
+        assertEquals("90", controller.getTemperature().getText());
+    }
+
+    @Test
     public void should_start_simulator() {
         AnchorPane parent = controller.getAnc();
 

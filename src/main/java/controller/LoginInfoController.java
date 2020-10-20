@@ -187,6 +187,14 @@ public class LoginInfoController implements Initializable {
         return username;
     }
 
+    public Label getTemperature() {
+        return temperature;
+    }
+
+    public TextField getTemperatureField() {
+        return textFieldTemperature;
+    }
+
     /**
      * Animation controller for the clock
      */
@@ -265,7 +273,11 @@ public class LoginInfoController implements Initializable {
 
     }
 
-
+    /**
+     * On Click function for the temperature label
+     *
+     * @param event The event that triggered the onClick method
+     */
     public void temperatureOnClick(MouseEvent event) {
         invisibleContainer.getChildren().add(temperature);
         textFieldTemperature.setText(temperature.getText());
@@ -275,20 +287,27 @@ public class LoginInfoController implements Initializable {
         textFieldTemperature.requestFocus();
 
         textFieldTemperature.setOnAction(e -> {  // on enter key
-            if (textFieldTemperature.getText().matches("-?\\d+") && textFieldTemperature.getText().length() != 0) {
-
-                int new_temp = Integer.parseInt(textFieldTemperature.getText());
-                System.out.println("its an integer " + new_temp);
-
-                invisibleContainer.getChildren().add(textFieldTemperature);
-                hBoxTemperature.getChildren().add(0, temperature);
-                temperature.setText(textFieldTemperature.getText());
-                textFieldTemperature.clear();
-                temperatureInInt = Integer.parseInt(temperature.getText());
-            } else {
-                consoleLog("Please enter a valid temperature input.");
-            }
+            changeTemperatureOnEnter();
         });
+    }
+
+    /**
+     * On Enter functionality for the textFieldTemperature
+     */
+    protected void changeTemperatureOnEnter() {
+        if (textFieldTemperature.getText().matches("-?\\d+") && textFieldTemperature.getText().length() != 0) {
+
+            int new_temp = Integer.parseInt(textFieldTemperature.getText());
+            System.out.println("its an integer " + new_temp);
+
+            invisibleContainer.getChildren().add(textFieldTemperature);
+            hBoxTemperature.getChildren().add(0, temperature);
+            temperature.setText(textFieldTemperature.getText());
+            textFieldTemperature.clear();
+            temperatureInInt = Integer.parseInt(temperature.getText());
+        } else {
+            consoleLog("Please enter a valid temperature input.");
+        }
     }
 
     /**
