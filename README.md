@@ -1,4 +1,4 @@
-# SOEN 343
+# SOEN 343  TEAM 8
 
 Clone the repository under your work space.
 
