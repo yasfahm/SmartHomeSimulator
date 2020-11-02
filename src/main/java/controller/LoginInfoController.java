@@ -428,16 +428,18 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToUserSettings(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userRoles.fxml"));
-        Parent root = loader.load();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
+        Parent userRoles = loader.load();
+        Scene userRolesScene = new Scene(userRoles);
 
         UserRolesController controller = loader.getController();
         controller.setUsername(user.getText());
 
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(root));
-        stage.show();
+        // stage info
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(userRolesScene);
+        window.show();
     }
 
     /**

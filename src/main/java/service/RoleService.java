@@ -5,9 +5,12 @@ import entity.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang3.EnumUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -78,5 +81,25 @@ public class RoleService {
             System.out.println("There are no user roles");
         }
         return null;
+    }
+
+    public static void importRoles(final JSONObject object, final String parentUser) throws SQLException {
+        List<UserRole> userRoles = DatabaseService.getAllUserRoles(parentUser);
+        JSONArray array = object.getJSONArray("users");
+        array.forEach(jsonObject -> {
+            AtomicBoolean existence = new AtomicBoolean(false);
+            userRoles.forEach(r -> {
+                if (r.getUsername().equals(((JSONObject) jsonObject).get("username").toString())) {
+                    existence.set(true);
+                }
+            });
+            if (!existence.get() && EnumUtils.isValidEnum(UserRoles.class, ((JSONObject) jsonObject).get("role").toString())) {
+                try {
+                    DatabaseService.createNewUserRole(parentUser, ((JSONObject) jsonObject).get("username").toString(), ((JSONObject) jsonObject).get("role").toString());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

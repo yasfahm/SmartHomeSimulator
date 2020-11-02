@@ -11,16 +11,21 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import service.DatabaseService;
 import service.RoleService;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NewUserRoleController {
-
 
     private String username;
     private String parentUser;
@@ -98,5 +103,22 @@ public class NewUserRoleController {
             Alert alert = new Alert(Alert.AlertType.WARNING, "User needs a name or already exists");
             alert.showAndWait();
         }
+    }
+
+    /**
+     * Function to go import a userRole text file
+     *
+     * @param event The event that triggered this method
+     * @throws IOException Thrown if the method is unable to locate the view resource
+     */
+    public void importUserRole(ActionEvent event) throws SQLException, IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+        JSONTokener tokener = new JSONTokener(Files.readString(file.toPath()));
+
+        RoleService.importRoles(new JSONObject(tokener), parentUser);
     }
 }

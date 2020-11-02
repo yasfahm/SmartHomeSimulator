@@ -20,10 +20,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import service.RegistrationService;
 import service.RoleService;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,6 +50,7 @@ public class UserRolesController {
      */
     private String username;
     private String parentUser;
+    private static AtomicInteger indexCache = new AtomicInteger();
 
     /**
      * On initialization, add the grid of information into values
@@ -129,6 +136,7 @@ public class UserRolesController {
                 index.getAndIncrement();
             });
         }
+        indexCache.set(index.get());
         return gridPane;
     }
 
@@ -190,5 +198,52 @@ public class UserRolesController {
             }
         });
         return deleteButton;
+    }
+
+    /**
+     * Method responsible for exporting current user and role list into a txt file
+     *
+     * @param event The event that triggered this function
+     */
+    public void exportList(ActionEvent event) {
+        AtomicInteger index = indexCache;
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < index.get(); i++) {
+            Label user = ((Label) values.lookup("#gridLabel" + i));
+            ComboBox role = ((ComboBox) values.lookup("#gridBox" + i));
+            JSONObject object = new JSONObject();
+
+            object.put("username", user.getText());
+            object.put("role", role.getSelectionModel().getSelectedItem().toString());
+
+            jsonArray.put(object);
+        }
+        JSONObject allUserRoles = new JSONObject();
+        allUserRoles.put("users", jsonArray);
+
+        File file = fileChooser.showSaveDialog(values.getParent().getScene().getWindow());
+        if (Objects.nonNull(file)) {
+            saveToFile(allUserRoles, file);
+        }
+    }
+
+    /**
+     * Method responsible for saving a JSON object onto a file
+     *
+     * @param json The JSON object to save
+     * @param file The file to save into
+     */
+    protected void saveToFile(final JSONObject json, final File file) {
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(json);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
