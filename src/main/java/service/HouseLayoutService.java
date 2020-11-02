@@ -54,7 +54,7 @@ public class HouseLayoutService {
                 String connection = doorsJSON.getJSONObject(j).getString("connection");
                 doors.add(new Door(getPosition(position), connection));
             }
-            roomsArray[i] = new Room(name, windows, doors, lightsTotal);
+            roomsArray[i] = new Room.Builder(name).withWindows(windows).withDoors(doors).withlightsTotal(lightsTotal).build();
         }
         return roomsArray;
     }

@@ -32,6 +32,14 @@ public class RoleService {
         );
     }
 
+    public static void createRole(final String parentUser, final String newUsername, final String role) {
+        try {
+            DatabaseService.createNewUserRole(parentUser, newUsername, role);
+        } catch (SQLException e) {
+            System.out.println("There are no user roles");
+        }
+    }
+
     /**
      * Queries the database for all user and user role combinations
      *

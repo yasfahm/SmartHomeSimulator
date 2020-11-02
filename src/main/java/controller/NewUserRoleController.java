@@ -85,16 +85,16 @@ public class NewUserRoleController {
      * @param event The event that triggered this method
      * @throws IOException Thrown if the method is unable to locate the view resource
      */
-    public void createUserRole(ActionEvent event) throws SQLException, IOException {
+    public void createUserRole(ActionEvent event) throws SQLException {
         String newUsername = newUserField.getText();
         AtomicBoolean existence = new AtomicBoolean(false);
-        DatabaseService.getAllUserRoles(parentUser).forEach(r -> {
+        RoleService.getRoles(parentUser).forEach(r -> {
             if (r.getUsername().equals(newUsername)) {
                 existence.set(true);
             }
         });
         if (Objects.nonNull(newUsername) && !existence.get()) {
-            DatabaseService.createNewUserRole(parentUser, newUsername, roles.getValue());
+            RoleService.createRole(parentUser, newUsername, roles.getValue());
             newUserField.setText("");
             roles.getSelectionModel().select(UserRoles.STRANGER.ordinal());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "User has been created");
