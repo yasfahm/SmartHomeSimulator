@@ -25,7 +25,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -645,7 +650,7 @@ public class LoginInfoController implements Initializable {
      */
     public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
-        
+
         switch (previous) {
             case NONE -> {
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
