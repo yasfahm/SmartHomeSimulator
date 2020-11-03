@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,17 +25,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -47,6 +48,8 @@ import javafx.util.Duration;
 import service.HouseLayoutService;
 import service.RoleService;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -83,6 +86,10 @@ public class LoginInfoController implements Initializable {
     private HBox invisibleContainer, hBoxTemperature;
     @FXML
     private TextField textFieldTemperature;
+    @FXML
+    private AnchorPane anchorSHC;
+    @FXML
+    private VBox vboxSHC;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -100,6 +107,7 @@ public class LoginInfoController implements Initializable {
     private static Timeline clock;
     private static boolean firstLaunch = true;
     private static int temperatureInInt = 15;
+    private Map<String, int[]> lights = new HashMap<>();
 
     /**
      * Sets up the logged in user as the active user
@@ -248,7 +256,11 @@ public class LoginInfoController implements Initializable {
         setupCurrentUser();
 
         if (Objects.nonNull(house)) {
-            drawRoomFromCache();
+            try {
+                drawRoomFromCache();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         selectedUser.getSelectionModel().select(username);
         Map userLocs = EditSimulationController.getUserLocations();
@@ -271,6 +283,35 @@ public class LoginInfoController implements Initializable {
 
         root.getChildren().addAll(toggle, toggleText);
 
+        //...
+        GridPane gridpane = new GridPane();
+        //gridpane.addRow(1,);
+        if (toggleText.getText().equals("ON")) {
+            String[] list = house.keySet().toArray(new String[1]);
+            Label userLabel = new Label();
+            userLabel.setMinWidth(100);
+            //userLabel.setId("gridLabel" + index);
+            userLabel.setText("test");
+            for (int i = 0 ; i < list.length ; i++) {
+                userLabel.setText(list[i]);
+                gridpane.addRow(i, userLabel);
+            }
+            //gridpane.addRow(1,userLabel);
+            //gridpane.
+            vboxSHC.getChildren().add(gridpane);
+        }
+//        String[] list = house.keySet().toArray(new String[1]);
+//        Label userLabel = new Label();
+//        userLabel.setMinWidth(100);
+//        //userLabel.setId("gridLabel" + index);
+//        userLabel.setText("test");
+//        for (int i = 0 ; i < list.length ; i++) {
+//            userLabel.setText(list[i]);
+//            gridpane.addRow(i, userLabel);
+//        }
+//        //gridpane.addRow(1,userLabel);
+//        //gridpane.
+//        vboxSHC.getChildren().add(gridpane);
     }
 
     /**
@@ -474,16 +515,52 @@ public class LoginInfoController implements Initializable {
             int lastX = 130, lastY = 190;
             house = rooms;
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
+
+            //creating a gridPane to show the names of the rooms with buttons to turn on/off the lights.
+            GridPane gridpane = new GridPane();
+
+            // creating a room label which has the name of the room.
+            for (int i = 0 ; i < roomArray.length ; i++) {
+                Label room = new Label();
+                room.setText(roomArray[i].getName());
+
+                //creating the light ImageView that acts as a button.
+                Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
+                Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
+                ImageView light = new ImageView(lightOff);
+                int finalI = i;
+                light.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                        if (roomArray[finalI].getLightsOn() == 0) {
+                            roomArray[finalI].setLightsOn(1);
+                            drawLight(roomArray[finalI]);
+                            light.setImage(lightOn);
+                        }
+                        else {
+                            roomArray[finalI].setLightsOn(0);
+                            drawLight(roomArray[finalI]);
+                            light.setImage(lightOff);
+                        }
+                    }
+                });
+                gridpane.addRow(i, room, light);
+
+            }
+            // adding the gridPane containing names of the rooms and buttons to turn on/off the lights.
+            vboxSHC.getChildren().add(gridpane);
+
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
             alert.showAndWait();
         }
     }
 
+
     /**
      * Draws the room based on the cached static variables after this file has been submitted
      */
-    public void drawRoomFromCache() {
+    public void drawRoomFromCache() throws FileNotFoundException {
         gc = houseRender.getGraphicsContext2D();
         gc.setFont(new Font(11));
         drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
@@ -536,15 +613,30 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
-     * Method responsible for drawing the lights in a room
+     * This function will draw the lights with a given room.
      *
-     * @param x  x coordinate of the light
-     * @param y  y coordinate of the light
-     * @param on boolean value for lights on/off
+     * @param room where light will be drawn.
      */
-    public void drawLight(int x, int y, boolean on) {
-        if (on) {
-            gc.setFill(Color.GOLD);
+    public void drawLight(Room room){
+        String name = room.getName();
+        Image img = null;
+        if (room.getLightsOn() == 0) {
+            try {
+                img = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            int[] coordinates = lights.get(name);
+            gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
+        }
+        else {
+            try {
+                img = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            int[] coordinates = lights.get(name);
+            gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
         }
     }
 
@@ -560,6 +652,7 @@ public class LoginInfoController implements Initializable {
      */
     public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
+
         switch (previous) {
             case NONE -> {
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
@@ -592,7 +685,17 @@ public class LoginInfoController implements Initializable {
             }
         }
         drawWindows(room, x, y);
-        drawLight(x + ROOM_SIZE / 2 - 5, y + ROOM_SIZE / 2 - 5, false);
+
+        //updating a hashMap to get all the lights with their coordinates.
+        int[] coordinates = {x, y};
+        lights.put(room.getName(), coordinates);
+
+        //setting a default value for light status which means that is off.
+        room.setLightsOn(0);
+
+        //draw the light for a room.
+        drawLight(room);
+
         for (Door child : room.getDoors()) {
             Room nextRoom = roomHashMap.get(child.getConnection());
             if (!visited.contains(nextRoom))
