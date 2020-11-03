@@ -509,123 +509,38 @@ public class LoginInfoController implements Initializable {
             house = rooms;
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
 
-            //.....
+            //creating a gridPane to show the names of the rooms with buttons to turn on/off the lights.
             GridPane gridpane = new GridPane();
-            String[] list = house.keySet().toArray(new String[0]);
-//            Label userLabel = new Label();
-//            userLabel.setMinWidth(100);
-//            //userLabel.setId("gridLabel" + index);
-//            userLabel.setText("test");
-//            Label userLabel2 = new Label();
-//            userLabel2.setMinWidth(100);
-//            //userLabel.setId("gridLabel" + index);
-//            userLabel2.setText("test");
-            for (int i = 0 ; i < list.length ; i++) {
+
+            // creating a room label which has the name of the room.
+            for (int i = 0 ; i < roomArray.length ; i++) {
                 Label room = new Label();
                 room.setText(roomArray[i].getName());
-//                Label light = new Label();
-//                light.setText("light");
 
-                Button lightOnOff = new Button("light");
-                Button lightOnOff2 = new Button("light");
-                Button lightOnOff3 = new Button("light");
-                Button lightOnOff4 = new Button("light");
-//                Image img = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
-
-                lightOnOff.resize(5, 5);
+                //creating the light ImageView that acts as a button.
+                Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
+                Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
+                ImageView light = new ImageView(lightOff);
                 int finalI = i;
-                lightOnOff.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-//                        int[] coordinates = lights.get(name);
-//                        gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
-                        if (roomArray[finalI].getLightsOn() == 0) {
-                            roomArray[finalI].setLightsOn(1);
-                            drawLight(roomArray[finalI]);
-                        }
-                        else {
-                            roomArray[finalI].setLightsOn(0);
-                            drawLight(roomArray[finalI]);
-                        }
-                    }
-                });
-
-
-                Label label = new Label();
-                label.setText("test");
-                label.setOnMousePressed(new EventHandler<MouseEvent>() {
+                light.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
-//                        int[] coordinates = lights.get(name);
-//                        gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
                         if (roomArray[finalI].getLightsOn() == 0) {
                             roomArray[finalI].setLightsOn(1);
                             drawLight(roomArray[finalI]);
+                            light.setImage(lightOn);
                         }
                         else {
                             roomArray[finalI].setLightsOn(0);
                             drawLight(roomArray[finalI]);
+                            light.setImage(lightOff);
                         }
                     }
                 });
-
-
-                Image img = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
-                Image img2 = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
-
-
-                ImageView iv = new ImageView(img2);
-
-                iv.setOnMousePressed(new EventHandler<MouseEvent>() {
-                    @Override
-
-                    public void handle(MouseEvent e) {
-//                        int[] coordinates = lights.get(name);
-//                        gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
-                        if (roomArray[finalI].getLightsOn() == 0) {
-                            roomArray[finalI].setLightsOn(1);
-                            drawLight(roomArray[finalI]);
-                            iv.setImage(img);
-                        }
-                        else {
-                            roomArray[finalI].setLightsOn(0);
-                            drawLight(roomArray[finalI]);
-                            iv.setImage(img2);
-                        }
-                    }
-                });
-
-
-//                if (i == 2) {
-//                    gridpane.addRow(2, room, lightOnOff, lightOnOff2, lightOnOff3);
-//                }
-//                else {
-//                    gridpane.addRow(i, room, lightOnOff, label);
-//                }
-                gridpane.addRow(i, room, lightOnOff, iv);
+                gridpane.addRow(i, room, light);
 
             }
-
-            //gridpane.addRow(0,userLabel);
-//            gridpane.add(userLabel,0,1);
-//            gridpane.add(userLabel,0,2);
-            Button button1 = new Button("Button 1");
-            Button button2 = new Button("Button 2");
-            Button button3 = new Button("Button 3");
-            Button button4 = new Button("Button 4");
-            Button button5 = new Button("Button 5");
-            Button button6 = new Button("Button 6");
-
-//            gridpane.add(button1, 0, 0, 1, 1);
-//            gridpane.add(button2, 1, 0, 1, 1);
-//            gridpane.add(button3, 2, 0, 1, 1);
-//            gridpane.add(button4, 0, 1, 1, 1);
-//            gridpane.add(button5, 1, 1, 1, 1);
-//            gridpane.add(button6, 2, 1, 1, 1);
-//            gridpane.add(userLabel,0,2);
-//            gridpane.add(userLabel2,0,3);
-
-            //gridpane.
+            // adding the gridPane containing names of the rooms and buttons to turn on/off the lights.
             vboxSHC.getChildren().add(gridpane);
 
         } else {
@@ -633,6 +548,7 @@ public class LoginInfoController implements Initializable {
             alert.showAndWait();
         }
     }
+
 
     /**
      * Draws the room based on the cached static variables after this file has been submitted
@@ -689,19 +605,6 @@ public class LoginInfoController implements Initializable {
         gc.setStroke(Color.BLACK);
     }
 
-//    /**
-//     * Method responsible for drawing the lights in a room
-//     *
-//     * @param x  x coordinate of the light
-//     * @param y  y coordinate of the light
-//     * @param on boolean value for lights on/off
-//     */
-//    public void drawLight(int x, int y, boolean on) {
-//        if (on) {
-//            gc.setFill(Color.GOLD);
-//        }
-//    }
-
     /**
      * This function will draw the lights with a given room.
      *
@@ -742,88 +645,54 @@ public class LoginInfoController implements Initializable {
      */
     public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
-
-        //....
-//        Image img = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
-
+        
         switch (previous) {
             case NONE -> {
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
                 gc.fillText(room.getName(), x + 10, y + 15);
                 drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
-//                gc.strokeOval(x, y, ROOM_SIZE/2, ROOM_SIZE/2);
-                System.out.println("test: " + "x: " + x + "  y: " + y);
-                System.out.println(room.getName());
-//                String temp = room.getName();
-//                int[] coordinates = {x, y};
-//                lights.put(room.getName(), coordinates);
-//                gc.drawImage(img, x + 72, y + 2);
             }
             case BOTTOM -> {
                 drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
                 y += ROOM_SIZE;
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
                 gc.fillText(room.getName(), x + 10, y + 15);
-//                gc.strokeOval(x, y, ROOM_SIZE/2, ROOM_SIZE/2);
-                System.out.println("test: " + "x: " + x + "  y: " + y);
-                System.out.println(room.getName());
-//                int[] coordinates = {x, y};
-//                lights.put(room.getName(), coordinates);
-//                gc.drawImage(img, x + 72, y + 2);
             }
             case RIGHT -> {
                 drawDoor(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
                 x += ROOM_SIZE;
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
                 gc.fillText(room.getName(), x + 10, y + 15);
-//                gc.strokeOval(x, y, ROOM_SIZE/2, ROOM_SIZE/2);
-                System.out.println("test: " + "x: " + x + "  y: " + y);
-                System.out.println(room.getName());
-//                int[] coordinates = {x, y};
-//                lights.put(room.getName(), coordinates);
-//                gc.drawImage(img, x + 72, y + 2);
             }
             case TOP -> {
                 drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
                 y -= ROOM_SIZE;
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
                 gc.fillText(room.getName(), x + 10, y + 15);
-//                gc.strokeOval(x, y, ROOM_SIZE/2, ROOM_SIZE/2);
-                System.out.println("test: " + "x: " + x + "  y: " + y);
-                System.out.println(room.getName());
-//                int[] coordinates = {x, y};
-//                lights.put(room.getName(), coordinates);
-//                gc.drawImage(img, x + 72, y + 2);
             }
             case LEFT -> {
                 drawDoor(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
                 x -= ROOM_SIZE;
                 gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
                 gc.fillText(room.getName(), x + 10, y + 15);
-//                gc.strokeOval(x, y, ROOM_SIZE/2, ROOM_SIZE/2);
-                System.out.println("test: " + "x: " + x + "  y: " + y);
-                System.out.println(room.getName());
-//                int[] coordinates = {x, y};
-//                lights.put(room.getName(), coordinates);
-//                gc.drawImage(img, x + 72, y + 2);
             }
         }
         drawWindows(room, x, y);
 
+        //updating a hashMap to get all the lights with their coordinates.
         int[] coordinates = {x, y};
         lights.put(room.getName(), coordinates);
-//        gc.drawImage(img, x + 72, y + 2);
 
+        //setting a default value for light status which means that is off.
         room.setLightsOn(0);
+
+        //draw the light for a room.
         drawLight(room);
-//        drawLight(x + ROOM_SIZE / 2 - 5, y + ROOM_SIZE / 2 - 5, true);
+
         for (Door child : room.getDoors()) {
             Room nextRoom = roomHashMap.get(child.getConnection());
-            if (!visited.contains(nextRoom)) {
+            if (!visited.contains(nextRoom))
                 drawRoom(roomHashMap, nextRoom, visited, child.getPosition(), x, y);
-//                System.out.println(room.getName());
-                //...
-            }
         }
     }
 
