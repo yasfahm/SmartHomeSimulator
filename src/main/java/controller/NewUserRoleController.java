@@ -15,11 +15,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import service.DatabaseService;
+import service.PermissionService;
 import service.RoleService;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -118,7 +117,9 @@ public class NewUserRoleController {
         File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
 
         JSONTokener tokener = new JSONTokener(Files.readString(file.toPath()));
+        JSONObject object = new JSONObject(tokener);
 
-        RoleService.importRoles(new JSONObject(tokener), parentUser);
+        RoleService.importRoles(object, parentUser);
+        PermissionService.importRoles(object);
     }
 }

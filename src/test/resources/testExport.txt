@@ -1,1 +1,1 @@
-{"users":[{"role":"role","username":"username"}]}
+{"permissions":"","users":[{"role":"role","username":"username"}]}

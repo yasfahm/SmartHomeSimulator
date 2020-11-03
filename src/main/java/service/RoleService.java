@@ -91,6 +91,13 @@ public class RoleService {
         return null;
     }
 
+    /**
+     * Imports the roles from a JSON object
+     *
+     * @param object The JSONObject obtained from the txt file
+     * @param parentUser The parent of each user role
+     * @throws SQLException Thrown if the DB runs unknown commands
+     */
     public static void importRoles(final JSONObject object, final String parentUser) throws SQLException {
         List<UserRole> userRoles = DatabaseService.getAllUserRoles(parentUser);
         JSONArray array = object.getJSONArray("users");

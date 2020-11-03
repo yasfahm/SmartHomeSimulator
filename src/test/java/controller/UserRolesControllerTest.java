@@ -61,8 +61,12 @@ public class UserRolesControllerTest extends ApplicationTest {
 
         jsonArray.put(object);
 
-        userRolesController.saveToFile((new JSONObject()).put("users", jsonArray), file);
+        JSONObject toExport = new JSONObject();
+        toExport.put("users", jsonArray);
+        toExport.put("permissions", "");
 
-        assertEquals("{\"users\":[{\"role\":\"role\",\"username\":\"username\"}]}\n".replaceAll("\n", "").replaceAll("\r", ""), Files.readString(file.toPath()).replaceAll("\n", "").replaceAll("\r", ""));
+        userRolesController.saveToFile(toExport, file);
+
+        assertEquals("{\"permissions\":\"\",\"users\":[{\"role\":\"role\",\"username\":\"username\"}]}\n".replaceAll("\n", "").replaceAll("\r", ""), Files.readString(file.toPath()).replaceAll("\n", "").replaceAll("\r", ""));
     }
 }
