@@ -31,6 +31,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -62,6 +64,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginInfoController implements Initializable {
 
@@ -90,11 +93,16 @@ public class LoginInfoController implements Initializable {
     private AnchorPane anchorSHC;
     @FXML
     private VBox vboxSHC;
+    @FXML
+    private ToggleButton awayModeON;
+    @FXML
+    private ToggleButton awayModeOFF;
 
     private static String userParent;
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
+    private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
 
@@ -203,6 +211,14 @@ public class LoginInfoController implements Initializable {
         return textFieldTemperature;
     }
 
+    public static void setUsername(String username) {
+        LoginInfoController.username = username;
+    }
+
+    public static boolean isAwayMode() {
+        return awayMode;
+    }
+
     /**
      * Animation controller for the clock
      */
@@ -239,6 +255,9 @@ public class LoginInfoController implements Initializable {
 
         }
 
+        awayModeON.setSelected(awayMode);
+        awayModeOFF.setSelected(!awayMode);
+
         // Temperature
         this.temperature.setText(Integer.toString(temperatureInInt));
 
@@ -264,7 +283,7 @@ public class LoginInfoController implements Initializable {
         }
         selectedUser.getSelectionModel().select(username);
         Map userLocs = EditSimulationController.getUserLocations();
-        loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+        loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
 
         // toggleSwitch
         Pane root = getAnc();
@@ -286,13 +305,13 @@ public class LoginInfoController implements Initializable {
         //...
         GridPane gridpane = new GridPane();
         //gridpane.addRow(1,);
-        if (toggleText.getText().equals("ON")) {
+        if (toggleText.getText().equals("ON") && Objects.nonNull(house)) {
             String[] list = house.keySet().toArray(new String[1]);
-            Label userLabel = new Label();
-            userLabel.setMinWidth(100);
-            //userLabel.setId("gridLabel" + index);
-            userLabel.setText("test");
             for (int i = 0 ; i < list.length ; i++) {
+                Label userLabel = new Label();
+                userLabel.setMinWidth(100);
+                //userLabel.setId("gridLabel" + index);
+                userLabel.setText("test");
                 userLabel.setText(list[i]);
                 gridpane.addRow(i, userLabel);
             }
@@ -349,6 +368,32 @@ public class LoginInfoController implements Initializable {
         } else {
             consoleLog("Please enter a valid temperature input.");
         }
+    }
+
+    public void onMouseClickAwayToggleON(MouseEvent event) {
+        Map<String, String> userLocations = EditSimulationController.getUserLocations();
+        AtomicBoolean isNotInHouse = new AtomicBoolean(true);
+        if (Objects.nonNull(userLocations)) {
+            userLocations.keySet().forEach(user -> {
+                if (!userLocations.get(user).equals("Outside")) {
+                    isNotInHouse.set(false);
+                }
+            });
+        }
+        if (isNotInHouse.get()) {
+            awayMode = true;
+            awayModeON.setSelected(true);
+        } else {
+            consoleLog("Unable to turn Away Mode ON, there is someone in the house");
+            awayMode = false;
+            awayModeON.setSelected(false);
+            awayModeOFF.setSelected(true);
+        }
+    }
+
+    public void onMouseClickAwayToggleOFF(MouseEvent event) {
+        awayMode = false;
+        awayModeOFF.setSelected(true);
     }
 
     /**
@@ -428,7 +473,7 @@ public class LoginInfoController implements Initializable {
                     selectedUser.getSelectionModel().select(newValue);
                     userRole.setText(listOfUsers.get(newValue));
                     Map userLocs = EditSimulationController.getUserLocations();
-                    loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+                    loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
                 }
             }
         });
@@ -756,14 +801,13 @@ public class LoginInfoController implements Initializable {
      */
     public void goToEdit(ActionEvent event) throws IOException {
         if (Objects.nonNull(house)) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
-            Parent root = loader.load();
+            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+            Scene editScene = new Scene(edit);
 
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.show();
-
+            // stage info
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(editScene);
+            window.show();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
             alert.showAndWait();

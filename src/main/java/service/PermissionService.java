@@ -20,7 +20,7 @@ public class PermissionService {
      * @param object The JSONObject obtained from the txt file
      * @throws JsonProcessingException Thrown if the obtained object is not in specified permissions format
      */
-    public static void importRoles(final JSONObject object) throws JsonProcessingException {
+    public static void importPermissions(final JSONObject object) throws JsonProcessingException {
         JSONObject jsonMap = object.getJSONObject("permissions");
         HashMap<String, Object> map = new ObjectMapper().readValue(jsonMap.toString(), HashMap.class);
         Map<String, Map<CommandType, PermissionType>> result = new HashMap<>();
@@ -33,6 +33,8 @@ public class PermissionService {
             result.put(key, commandPermissions);
         });
 
-        UserPermissionsController.setUserPermissions(result);
+        Map<String, Map<CommandType, PermissionType>> existingPermissions = UserPermissionsController.getUserPermissions();
+        existingPermissions.putAll(result);
+        UserPermissionsController.setUserPermissions(existingPermissions);
     }
 }

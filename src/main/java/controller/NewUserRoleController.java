@@ -120,6 +120,6 @@ public class NewUserRoleController {
         JSONObject object = new JSONObject(tokener);
 
         RoleService.importRoles(object, parentUser);
-        PermissionService.importRoles(object);
+        PermissionService.importPermissions(object);
     }
 }
