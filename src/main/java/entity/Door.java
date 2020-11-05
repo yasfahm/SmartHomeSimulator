@@ -8,16 +8,19 @@ import constants.Position;
 public class Door {
     private Position position;
     private String connection;
+    private boolean openDoor;
 
     /**
      * Constructor for class Door
      *
      * @param position   position of the door
      * @param connection room the door connects to
+     * @param openDoor open the door of room
      */
-    public Door(Position position, String connection) {
+    public Door(Position position, String connection, boolean openDoor) {
         this.position = position;
         this.connection = connection;
+        this.openDoor = openDoor;
     }
 
     /**
@@ -55,6 +58,24 @@ public class Door {
      */
     public void setConnection(String connection) {
         this.connection = connection;
+    }
+
+    /**
+     * Get the opening of the window
+     *
+     * @return opening of the window
+     */
+    public boolean getOpenDoor() {
+        return openDoor;
+    }
+
+    /**
+     * Set the opening of the window
+     *
+     * @param openDoor opening  of the window
+     */
+    public void setOpenDoor(boolean openDoor) {
+        this.openDoor = openDoor;
     }
 
 }

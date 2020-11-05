@@ -52,7 +52,7 @@ public class HouseLayoutService {
             for (int j = 0; j < doorsJSON.length(); j++) {
                 int position = doorsJSON.getJSONObject(j).getInt("position");
                 String connection = doorsJSON.getJSONObject(j).getString("connection");
-                doors.add(new Door(getPosition(position), connection));
+                doors.add(new Door(getPosition(position), connection, false));
             }
             roomsArray[i] = new Room(name, windows, doors, lightsTotal);
         }
