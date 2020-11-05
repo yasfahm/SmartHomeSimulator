@@ -132,10 +132,6 @@ public class LoginInfoController implements Initializable {
     private Map<String, int[]> roomPosition = new HashMap<>();
     private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
-    private GridPane gpSHCRooms = new GridPane();
-    private GridPane gpSHCDoors = new GridPane();
-    private GridPane gpSHCWindows = new GridPane();
-    private GridPane gpSHCLights = new GridPane();
 
     /**
      * Sets up the logged in user as the active user
@@ -582,15 +578,19 @@ public class LoginInfoController implements Initializable {
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
 
             // creating a room label which has the name of the room.
+            GridPane gpSHCRooms = new GridPane();
             gpSHCRooms.setVgap(21.3);
+
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Label room = new Label();
                 room.setText(roomArray[i].getName());
                 gpSHCRooms.addRow(i, room);
             }
+            vboxSHCRooms.getChildren().clear();
 
             vboxSHCRooms.getChildren().add(gpSHCRooms);
 
+            GridPane gpSHCLights = new GridPane();
             gpSHCLights.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -598,6 +598,13 @@ public class LoginInfoController implements Initializable {
                 Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
                 ImageView light = new ImageView(lightOff);
                 int finalI = i;
+
+                if (roomArray[finalI].getLightsOn() == 0)
+                    light.setImage(lightOff);
+                else {
+                    light.setImage(lightOn);
+                }
+
                 light.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
@@ -615,10 +622,12 @@ public class LoginInfoController implements Initializable {
                 });
                 gpSHCLights.addRow(i, light);
             }
+            vboxSHCLights.getChildren().clear();
 
             vboxSHCLights.getChildren().add(gpSHCLights);
 
             // open/close window functionality
+            GridPane gpSHCWindows = new GridPane();
             gpSHCWindows.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -776,9 +785,12 @@ public class LoginInfoController implements Initializable {
                 }
             }
 
+            vboxSHCWindows.getChildren().clear();
+
             vboxSHCWindows.getChildren().add(gpSHCWindows);
 
             // open/close door functionality
+            GridPane gpSHCDoors = new GridPane();
             gpSHCDoors.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1003,6 +1015,8 @@ public class LoginInfoController implements Initializable {
                 }
             }
 
+            vboxSHCDoors.getChildren().clear();
+
             vboxSHCDoors.getChildren().add(gpSHCDoors);
 
         } else {
@@ -1021,6 +1035,7 @@ public class LoginInfoController implements Initializable {
         drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
 
         // creating a room label which has the name of the room.
+        GridPane gpSHCRooms = new GridPane();
         gpSHCRooms.setVgap(21.3);
         for (int i = 0 ; i < roomArray.length ; i++) {
             Label room = new Label();
@@ -1028,8 +1043,11 @@ public class LoginInfoController implements Initializable {
             gpSHCRooms.addRow(i, room);
         }
 
+        vboxSHCRooms.getChildren().clear();
+
         vboxSHCRooms.getChildren().add(gpSHCRooms);
 
+        GridPane gpSHCLights = new GridPane();
         gpSHCLights.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1038,6 +1056,11 @@ public class LoginInfoController implements Initializable {
             Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
             ImageView light = new ImageView(lightOff);
             int finalI = i;
+            if (roomArray[finalI].getLightsOn() == 0)
+                light.setImage(lightOff);
+            else {
+                light.setImage(lightOn);
+            }
             light.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
@@ -1056,9 +1079,12 @@ public class LoginInfoController implements Initializable {
             gpSHCLights.addRow(i, light);
         }
 
+        vboxSHCLights.getChildren().clear();
+
         vboxSHCLights.getChildren().add(gpSHCLights);
 
         // open/close window functionality
+        GridPane gpSHCWindows = new GridPane();
         gpSHCWindows.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1216,9 +1242,12 @@ public class LoginInfoController implements Initializable {
             }
         }
 
+        vboxSHCWindows.getChildren().clear();
+
         vboxSHCWindows.getChildren().add(gpSHCWindows);
 
         // open/close door functionality
+        GridPane gpSHCDoors = new GridPane();
         gpSHCDoors.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1442,6 +1471,8 @@ public class LoginInfoController implements Initializable {
                 gpSHCDoors.addRow(i, doorsTop, doorsBottom, doorsLeft, doorsRight);
             }
         }
+
+        vboxSHCDoors.getChildren().clear();
 
         vboxSHCDoors.getChildren().add(gpSHCDoors);
     }
