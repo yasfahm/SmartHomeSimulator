@@ -88,6 +88,7 @@ public class ChangeDateTimeController implements Initializable {
      * This function submit the change to parent controller
      *
      * @param event The event that calls this function
+     * @throws ParseException if the Date can't be parsed correctly in onTimeChangeLightRooms
      */
     public void bt_onChangeClick(ActionEvent event) throws ParseException {
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();

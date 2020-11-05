@@ -1331,9 +1331,10 @@ public class LoginInfoController implements Initializable {
     /**
      * This function writes the light scheduling to the loginInfo SHP page and calls the method to
      * check the scheduling
-     *
+     * 
      * @param room the name of the room in which the light will remain on
      * @param times the begin and end times at which the light remains on
+     * @throws ParseException if the Date can't be parsed correctly
      */
     public void setRoomLightSchedule(String room, String times) throws ParseException {
         roomToLight.setText(roomToLight.getText() + "\n" + room + " " + times);
@@ -1352,6 +1353,7 @@ public class LoginInfoController implements Initializable {
     /**
      * This function is called when the time is changed. It checks through every entry to determine if some lights
      * need to be turned on based on the schedule
+     * @throws ParseException if the Date can't be parsed correctly in lightScheduleLight
      */
     public void onTimeChangeLightRooms() throws ParseException {
         for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()){
@@ -1359,6 +1361,14 @@ public class LoginInfoController implements Initializable {
         }
     }
 
+    /**
+     * This function determines if the light should be turned on/off depending on the schedule
+     *
+     * @param room name of the room in which to turn on/off light
+     * @param beginTime begin time of the schedule
+     * @param endTime end time of the schedule
+     * @throws ParseException if the Date can't be parsed correctly
+     */
     public void lightScheduleLight(String room, Date beginTime, Date endTime) throws ParseException {
 
         String currentTimeWithoutSeconds ="";
