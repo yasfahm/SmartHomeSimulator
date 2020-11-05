@@ -839,7 +839,6 @@ public class LoginInfoController implements Initializable {
         LoginInfoController.house = null;
     }
 
-
     /**
      * This function loads the scheduleLights pane
      *
