@@ -117,7 +117,6 @@ public class LoginInfoController implements Initializable {
     private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
-    private static String consoleLog = "";
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -129,6 +128,7 @@ public class LoginInfoController implements Initializable {
     private static boolean firstLaunch = true;
     private static int temperatureInInt = 15;
     private Map<String, int[]> roomPosition = new HashMap<>();
+    
 
     /**
      * Sets up the logged in user as the active user
@@ -181,6 +181,7 @@ public class LoginInfoController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        console.setText(ConsoleService.getConsole());
     }
 
     /**
@@ -255,7 +256,6 @@ public class LoginInfoController implements Initializable {
         // any action at the first initialization
         if (firstLaunch) {
             firstLaunch = false;
-
             ChangeDateTimeController.setParentController(this);
             LightsScheduleController.setParentController(this);
 
@@ -266,15 +266,18 @@ public class LoginInfoController implements Initializable {
             Date d = new Date(sysmillis);
             this.date.setText(formatDate.format(d));
             this.time.setText(formatTime.format(d));
-
+            
+            ConsoleService.initialize();
+            consoleLog("System initialized");
         }
+        
+        console.setText(ConsoleService.getConsole());
 
         if (Objects.nonNull(house)) {
             rooms.getItems().addAll(house.keySet());
             rooms.getSelectionModel().selectFirst();
         }
-      
-        console.appendText(consoleLog);
+        
         awayModeON.setSelected(awayMode);
         awayModeOFF.setSelected(!awayMode);
 
@@ -319,7 +322,7 @@ public class LoginInfoController implements Initializable {
         toggleText.setTranslateX(60);
         toggleText.setTranslateY(30);
         toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
-
+        
         root.getChildren().addAll(toggle, toggleText);
     }
 
@@ -333,12 +336,11 @@ public class LoginInfoController implements Initializable {
         textFieldTemperature.setText(temperature.getText());
         textFieldTemperature.setPrefWidth(20 + (temperature.getText().length() * 5));
         hBoxTemperature.getChildren().add(0, textFieldTemperature);
-
         textFieldTemperature.requestFocus();
-
         textFieldTemperature.setOnAction(e -> {  // on enter key
             changeTemperatureOnEnter();
         });
+        
     }
 
     /**
@@ -355,9 +357,11 @@ public class LoginInfoController implements Initializable {
             temperature.setText(textFieldTemperature.getText());
             textFieldTemperature.clear();
             temperatureInInt = Integer.parseInt(temperature.getText());
+            consoleLog("Change outside temperature to " + temperatureInInt);
         } else {
-            consoleLog("Please enter a valid temperature input.");
+            consoleLog("Please enter a valid input for outside temperature.");
         }
+        
     }
 
     public void onMouseClickAwayToggleON(MouseEvent event) {
@@ -504,7 +508,7 @@ public class LoginInfoController implements Initializable {
      */
     public void consoleLog(String str) {
         updateConsoleLog(str);
-        this.console.setText(consoleLog);
+        console.appendText("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n");
     }
 
     /**
@@ -514,7 +518,7 @@ public class LoginInfoController implements Initializable {
      */
     private static void updateConsoleLog(String str) {
         String toAppend = "[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n";
-        consoleLog += toAppend;
+        System.out.println("toAppend:"+toAppend);
         ConsoleService.exportConsole(toAppend);
     }
 
@@ -1007,9 +1011,12 @@ public class LoginInfoController implements Initializable {
             }
 
             vboxSHCDoors.getChildren().add(gpSHCDoors);
+            
+            consoleLog("Successively add house layout.");
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
+        	consoleLog("Add house layout failed, please turn on the simulation first.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first.");
             alert.showAndWait();
         }
     }
@@ -1256,7 +1263,7 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -1280,6 +1287,7 @@ public class LoginInfoController implements Initializable {
             window.setScene(editScene);
             window.show();
         } else {
+        	consoleLog("Please input the house to change location.");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
             alert.showAndWait();
         }
@@ -1310,6 +1318,7 @@ public class LoginInfoController implements Initializable {
      */
     public void scheduleLights(ActionEvent event) throws IOException {
         if (!awayMode){
+        	consoleLog("Away mode is turned off, cannot schedule the lights");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
             alert.showAndWait();
             return;
