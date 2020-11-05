@@ -375,6 +375,7 @@ public class LoginInfoController implements Initializable {
             });
         }
         if (isNotInHouse.get()) {
+        	consoleLog("Away mode turns on.");
             awayMode = true;
             awayModeON.setSelected(true);
         } else {
@@ -386,6 +387,7 @@ public class LoginInfoController implements Initializable {
     }
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
+    	consoleLog("Away mode turns off.");
         awayMode = false;
         awayModeOFF.setSelected(true);
     }

@@ -92,7 +92,7 @@ public class LightsScheduleController implements Initializable {
 
         String times = startTime + "-" + endTime;
         parentController.setRoomLightSchedule(room, times);
-
+        LoginInfoController.consoleLogFile("New light schedule for " + startTime + " to " + endTime+".");
         Stage stage = (Stage) rooms.getScene().getWindow();
         stage.close();
     }
