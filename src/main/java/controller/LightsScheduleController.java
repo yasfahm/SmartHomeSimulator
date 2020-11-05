@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
@@ -84,7 +86,7 @@ public class LightsScheduleController implements Initializable {
      *
      * @param actionEvent the event that triggers this function
      */
-    public void confirm(ActionEvent actionEvent) {
+    public void confirm(ActionEvent actionEvent) throws FileNotFoundException {
         String room = rooms.getValue();
 
         String startTime = String.format("%02d:%02d", startHour.getValue(), startMinutes.getValue());

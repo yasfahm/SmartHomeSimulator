@@ -54,6 +54,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -129,6 +130,8 @@ public class LoginInfoController implements Initializable {
     private static boolean firstLaunch = true;
     private static int temperatureInInt = 15;
     private Map<String, int[]> roomPosition = new HashMap<>();
+    private Map<String, int[]> lightsSchedule = new HashMap<>();
+    private String timeStr;
 
     /**
      * Sets up the logged in user as the active user
@@ -178,6 +181,8 @@ public class LoginInfoController implements Initializable {
         try {
             Date d = formatFull.parse(dateTime);
             timeInMillis = d.getTime();
+            String[] arr = dateTime.split(" ");
+            timeStr = arr[5];
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -1323,12 +1328,88 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
-     * This function writes the light scheduling to the loginInfo SHP page
+     * This function writes the light scheduling to the loginInfo SHP page and calls the method to
+     * check the scheduling
      *
      * @param room the name of the room in which the light will remain on
      * @param times the begin and end times at which the light remains on
      */
-    public void setRoomLightSchedule(String room, String times) {
+    public void setRoomLightSchedule(String room, String times) throws FileNotFoundException {
         roomToLight.setText(roomToLight.getText() + "\n" + room + " " + times);
+
+        String[] timeBeginEnd = times.split("-");
+        String[] timeBegin = timeBeginEnd[0].split(":");
+        String[] timeEnd = timeBeginEnd[1].split(":");
+
+        int beginHour = Integer.parseInt(timeBegin[0]);
+        int beginMinute = Integer.parseInt(timeBegin[1]);
+        int endHour = Integer.parseInt(timeEnd[0]);
+        int endMinute = Integer.parseInt(timeEnd[1]);
+
+        int[] arr = new int[]{beginHour, beginMinute, endHour,endMinute};
+        lightsSchedule.put(room, arr);
+
+        lightScheduleLight(room, beginHour, beginMinute, endHour, endMinute);
+    }
+
+    /**
+     * This function is called when the time is changed. It checks through every entry to determine if some lights
+     * need to be turned on based on the schedule
+     */
+    public void onTimeChangeLightRooms(){
+        for (Map.Entry<String, int[]> entry: lightsSchedule.entrySet()){
+            lightScheduleLight(entry.getKey(), entry.getValue()[0], entry.getValue()[1], entry.getValue()[2], entry.getValue()[3]);
+        }
+    }
+
+    /**
+     * This function verifies the schedule times with the current time and calls the function to turn
+     * on the lights on the house layout if needed
+     *
+     * @param room string of the room
+     * @param beginHour begin hour of the schedule
+     * @param beginMinute begin minutes of the schedule
+     * @param endHour end hour of the schedule
+     * @param endMinute end minutes of the schedule
+     */
+    public void lightScheduleLight(String room, int beginHour, int beginMinute, int endHour, int endMinute){
+
+        String currentTimeWithoutSeconds ="";
+
+        if (timeStr == null){
+            currentTimeWithoutSeconds = time.toString().substring(33, 38);
+        }
+        else {
+            currentTimeWithoutSeconds = timeStr.substring(0,4);
+        }
+
+        String[] currentTime = currentTimeWithoutSeconds.split(":");
+        int currentHour = Integer.parseInt(currentTime[0]);
+        int currentMinutes= Integer.parseInt(currentTime[1]);
+
+        if (beginHour == endHour & endHour == currentHour &&
+                beginMinute <= currentMinutes && currentMinutes <= endMinute){
+            findRoomToLight(room);
+        }
+        else if (beginHour <= currentHour && currentHour <= endHour &&
+                (beginMinute <= currentMinutes || endMinute <= currentMinutes )){
+            findRoomToLight(room);
+        }
+    }
+
+    /**
+     * This method finds the room in roomArray sets the number of lights on to 1 and calls the drawLight method
+     * @param room name of the room to turn the light on in
+     */
+    public void findRoomToLight(String room){
+        int index = 0;
+        for (int i=0; i<roomArray.length; i++){
+            if (roomArray[i].getName().equals(room)){
+                System.out.println(roomArray[i].getName());
+                index = i;
+            }
+        }
+        roomArray[index].setLightsOn(1);
+        drawLight(roomArray[index]);
     }
 }

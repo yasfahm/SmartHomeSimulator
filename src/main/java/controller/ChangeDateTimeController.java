@@ -96,7 +96,7 @@ public class ChangeDateTimeController implements Initializable {
         String result = date + " " + time; // in the format "yyyy - MMMM - dd HH:mm:ss"
         LoginInfoController.consoleLogFile("Changing date and time to " + date.replace(" ", "") + ", " + time + ".");
         parentController.setTime(result);
-
+        parentController.onTimeChangeLightRooms();
         Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
