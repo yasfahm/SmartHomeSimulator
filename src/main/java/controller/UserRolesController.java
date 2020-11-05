@@ -2,6 +2,7 @@ package controller;
 
 import constants.UserRoles;
 import entity.UserRole;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -20,10 +21,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import service.RegistrationService;
 import service.RoleService;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,6 +51,7 @@ public class UserRolesController {
      */
     private String username;
     private String parentUser;
+    private static AtomicInteger indexCache = new AtomicInteger();
 
     /**
      * On initialization, add the grid of information into values
@@ -125,10 +133,11 @@ public class UserRolesController {
         List<UserRole> userRoles = RoleService.getRoles(parentUser);
         if (Objects.nonNull(userRoles)) {
             userRoles.forEach(result -> {
-                gridPane.addRow(gridPane.getRowCount(), createUserLabel(result.getUsername(), index.get()), createRoleComboBox(result.getRole().toString(), index.get()), createDeleteButton(index.get()));
+                gridPane.addRow(gridPane.getRowCount(), createUserLabel(result.getUsername(), index.get()), createRoleComboBox(result.getRole().toString(), index.get()), createPermissionsButton(index.get()), createDeleteButton(index.get()));
                 index.getAndIncrement();
             });
         }
+        indexCache.set(index.get());
         return gridPane;
     }
 
@@ -170,6 +179,12 @@ public class UserRolesController {
         return box;
     }
 
+    /**
+     * Creates the button to click in order to delete the user
+     *
+     * @param index The index used to create the ID used to fetch its linked username label's value.
+     * @return The delete button
+     */
     private Node createDeleteButton(final int index) {
         Button deleteButton = new Button();
         deleteButton.setText("DELETE");
@@ -178,6 +193,7 @@ public class UserRolesController {
             public void handle(ActionEvent event) {
                 Label userToDelete = ((Label) values.lookup("#gridLabel" + index));
                 ComboBox comboBoxToDelete = ((ComboBox) values.lookup("#gridBox" + index));
+                values.lookup("#gridBox" + index).setDisable(true);
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete user " + userToDelete.getText() + "?", ButtonType.YES, ButtonType.NO);
                 alert.showAndWait();
                 if (alert.getResult() == ButtonType.YES) {
@@ -190,5 +206,91 @@ public class UserRolesController {
             }
         });
         return deleteButton;
+    }
+
+    /**
+     * Creates the button to click in order to go change user's permissions
+     *
+     * @param index The index used to create the ID used to fetch its linked username label's value.
+     * @return The permissions button
+     */
+    private Node createPermissionsButton(final int index) {
+        Button permissionButton = new Button();
+        permissionButton.setText("Permissions");
+        permissionButton.setId("gridPerms" + index);
+        permissionButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/view/userPermissions.fxml"));
+                    String user = ((Label) values.lookup("#gridLabel" + index)).getText();
+                    UserPermissionsController.setUsername(user);
+
+                    Parent login = loader.load();
+
+                    UserPermissionsController controller = loader.getController();
+                    controller.setMenuUsername(username);
+                    controller.setTitle("User Permissions for: " + username);
+
+                    Scene loginScene = new Scene(login);
+
+                    Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    window.setScene(loginScene);
+                    window.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return permissionButton;
+    }
+
+    /**
+     * Method responsible for exporting current user and role list into a txt file
+     *
+     * @param event The event that triggered this function
+     */
+    public void exportList(ActionEvent event) {
+        AtomicInteger index = indexCache;
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < index.get(); i++) {
+            Label user = ((Label) values.lookup("#gridLabel" + i));
+            ComboBox role = ((ComboBox) values.lookup("#gridBox" + i));
+            JSONObject object = new JSONObject();
+
+            object.put("username", user.getText());
+            object.put("role", role.getSelectionModel().getSelectedItem().toString());
+
+            jsonArray.put(object);
+        }
+        JSONObject allUserRoles = new JSONObject();
+        allUserRoles.put("users", jsonArray);
+        allUserRoles.put("permissions", UserPermissionsController.getUserPermissions());
+
+        File file = fileChooser.showSaveDialog(values.getParent().getScene().getWindow());
+        if (Objects.nonNull(file)) {
+            saveToFile(allUserRoles, file);
+        }
+    }
+
+    /**
+     * Method responsible for saving a JSON object onto a file
+     *
+     * @param json The JSON object to save
+     * @param file The file to save into
+     */
+    protected void saveToFile(final JSONObject json, final File file) {
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(json);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -11,16 +11,20 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import service.DatabaseService;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import service.PermissionService;
 import service.RoleService;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NewUserRoleController {
-
 
     private String username;
     private String parentUser;
@@ -80,16 +84,16 @@ public class NewUserRoleController {
      * @param event The event that triggered this method
      * @throws IOException Thrown if the method is unable to locate the view resource
      */
-    public void createUserRole(ActionEvent event) throws SQLException, IOException {
+    public void createUserRole(ActionEvent event) throws SQLException {
         String newUsername = newUserField.getText();
         AtomicBoolean existence = new AtomicBoolean(false);
-        DatabaseService.getAllUserRoles(parentUser).forEach(r -> {
+        RoleService.getRoles(parentUser).forEach(r -> {
             if (r.getUsername().equals(newUsername)) {
                 existence.set(true);
             }
         });
         if (Objects.nonNull(newUsername) && !existence.get()) {
-            DatabaseService.createNewUserRole(parentUser, newUsername, roles.getValue());
+            RoleService.createRole(parentUser, newUsername, roles.getValue());
             newUserField.setText("");
             roles.getSelectionModel().select(UserRoles.STRANGER.ordinal());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "User has been created");
@@ -98,5 +102,24 @@ public class NewUserRoleController {
             Alert alert = new Alert(Alert.AlertType.WARNING, "User needs a name or already exists");
             alert.showAndWait();
         }
+    }
+
+    /**
+     * Function to go import a userRole text file
+     *
+     * @param event The event that triggered this method
+     * @throws IOException Thrown if the method is unable to locate the view resource
+     */
+    public void importUserRole(ActionEvent event) throws SQLException, IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+        JSONTokener tokener = new JSONTokener(Files.readString(file.toPath()));
+        JSONObject object = new JSONObject(tokener);
+
+        RoleService.importRoles(object, parentUser);
+        PermissionService.importPermissions(object);
     }
 }

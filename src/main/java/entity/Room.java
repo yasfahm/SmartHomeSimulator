@@ -20,7 +20,7 @@ public class Room {
      * @param doors       doors in the room
      * @param lightsTotal total lights in the room
      */
-    public Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal) {
+    private Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal) {
         this.name = name;
         this.windows = windows;
         this.doors = doors;
@@ -97,4 +97,42 @@ public class Room {
         this.doors = doors;
     }
 
+    /**
+     * Builder pattern for Room Object
+     */
+    public static class Builder {
+        private String name;
+        private ArrayList<Window> windows;
+        private ArrayList<Door> doors;
+        private int lightsOn;
+        private int lightsTotal;
+
+        public Builder(final String name) {
+            this.name = name;
+        }
+
+        public Builder withWindows(final ArrayList<Window> windows) {
+            this.windows = windows;
+            return this;
+        }
+
+        public Builder withDoors(final ArrayList<Door> doors) {
+            this.doors = doors;
+            return this;
+        }
+
+        public Builder withLightsOn(final int lightsOn) {
+            this.lightsOn = lightsOn;
+            return this;
+        }
+
+        public Builder withlightsTotal(final int lightsTotal) {
+            this.lightsTotal = lightsTotal;
+            return this;
+        }
+
+        public Room build() {
+            return new Room(name, windows, doors, lightsTotal);
+        }
+    }
 }

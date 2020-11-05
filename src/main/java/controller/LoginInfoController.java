@@ -31,6 +31,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -54,7 +56,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginInfoController implements Initializable {
 
@@ -87,11 +98,20 @@ public class LoginInfoController implements Initializable {
     private VBox vboxSHCDoors;
     @FXML
     private VBox vboxSHCRooms;
+    @FXML
+    private ToggleButton awayModeON;
+    @FXML
+    private ToggleButton awayModeOFF;
+    @FXML
+    private ComboBox<String> rooms;
+    @FXML
+    private Label roomToLight;
 
     private static String userParent;
     private static Map<String, Room> house;
     private static Room[] roomArray;
     private static String username;
+    private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
 
@@ -200,6 +220,14 @@ public class LoginInfoController implements Initializable {
         return textFieldTemperature;
     }
 
+    public static void setUsername(String username) {
+        LoginInfoController.username = username;
+    }
+
+    public static boolean isAwayMode() {
+        return awayMode;
+    }
+
     /**
      * Animation controller for the clock
      */
@@ -225,6 +253,7 @@ public class LoginInfoController implements Initializable {
             firstLaunch = false;
 
             ChangeDateTimeController.setParentController(this);
+            LightsScheduleController.setParentController(this);
 
             SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
             SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
@@ -235,6 +264,12 @@ public class LoginInfoController implements Initializable {
             this.time.setText(formatTime.format(d));
 
         }
+        if (Objects.nonNull(house)) {
+            rooms.getItems().addAll(house.keySet());
+            rooms.getSelectionModel().selectFirst();
+        }
+        awayModeON.setSelected(awayMode);
+        awayModeOFF.setSelected(!awayMode);
 
         // Temperature
         this.temperature.setText(Integer.toString(temperatureInInt));
@@ -261,7 +296,7 @@ public class LoginInfoController implements Initializable {
         }
         selectedUser.getSelectionModel().select(username);
         Map userLocs = EditSimulationController.getUserLocations();
-        loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+        loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
 
         // toggleSwitch
         Pane root = getAnc();
@@ -316,6 +351,32 @@ public class LoginInfoController implements Initializable {
         } else {
             consoleLog("Please enter a valid temperature input.");
         }
+    }
+
+    public void onMouseClickAwayToggleON(MouseEvent event) {
+        Map<String, String> userLocations = EditSimulationController.getUserLocations();
+        AtomicBoolean isNotInHouse = new AtomicBoolean(true);
+        if (Objects.nonNull(userLocations)) {
+            userLocations.keySet().forEach(user -> {
+                if (!userLocations.get(user).equals("Outside")) {
+                    isNotInHouse.set(false);
+                }
+            });
+        }
+        if (isNotInHouse.get()) {
+            awayMode = true;
+            awayModeON.setSelected(true);
+        } else {
+            consoleLog("Unable to turn Away Mode ON, there is someone in the house");
+            awayMode = false;
+            awayModeON.setSelected(false);
+            awayModeOFF.setSelected(true);
+        }
+    }
+
+    public void onMouseClickAwayToggleOFF(MouseEvent event) {
+        awayMode = false;
+        awayModeOFF.setSelected(true);
     }
 
     /**
@@ -395,7 +456,7 @@ public class LoginInfoController implements Initializable {
                     selectedUser.getSelectionModel().select(newValue);
                     userRole.setText(listOfUsers.get(newValue));
                     Map userLocs = EditSimulationController.getUserLocations();
-                    loc.setText(Objects.isNull(userLocs) ? "Unknown" : userLocs.get(username).toString());
+                    loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
                 }
             }
         });
@@ -436,16 +497,18 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToUserSettings(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userRoles.fxml"));
-        Parent root = loader.load();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
+        Parent userRoles = loader.load();
+        Scene userRolesScene = new Scene(userRoles);
 
         UserRolesController controller = loader.getController();
         controller.setUsername(user.getText());
 
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(root));
-        stage.show();
+        // stage info
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(userRolesScene);
+        window.show();
     }
 
     /**
@@ -1181,14 +1244,13 @@ public class LoginInfoController implements Initializable {
      */
     public void goToEdit(ActionEvent event) throws IOException {
         if (Objects.nonNull(house)) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
-            Parent root = loader.load();
+            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+            Scene editScene = new Scene(edit);
 
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.show();
-
+            // stage info
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(editScene);
+            window.show();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
             alert.showAndWait();
@@ -1210,5 +1272,35 @@ public class LoginInfoController implements Initializable {
      */
     public static void deleteHouse() {
         LoginInfoController.house = null;
+    }
+
+    /**
+     * This function loads the scheduleLights pane
+     *
+     * @param event the event that triggers this function
+     * @throws IOException if the view file is not found
+     */
+    public void scheduleLights(ActionEvent event) throws IOException {
+        if (!awayMode){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    /**
+     * This function writes the light scheduling to the loginInfo SHP page
+     *
+     * @param room the name of the room in which the light will remain on
+     * @param times the begin and end times at which the light remains on
+     */
+    public void setRoomLightSchedule(String room, String times) {
+        roomToLight.setText(roomToLight.getText() + "\n" + room + " " + times);
     }
 }

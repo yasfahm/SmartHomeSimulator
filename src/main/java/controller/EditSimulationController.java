@@ -71,8 +71,9 @@ public class EditSimulationController implements Initializable {
         Parent loginInfo = FXMLLoader.load(getClass().getResource("/view/loginInfo.fxml"));
         Scene loginInfoScene = new Scene(loginInfo);
 
-        Stage stage = (Stage) windows.getScene().getWindow();
-        stage.close();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(loginInfoScene);
+        window.show();
     }
 
     /**
@@ -206,7 +207,7 @@ public class EditSimulationController implements Initializable {
         if (Objects.isNull(userLocations)) {
             userLocations = RoleService.getRoles(LoginInfoController.getUserParent()).stream().collect(Collectors.toMap(
                     UserRole::getUsername,
-                    userRole -> "Unknown"
+                    userRole -> "Outside"
             ));
         }
         userLocations.forEach((key, value) -> {

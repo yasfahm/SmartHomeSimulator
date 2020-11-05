@@ -19,10 +19,13 @@ import org.testfx.framework.junit5.ApplicationTest;
 import service.DatabaseService;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginInfoControllerTest extends ApplicationTest {
 
@@ -30,6 +33,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
     FXMLLoader loader;
 
     static DB db;
+    static MockedStatic<EditSimulationController> mock;
 
     @BeforeAll
     static void setupDB() throws ManagedProcessException, SQLException {
@@ -46,12 +50,13 @@ public class LoginInfoControllerTest extends ApplicationTest {
         Flyway flyway = Flyway.configure().dataSource(databaseUrl, "root", "").load();
         flyway.migrate();
 
-        MockedStatic<EditSimulationController> mock = Mockito.mockStatic(EditSimulationController.class);
+        mock = Mockito.mockStatic(EditSimulationController.class);
         mock.when(EditSimulationController::getUserLocations).thenReturn(null);
     }
 
     @BeforeEach
     public void setup() throws IOException {
+        LoginInfoController.setUsername("user1");
         loader = new FXMLLoader(getClass().getResource("/view/loginInfo.fxml"));
         loader.load();
         controller = loader.getController();
@@ -88,5 +93,19 @@ public class LoginInfoControllerTest extends ApplicationTest {
                 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
                 true, true, true, true, true, true, null));
         assertEquals("ON", text.getText());
+    }
+
+    @Test
+    public void should_allow_away_mode() {
+        controller.onMouseClickAwayToggleON(null);
+        assertTrue(LoginInfoController.isAwayMode());
+    }
+
+    @Test
+    public void should_not_allow_away_mode() {
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "not outside"));
+
+        controller.onMouseClickAwayToggleON(null);
+        assertFalse(LoginInfoController.isAwayMode());
     }
 }
