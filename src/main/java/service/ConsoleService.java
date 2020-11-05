@@ -15,7 +15,6 @@ public class ConsoleService {
     private static List<String> consoleList = new ArrayList<String>();
 
     static {
-    	System.out.println("HIIIIIIIIIIIIII");
         try {
             printWriter = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
         } catch (FileNotFoundException e) {
