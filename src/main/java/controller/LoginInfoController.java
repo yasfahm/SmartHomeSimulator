@@ -97,6 +97,10 @@ public class LoginInfoController implements Initializable {
     private ToggleButton awayModeON;
     @FXML
     private ToggleButton awayModeOFF;
+    @FXML
+    private ComboBox<String> rooms;
+    @FXML
+    private Label roomToLight;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -244,6 +248,7 @@ public class LoginInfoController implements Initializable {
             firstLaunch = false;
 
             ChangeDateTimeController.setParentController(this);
+            LightsScheduleController.setParentController(this);
 
             SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
             SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
@@ -254,7 +259,10 @@ public class LoginInfoController implements Initializable {
             this.time.setText(formatTime.format(d));
 
         }
-
+        if (Objects.nonNull(house)) {
+            rooms.getItems().addAll(house.keySet());
+            rooms.getSelectionModel().selectFirst();
+        }
         awayModeON.setSelected(awayMode);
         awayModeOFF.setSelected(!awayMode);
 
@@ -829,5 +837,35 @@ public class LoginInfoController implements Initializable {
      */
     public static void deleteHouse() {
         LoginInfoController.house = null;
+    }
+
+    /**
+     * This function loads the scheduleLights pane
+     *
+     * @param event the event that triggers this function
+     * @throws IOException if the view file is not found
+     */
+    public void scheduleLights(ActionEvent event) throws IOException {
+        if (!awayMode){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    /**
+     * This function writes the light scheduling to the loginInfo SHP page
+     *
+     * @param room the name of the room in which the light will remain on
+     * @param times the begin and end times at which the light remains on
+     */
+    public void setRoomLightSchedule(String room, String times) {
+        roomToLight.setText(roomToLight.getText() + "\n" + room + " " + times);
     }
 }

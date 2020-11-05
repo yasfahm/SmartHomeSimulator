@@ -148,6 +148,13 @@
                                                                </toggleGroup>
                                                             </ToggleButton>
                                                             <ToggleButton fx:id="awayModeOFF" layoutX="199.0" layoutY="49.0" mnemonicParsing="false" onMouseClicked="#onMouseClickAwayToggleOFF" text="OFF" toggleGroup="$awayModeToggle" />
+                                                         </children>
+                                                         <children>
+                                                             <VBox layoutX="35.0" layoutY="100.0" spacing="10.0">
+                                                                <Label text="Lights Schedule" style="-fx-font-size: 20px;"/>
+                                                                 <Label fx:id="roomToLight" text="Lights will remain on in selected rooms"/>
+                                                                 <Button onAction="#scheduleLights" style="-fx-background-color: white; -fx-text-fill: black;" text="Add" />
+                                                             </VBox>
                                                          </children></AnchorPane>
                                                                     </content>
                                                                 </Tab>
