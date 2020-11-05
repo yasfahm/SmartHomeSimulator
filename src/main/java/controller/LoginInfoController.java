@@ -279,38 +279,6 @@ public class LoginInfoController implements Initializable {
         toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
 
         root.getChildren().addAll(toggle, toggleText);
-
-        //...
-//        GridPane gridpane = new GridPane();
-
-        //gridpane.addRow(1,);
-//        if (toggleText.getText().equals("ON")) {
-//            String[] list = house.keySet().toArray(new String[1]);
-//            Label userLabel = new Label();
-//            userLabel.setMinWidth(100);
-//            //userLabel.setId("gridLabel" + index);
-//            userLabel.setText("test");
-//            for (int i = 0 ; i < list.length ; i++) {
-//                userLabel.setText(list[i]);
-//                gpSHCRooms.addRow(i, userLabel);
-//            }
-//            //gridpane.addRow(1,userLabel);
-//            //gridpane.
-//            vboxSHCRooms.getChildren().add(gpSHCRooms);
-//        }
-
-//        String[] list = house.keySet().toArray(new String[1]);
-//        Label userLabel = new Label();
-//        userLabel.setMinWidth(100);
-//        //userLabel.setId("gridLabel" + index);
-//        userLabel.setText("test");
-//        for (int i = 0 ; i < list.length ; i++) {
-//            userLabel.setText(list[i]);
-//            gridpane.addRow(i, userLabel);
-//        }
-//        //gridpane.addRow(1,userLabel);
-//        //gridpane.
-//        vboxSHC.getChildren().add(gridpane);
     }
 
     /**
@@ -525,7 +493,7 @@ public class LoginInfoController implements Initializable {
             vboxSHCRooms.getChildren().add(gpSHCRooms);
 
             GridPane gpSHCLights = new GridPane();
-            gpSHCLights.setVgap(11);
+            gpSHCLights.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
@@ -552,8 +520,9 @@ public class LoginInfoController implements Initializable {
 
             vboxSHCLights.getChildren().add(gpSHCLights);
 
+            // open/close window functionality
             GridPane gpSHCWindows = new GridPane();
-            gpSHCWindows.setVgap(11);
+            gpSHCWindows.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
@@ -716,9 +685,9 @@ public class LoginInfoController implements Initializable {
 
             vboxSHCWindows.getChildren().add(gpSHCWindows);
 
-
+            // open/close door functionality
             GridPane gpSHCDoors = new GridPane();
-            gpSHCDoors.setVgap(11);
+            gpSHCDoors.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/DoorOpenTop.png"), 60, 27, true, false);
@@ -758,7 +727,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
 
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsTop.setImage(doorOpenTop);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
@@ -771,7 +740,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
 
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsTop.setImage(doorCloseTop);
                                     }
                                 }
@@ -796,7 +765,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsLeft.setImage(doorOpenLeft);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
@@ -808,7 +777,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsLeft.setImage(doorCloseLeft);
                                     }
                                 }
@@ -833,7 +802,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsRight.setImage(doorOpenRight);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
@@ -845,7 +814,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsRight.setImage(doorCloseRight);
                                     }
                                 }
@@ -870,7 +839,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsBottom.setImage(doorOpenBottom);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
@@ -882,7 +851,7 @@ public class LoginInfoController implements Initializable {
                                                 }
                                             }
                                         }
-                                        drawDoor2(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsBottom.setImage(doorCloseBottom);
                                     }
                                 }
@@ -948,7 +917,6 @@ public class LoginInfoController implements Initializable {
 
             vboxSHCDoors.getChildren().add(gpSHCDoors);
 
-
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
             alert.showAndWait();
@@ -963,26 +931,7 @@ public class LoginInfoController implements Initializable {
         gc.setFont(new Font(11));
         drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
     }
-
-    /**
-     * This function draws doors on the house layout
-     *
-     * @param x  first x coordinate of the door
-     * @param y  first y coordinate of the door
-     * @param x2 second x coordinate of the door
-     * @param y2 second y coordinate of the door
-     */
-    public void drawDoor(int x, int y, int x2, int y2) {
-        gc.setLineWidth(3);
-        gc.setStroke(Color.SANDYBROWN);
-        gc.strokeLine(x, y, x2, y2);
-        gc.setLineWidth(1);
-        gc.setStroke(Color.BLACK);
-
-
-    }
-
-
+    
     /**
      * This function draws windows on the house layout
      *
@@ -997,14 +946,12 @@ public class LoginInfoController implements Initializable {
         gc.setLineWidth(2);
         for (Window window : room.getWindows()) {
             if(window.getOpenWindow()) {
-                gc.setStroke(Color.LIGHTBLUE);
+                gc.setStroke(Color.BLUE);
             }
             else{
                 gc.setStroke(Color.BLACK);
             }
             switch (window.getPosition()) {
-                case NONE -> {
-                }
                 case BOTTOM -> {
                     gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
                 }
@@ -1051,7 +998,13 @@ public class LoginInfoController implements Initializable {
         }
     }
 
-    public void drawDoor2(Room room, String position) {
+    /**
+     * This function will draw the doors in a given room.
+     *
+     * @param room where door will be
+     * @param position where door is situated
+     */
+    public void drawDoor(Room room, String position) {
         int[] coordinates = roomPosition.get(room.getName());
         int x = coordinates[0];
         int y = coordinates[1];
@@ -1064,8 +1017,6 @@ public class LoginInfoController implements Initializable {
                 gc.setStroke(Color.SANDYBROWN);
             }
             switch (door.getPosition()) {
-                case NONE -> {
-                }
                 case BOTTOM -> {
                     gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
                 }
@@ -1078,21 +1029,6 @@ public class LoginInfoController implements Initializable {
                 case LEFT -> {
                     gc.strokeLine(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
                 }
-//                case NONE -> {
-//                    gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
-//                }
-//                case BOTTOM -> {
-//                    gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-//                }
-//                case TOP -> {
-//                    gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-//                }
-//                case RIGHT -> {
-//                    gc.strokeLine(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-//                }
-//                case LEFT -> {
-//                    gc.strokeLine(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-//                }
             }
         }
         gc.setLineWidth(1);
@@ -1112,35 +1048,56 @@ public class LoginInfoController implements Initializable {
     public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
 
-        switch (previous) {
-            case NONE -> {
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-                //drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
+        // if room is entrance or backyard no line is drawn
+        if (room.getName().equals("Entrance") || room.getName().equals("Backyard")) {
+            switch (previous) {
+                case NONE -> {
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case BOTTOM -> {
+                    y += ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case RIGHT -> {
+                    x += ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case TOP -> {
+                    y -= ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case LEFT -> {
+                    x -= ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
             }
-            case BOTTOM -> {
-                //drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-                y += ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case RIGHT -> {
-               // drawDoor(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-                x += ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case TOP -> {
-                //drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-                y -= ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case LEFT -> {
-                //drawDoor(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-                x -= ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
+        }
+        else {
+            switch (previous) {
+                case NONE -> {
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case BOTTOM -> {
+                    y += ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case RIGHT -> {
+                    x += ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case TOP -> {
+                    y -= ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case LEFT -> {
+                    x -= ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
             }
         }
 
@@ -1161,7 +1118,7 @@ public class LoginInfoController implements Initializable {
 
         //draw the door for a room
         for(int i = 0; i < room.getDoors().size() ; i++) {
-            drawDoor2(room, room.getDoors().get(i).getPosition().toString());
+            drawDoor(room, room.getDoors().get(i).getPosition().toString());
         }
 
         for (Door child : room.getDoors()) {
