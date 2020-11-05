@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import java.net.URL;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Calendar;
@@ -87,8 +88,9 @@ public class ChangeDateTimeController implements Initializable {
      * This function submit the change to parent controller
      *
      * @param event The event that calls this function
+     * @throws ParseException if the Date can't be parsed correctly in onTimeChangeLightRooms
      */
-    public void bt_onChangeClick(ActionEvent event) {
+    public void bt_onChangeClick(ActionEvent event) throws ParseException {
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();
 
         String time = String.format("%02d:%02d:%02d", cb_hour.getValue(), cb_minute.getValue(), LocalTime.now().getSecond());
@@ -96,7 +98,7 @@ public class ChangeDateTimeController implements Initializable {
         String result = date + " " + time; // in the format "yyyy - MMMM - dd HH:mm:ss"
         LoginInfoController.consoleLogFile("Changing date and time to " + date.replace(" ", "") + ", " + time + ".");
         parentController.setTime(result);
-
+        parentController.onTimeChangeLightRooms();
         Stage stage = (Stage) cb_year.getScene().getWindow();
         stage.close();
     }
