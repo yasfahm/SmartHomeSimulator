@@ -635,7 +635,12 @@ public class LoginInfoController implements Initializable {
                 Image windowCloseBottom = new Image(new FileInputStream("src/main/resources/Images/windowCloseBottom.png"), 60, 27, true, false);
                 Image windowCloseLeft = new Image(new FileInputStream("src/main/resources/Images/windowCloseLeft.png"), 60, 27, true, false);
                 Image windowCloseRight = new Image(new FileInputStream("src/main/resources/Images/windowCloseRight.png"), 60, 27, true, false);
+                Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+                Image windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+                Image windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+                Image windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
                 Image windowEmpty = new Image(new FileInputStream("src/main/resources/Images/windowEmpty.png"), 60, 27, true, false);
+
                 ImageView windowsTop = new ImageView(windowCloseTop);
                 ImageView windowsLeft = new ImageView(windowCloseLeft);
                 ImageView windowsRight = new ImageView(windowCloseRight);
@@ -649,6 +654,11 @@ public class LoginInfoController implements Initializable {
                     int finalJ = j;
 
                     if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsTop.setImage(windowCloseTop);
+                        else {
+                            windowsTop.setImage(windowOpenTop);
+                        }
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -656,7 +666,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsTop.setImage(windowCloseTop);
+                                        windowsTop.setImage(windowOpenTop);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -668,6 +678,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsLeft.setImage(windowCloseLeft);
+                        else {
+                            windowsLeft.setImage(windowOpenLeft);
+                        }
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -675,7 +690,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsLeft.setImage(windowCloseLeft);
+                                        windowsLeft.setImage(windowOpenLeft);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -687,6 +702,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsRight.setImage(windowCloseRight);
+                        else {
+                            windowsRight.setImage(windowOpenRight);
+                        }
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -694,7 +714,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsRight.setImage(windowCloseRight);
+                                        windowsRight.setImage(windowOpenRight);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -706,6 +726,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsBottom.setImage(windowCloseBottom);
+                        else {
+                            windowsBottom.setImage(windowOpenBottom);
+                        }
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -713,7 +738,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsBottom.setImage(windowCloseBottom);
+                                        windowsBottom.setImage(windowOpenBottom);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -798,6 +823,11 @@ public class LoginInfoController implements Initializable {
                 Image doorCloseBottom = new Image(new FileInputStream("src/main/resources/Images/DoorCloseBottom.png"), 60, 27, true, false);
                 Image doorCloseLeft = new Image(new FileInputStream("src/main/resources/Images/DoorCloseLeft.png"), 60, 27, true, false);
                 Image doorCloseRight = new Image(new FileInputStream("src/main/resources/Images/DoorCloseRight.png"), 60, 27, true, false);
+                Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/doorOpenTop.png"), 60, 27, true, false);
+                Image doorOpenBottom = new Image(new FileInputStream("src/main/resources/Images/doorOpenBottom.png"), 60, 27, true, false);
+                Image doorOpenLeft = new Image(new FileInputStream("src/main/resources/Images/doorOpenLeft.png"), 60, 27, true, false);
+                Image doorOpenRight = new Image(new FileInputStream("src/main/resources/Images/doorOpenRight.png"), 60, 27, true, false);
+
                 ImageView doorsTop = new ImageView(doorCloseTop);
                 ImageView doorsLeft = new ImageView(doorCloseLeft);
                 ImageView doorsRight = new ImageView(doorCloseRight);
@@ -811,6 +841,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "TOP") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsTop.setImage(doorCloseTop);
+                        else {
+                            doorsTop.setImage(doorOpenTop);
+                        }
 
                         doorsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -828,7 +863,7 @@ public class LoginInfoController implements Initializable {
                                         }
 
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsTop.setImage(doorCloseTop);
+                                        doorsTop.setImage(doorOpenTop);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -850,6 +885,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsLeft.setImage(doorCloseLeft);
+                        else {
+                            doorsLeft.setImage(doorOpenLeft);
+                        }
 
                         doorsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -866,7 +906,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsLeft.setImage(doorCloseLeft);
+                                        doorsLeft.setImage(doorOpenLeft);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -887,6 +927,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsRight.setImage(doorCloseRight);
+                        else {
+                            doorsRight.setImage(doorOpenRight);
+                        }
 
                         doorsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -903,7 +948,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsRight.setImage(doorCloseRight);
+                                        doorsRight.setImage(doorOpenRight);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -924,6 +969,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsBottom.setImage(doorCloseBottom);
+                        else {
+                            doorsBottom.setImage(doorOpenBottom);
+                        }
 
                         doorsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -940,7 +990,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsBottom.setImage(doorCloseBottom);
+                                        doorsBottom.setImage(doorOpenBottom);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -1093,6 +1143,11 @@ public class LoginInfoController implements Initializable {
             Image windowCloseLeft = new Image(new FileInputStream("src/main/resources/Images/windowCloseLeft.png"), 60, 27, true, false);
             Image windowCloseRight = new Image(new FileInputStream("src/main/resources/Images/windowCloseRight.png"), 60, 27, true, false);
             Image windowEmpty = new Image(new FileInputStream("src/main/resources/Images/windowEmpty.png"), 60, 27, true, false);
+            Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+            Image windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+            Image windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+            Image windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
+
             ImageView windowsTop = new ImageView(windowCloseTop);
             ImageView windowsLeft = new ImageView(windowCloseLeft);
             ImageView windowsRight = new ImageView(windowCloseRight);
@@ -1106,6 +1161,11 @@ public class LoginInfoController implements Initializable {
                 int finalJ = j;
 
                 if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsTop.setImage(windowCloseTop);
+                    else {
+                        windowsTop.setImage(windowOpenTop);
+                    }
                     windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1113,7 +1173,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsTop.setImage(windowCloseTop);
+                                    windowsTop.setImage(windowOpenTop);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1125,6 +1185,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsLeft.setImage(windowCloseLeft);
+                    else {
+                        windowsLeft.setImage(windowOpenLeft);
+                    }
                     windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1132,7 +1197,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsLeft.setImage(windowCloseLeft);
+                                    windowsLeft.setImage(windowOpenLeft);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1144,6 +1209,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsRight.setImage(windowCloseRight);
+                    else {
+                        windowsRight.setImage(windowOpenRight);
+                    }
                     windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1151,7 +1221,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsRight.setImage(windowCloseRight);
+                                    windowsRight.setImage(windowOpenRight);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1163,6 +1233,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsBottom.setImage(windowCloseBottom);
+                    else {
+                        windowsBottom.setImage(windowOpenBottom);
+                    }
                     windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1170,7 +1245,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsBottom.setImage(windowCloseBottom);
+                                    windowsBottom.setImage(windowOpenBottom);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1255,6 +1330,11 @@ public class LoginInfoController implements Initializable {
             Image doorCloseBottom = new Image(new FileInputStream("src/main/resources/Images/DoorCloseBottom.png"), 60, 27, true, false);
             Image doorCloseLeft = new Image(new FileInputStream("src/main/resources/Images/DoorCloseLeft.png"), 60, 27, true, false);
             Image doorCloseRight = new Image(new FileInputStream("src/main/resources/Images/DoorCloseRight.png"), 60, 27, true, false);
+            Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/doorOpenTop.png"), 60, 27, true, false);
+            Image doorOpenBottom = new Image(new FileInputStream("src/main/resources/Images/doorOpenBottom.png"), 60, 27, true, false);
+            Image doorOpenLeft = new Image(new FileInputStream("src/main/resources/Images/doorOpenLeft.png"), 60, 27, true, false);
+            Image doorOpenRight = new Image(new FileInputStream("src/main/resources/Images/doorOpenRight.png"), 60, 27, true, false);
+
             ImageView doorsTop = new ImageView(doorCloseTop);
             ImageView doorsLeft = new ImageView(doorCloseLeft);
             ImageView doorsRight = new ImageView(doorCloseRight);
@@ -1268,6 +1348,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "TOP") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsTop.setImage(doorCloseTop);
+                    else {
+                        doorsTop.setImage(doorOpenTop);
+                    }
 
                     doorsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1285,7 +1370,7 @@ public class LoginInfoController implements Initializable {
                                     }
 
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsTop.setImage(doorCloseTop);
+                                    doorsTop.setImage(doorOpenTop);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1307,6 +1392,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsLeft.setImage(doorCloseLeft);
+                    else {
+                        doorsLeft.setImage(doorOpenLeft);
+                    }
 
                     doorsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1323,7 +1413,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsLeft.setImage(doorCloseLeft);
+                                    doorsLeft.setImage(doorOpenLeft);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1344,6 +1434,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsRight.setImage(doorCloseRight);
+                    else {
+                        doorsRight.setImage(doorOpenRight);
+                    }
 
                     doorsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1360,7 +1455,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsRight.setImage(doorCloseRight);
+                                    doorsRight.setImage(doorOpenRight);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1381,6 +1476,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsBottom.setImage(doorCloseBottom);
+                    else {
+                        doorsBottom.setImage(doorOpenBottom);
+                    }
 
                     doorsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1397,7 +1497,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsBottom.setImage(doorCloseBottom);
+                                    doorsBottom.setImage(doorOpenBottom);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
