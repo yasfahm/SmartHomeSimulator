@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import java.net.URL;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Calendar;
@@ -88,7 +89,7 @@ public class ChangeDateTimeController implements Initializable {
      *
      * @param event The event that calls this function
      */
-    public void bt_onChangeClick(ActionEvent event) {
+    public void bt_onChangeClick(ActionEvent event) throws ParseException {
         String date = cb_year.getValue() + " - " + cb_month.getValue() + " - " + cb_date.getValue();
 
         String time = String.format("%02d:%02d:%02d", cb_hour.getValue(), cb_minute.getValue(), LocalTime.now().getSecond());

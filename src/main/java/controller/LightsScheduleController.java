@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -86,7 +87,7 @@ public class LightsScheduleController implements Initializable {
      *
      * @param actionEvent the event that triggers this function
      */
-    public void confirm(ActionEvent actionEvent) throws FileNotFoundException {
+    public void confirm(ActionEvent actionEvent) throws FileNotFoundException, ParseException {
         String room = rooms.getValue();
 
         String startTime = String.format("%02d:%02d", startHour.getValue(), startMinutes.getValue());

@@ -130,7 +130,7 @@ public class LoginInfoController implements Initializable {
     private static boolean firstLaunch = true;
     private static int temperatureInInt = 15;
     private Map<String, int[]> roomPosition = new HashMap<>();
-    private Map<String, int[]> lightsSchedule = new HashMap<>();
+    private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
 
     /**
@@ -1334,45 +1334,31 @@ public class LoginInfoController implements Initializable {
      * @param room the name of the room in which the light will remain on
      * @param times the begin and end times at which the light remains on
      */
-    public void setRoomLightSchedule(String room, String times) throws FileNotFoundException {
+    public void setRoomLightSchedule(String room, String times) throws ParseException {
         roomToLight.setText(roomToLight.getText() + "\n" + room + " " + times);
 
         String[] timeBeginEnd = times.split("-");
-        String[] timeBegin = timeBeginEnd[0].split(":");
-        String[] timeEnd = timeBeginEnd[1].split(":");
 
-        int beginHour = Integer.parseInt(timeBegin[0]);
-        int beginMinute = Integer.parseInt(timeBegin[1]);
-        int endHour = Integer.parseInt(timeEnd[0]);
-        int endMinute = Integer.parseInt(timeEnd[1]);
+        Date beginTime=new SimpleDateFormat("HH:mm").parse(timeBeginEnd[0]);
+        Date endTime=new SimpleDateFormat("HH:mm").parse(timeBeginEnd[1]);
 
-        int[] arr = new int[]{beginHour, beginMinute, endHour,endMinute};
+        Date[] arr = new Date[]{beginTime, endTime};
         lightsSchedule.put(room, arr);
 
-        lightScheduleLight(room, beginHour, beginMinute, endHour, endMinute);
+        lightScheduleLight(room, beginTime, endTime);
     }
 
     /**
      * This function is called when the time is changed. It checks through every entry to determine if some lights
      * need to be turned on based on the schedule
      */
-    public void onTimeChangeLightRooms(){
-        for (Map.Entry<String, int[]> entry: lightsSchedule.entrySet()){
-            lightScheduleLight(entry.getKey(), entry.getValue()[0], entry.getValue()[1], entry.getValue()[2], entry.getValue()[3]);
+    public void onTimeChangeLightRooms() throws ParseException {
+        for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()){
+            lightScheduleLight(entry.getKey(), entry.getValue()[0], entry.getValue()[1]);
         }
     }
 
-    /**
-     * This function verifies the schedule times with the current time and calls the function to turn
-     * on the lights on the house layout if needed
-     *
-     * @param room string of the room
-     * @param beginHour begin hour of the schedule
-     * @param beginMinute begin minutes of the schedule
-     * @param endHour end hour of the schedule
-     * @param endMinute end minutes of the schedule
-     */
-    public void lightScheduleLight(String room, int beginHour, int beginMinute, int endHour, int endMinute){
+    public void lightScheduleLight(String room, Date beginTime, Date endTime) throws ParseException {
 
         String currentTimeWithoutSeconds ="";
 
@@ -1382,18 +1368,13 @@ public class LoginInfoController implements Initializable {
         else {
             currentTimeWithoutSeconds = timeStr.substring(0,4);
         }
+        Date currentTime=new SimpleDateFormat("HH:mm").parse(currentTimeWithoutSeconds);
 
-        String[] currentTime = currentTimeWithoutSeconds.split(":");
-        int currentHour = Integer.parseInt(currentTime[0]);
-        int currentMinutes= Integer.parseInt(currentTime[1]);
-
-        if (beginHour == endHour & endHour == currentHour &&
-                beginMinute <= currentMinutes && currentMinutes <= endMinute){
-            findRoomToLight(room);
+        if(endTime.after(currentTime) && currentTime.after(beginTime)){
+            findRoomToLight(room, 1);
         }
-        else if (beginHour <= currentHour && currentHour <= endHour &&
-                (beginMinute <= currentMinutes || endMinute <= currentMinutes )){
-            findRoomToLight(room);
+        else {
+            findRoomToLight(room, 0);
         }
     }
 
@@ -1401,7 +1382,7 @@ public class LoginInfoController implements Initializable {
      * This method finds the room in roomArray sets the number of lights on to 1 and calls the drawLight method
      * @param room name of the room to turn the light on in
      */
-    public void findRoomToLight(String room){
+    public void findRoomToLight(String room, int on){
         int index = 0;
         for (int i=0; i<roomArray.length; i++){
             if (roomArray[i].getName().equals(room)){
@@ -1409,7 +1390,7 @@ public class LoginInfoController implements Initializable {
                 index = i;
             }
         }
-        roomArray[index].setLightsOn(1);
+        roomArray[index].setLightsOn(on);
         drawLight(roomArray[index]);
     }
 }
