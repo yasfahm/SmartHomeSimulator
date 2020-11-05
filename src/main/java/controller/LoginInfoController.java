@@ -378,6 +378,7 @@ public class LoginInfoController implements Initializable {
         if (isNotInHouse.get()) {
             awayMode = true;
             awayModeON.setSelected(true);
+            closeWindowsDoorsLights();
         } else {
             consoleLog("Unable to turn Away Mode ON, there is someone in the house");
             awayMode = false;
@@ -1361,7 +1362,6 @@ public class LoginInfoController implements Initializable {
     public void lightScheduleLight(String room, Date beginTime, Date endTime) throws ParseException {
 
         String currentTimeWithoutSeconds ="";
-
         if (timeStr == null){
             currentTimeWithoutSeconds = time.toString().substring(33, 38);
         }
@@ -1392,5 +1392,26 @@ public class LoginInfoController implements Initializable {
         }
         roomArray[index].setLightsOn(on);
         drawLight(roomArray[index]);
+    }
+
+    /**
+     * This method closes all the windows, doors and lights when away mode is turned on
+     */
+    public void closeWindowsDoorsLights(){
+        for (Room r: roomArray){
+            r.setLightsOn(0);
+            drawLight(r);
+
+            ArrayList<Window> windowList = r.getWindows();
+            for (Window w: windowList){
+                w.setOpenWindow(false);
+                drawWindows(r, w.getPosition().toString());
+            }
+            ArrayList<Door> doorList = r.getDoors();
+            for (Door d: doorList){
+                d.setOpenDoor(false);
+                drawDoor(r, d.getPosition().toString());
+            }
+        }
     }
 }
