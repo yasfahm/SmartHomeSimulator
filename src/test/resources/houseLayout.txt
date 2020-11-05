@@ -6,6 +6,8 @@
 		],
 		"doors": [
 			{ "position": 1, "connection": "Kitchen" },
+			{ "position": 4, "connection": "Backyard" },
+			{ "position": 3, "connection": "Entrance" },
 		],
 		"lights": 1
 	},
@@ -51,5 +53,30 @@
 			{ "position": 2, "connection": "Kitchen" }
 		],
 		"lights": 1
-	}
+	},
+	{
+    	"name": "Backyard",
+    	"windows": [],
+    	"doors": [
+    		{ "position": 2, "connection": "Living Room" },
+    	],
+    	"lights": 1
+    },
+    {
+        "name": "Entrance",
+        "windows": [],
+        "doors": [
+            { "position": 1, "connection": "Living Room" },
+            { "position": 2, "connection": "Garage" },
+        ],
+        "lights": 1
+    },
+    {
+        "name": "Garage",
+        "windows": [],
+        "doors": [
+            { "position": 4, "connection": "Entrance" },
+        ],
+        "lights": 1
+    }
 ]}

@@ -8,15 +8,18 @@ import constants.Position;
 public class Window {
     private Position position;
     private boolean blocking;
+    private boolean openWindow;
 
     /**
      * Constructor for class Window
      *
-     * @param position
+     * @param position position of window
+     * @param blocking blocking movement of window
      */
-    public Window(Position position, boolean blocking) {
+    public Window(Position position, boolean blocking, boolean open) {
         this.position = position;
         this.blocking = blocking;
+        this.openWindow = openWindow;
     }
 
     /**
@@ -53,6 +56,24 @@ public class Window {
      */
     public boolean getBlocking() {
         return blocking;
+    }
+
+    /**
+     * Get the opening of the window
+     *
+     * @return opening of the window
+     */
+    public boolean getOpenWindow() {
+        return openWindow;
+    }
+
+    /**
+     * Set the opening of the window
+     *
+     * @param openWindow opening  of the window
+     */
+    public void setOpenWindow(boolean openWindow) {
+        this.openWindow = openWindow;
     }
 
 }

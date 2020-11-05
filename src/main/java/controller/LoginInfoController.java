@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,9 +91,13 @@ public class LoginInfoController implements Initializable {
     @FXML
     private TextField textFieldTemperature;
     @FXML
-    private AnchorPane anchorSHC;
+    private VBox vboxSHCWindows;
     @FXML
-    private VBox vboxSHC;
+    private VBox vboxSHCLights;
+    @FXML
+    private VBox vboxSHCDoors;
+    @FXML
+    private VBox vboxSHCRooms;
     @FXML
     private ToggleButton awayModeON;
     @FXML
@@ -119,7 +124,7 @@ public class LoginInfoController implements Initializable {
     private static Timeline clock;
     private static boolean firstLaunch = true;
     private static int temperatureInInt = 15;
-    private Map<String, int[]> lights = new HashMap<>();
+    private Map<String, int[]> roomPosition = new HashMap<>();
 
     /**
      * Sets up the logged in user as the active user
@@ -309,36 +314,6 @@ public class LoginInfoController implements Initializable {
         toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
 
         root.getChildren().addAll(toggle, toggleText);
-
-        //...
-        GridPane gridpane = new GridPane();
-        //gridpane.addRow(1,);
-        if (toggleText.getText().equals("ON") && Objects.nonNull(house)) {
-            String[] list = house.keySet().toArray(new String[1]);
-            for (int i = 0 ; i < list.length ; i++) {
-                Label userLabel = new Label();
-                userLabel.setMinWidth(100);
-                //userLabel.setId("gridLabel" + index);
-                userLabel.setText("test");
-                userLabel.setText(list[i]);
-                gridpane.addRow(i, userLabel);
-            }
-            //gridpane.addRow(1,userLabel);
-            //gridpane.
-            vboxSHC.getChildren().add(gridpane);
-        }
-//        String[] list = house.keySet().toArray(new String[1]);
-//        Label userLabel = new Label();
-//        userLabel.setMinWidth(100);
-//        //userLabel.setId("gridLabel" + index);
-//        userLabel.setText("test");
-//        for (int i = 0 ; i < list.length ; i++) {
-//            userLabel.setText(list[i]);
-//            gridpane.addRow(i, userLabel);
-//        }
-//        //gridpane.addRow(1,userLabel);
-//        //gridpane.
-//        vboxSHC.getChildren().add(gridpane);
     }
 
     /**
@@ -569,15 +544,21 @@ public class LoginInfoController implements Initializable {
             house = rooms;
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
 
-            //creating a gridPane to show the names of the rooms with buttons to turn on/off the lights.
-            GridPane gridpane = new GridPane();
-
             // creating a room label which has the name of the room.
+            GridPane gpSHCRooms = new GridPane();
+            gpSHCRooms.setVgap(21.3);
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Label room = new Label();
                 room.setText(roomArray[i].getName());
+                gpSHCRooms.addRow(i, room);
+            }
 
-                //creating the light ImageView that acts as a button.
+            vboxSHCRooms.getChildren().add(gpSHCRooms);
+
+            GridPane gpSHCLights = new GridPane();
+            gpSHCLights.setVgap(13);
+
+            for (int i = 0 ; i < roomArray.length ; i++) {
                 Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
                 Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
                 ImageView light = new ImageView(lightOff);
@@ -597,18 +578,413 @@ public class LoginInfoController implements Initializable {
                         }
                     }
                 });
-                gridpane.addRow(i, room, light);
-
+                gpSHCLights.addRow(i, light);
             }
-            // adding the gridPane containing names of the rooms and buttons to turn on/off the lights.
-            vboxSHC.getChildren().add(gridpane);
+
+            vboxSHCLights.getChildren().add(gpSHCLights);
+
+            // open/close window functionality
+            GridPane gpSHCWindows = new GridPane();
+            gpSHCWindows.setVgap(13);
+
+            for (int i = 0 ; i < roomArray.length ; i++) {
+                Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+                Image windowCloseTop = new Image(new FileInputStream("src/main/resources/Images/windowCloseTop.png"), 60, 27, true, false);
+                Image windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+                Image windowCloseBottom = new Image(new FileInputStream("src/main/resources/Images/windowCloseBottom.png"), 60, 27, true, false);
+                Image windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+                Image windowCloseLeft = new Image(new FileInputStream("src/main/resources/Images/windowCloseLeft.png"), 60, 27, true, false);
+                Image windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
+                Image windowCloseRight = new Image(new FileInputStream("src/main/resources/Images/windowCloseRight.png"), 60, 27, true, false);
+                Image windowEmpty = new Image(new FileInputStream("src/main/resources/Images/windowEmpty.png"), 60, 27, true, false);
+                ImageView windowsTop = new ImageView(windowCloseTop);
+                ImageView windowsLeft = new ImageView(windowCloseLeft);
+                ImageView windowsRight = new ImageView(windowCloseRight);
+                ImageView windowsBottom = new ImageView(windowCloseBottom);
+                ImageView windowsEmpty = new ImageView(windowEmpty);
+
+                int finalI = i;
+                ArrayList<Window> windowList = roomArray[i].getWindows();
+
+                for (int j = 0; j < windowList.size(); j++) {
+                    int finalJ = j;
+
+                    if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                        windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                                    if (!windowList.get(finalJ).getOpenWindow()) {
+                                        windowList.get(finalJ).setOpenWindow(true);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsTop.setImage(windowOpenTop);
+                                    } else {
+                                        windowList.get(finalJ).setOpenWindow(false);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsTop.setImage(windowCloseTop);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                        windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                                    if (!windowList.get(finalJ).getOpenWindow()) {
+                                        windowList.get(finalJ).setOpenWindow(true);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsLeft.setImage(windowOpenLeft);
+                                    } else {
+                                        windowList.get(finalJ).setOpenWindow(false);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsLeft.setImage(windowCloseLeft);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                        windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                                    if (!windowList.get(finalJ).getOpenWindow()) {
+                                        windowList.get(finalJ).setOpenWindow(true);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsRight.setImage(windowOpenRight);
+                                    } else {
+                                        windowList.get(finalJ).setOpenWindow(false);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsRight.setImage(windowCloseRight);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                        windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                                    if (!windowList.get(finalJ).getOpenWindow()) {
+                                        windowList.get(finalJ).setOpenWindow(true);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsBottom.setImage(windowOpenBottom);
+                                    } else {
+                                        windowList.get(finalJ).setOpenWindow(false);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsBottom.setImage(windowCloseBottom);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // when room has 0 windows
+                if(windowList.size() == 0) {
+                    gpSHCWindows.addRow(i, windowsEmpty);
+                }
+
+                // when room has 1 window
+                if(windowList.size() == 1) {
+                    ImageView selectedWindow = new ImageView();
+
+                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("TOP"))
+                        selectedWindow = windowsTop;
+                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("BOTTOM"))
+                        selectedWindow = windowsBottom;
+                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("LEFT"))
+                        selectedWindow = windowsLeft;
+                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("RIGHT"))
+                        selectedWindow = windowsRight;
+                    gpSHCWindows.addRow(i, selectedWindow);
+                }
+
+                // when room has 2 windows
+                if(windowList.size() == 2) {
+                    ImageView[] selectedWindows = new ImageView[2];
+
+                    for(int j = 0; j < selectedWindows.length; j++) {
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
+                            selectedWindows[j] = windowsTop;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
+                            selectedWindows[j] = windowsBottom;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
+                            selectedWindows[j] = windowsLeft;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
+                            selectedWindows[j] = windowsRight;
+                    }
+                    gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1]);
+                }
+
+                // when room has 3 windows
+                if(windowList.size() == 3) {
+                    ImageView[] selectedWindows = new ImageView[3];
+
+                    for(int j = 0; j < selectedWindows.length; j++) {
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
+                            selectedWindows[j] = windowsTop;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
+                            selectedWindows[j] = windowsBottom;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
+                            selectedWindows[j] = windowsLeft;
+                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
+                            selectedWindows[j] = windowsRight;
+                    }
+                    gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1], selectedWindows[2]);
+                }
+
+                // when room has 4 windows
+                if(windowList.size() == 4) {
+                    gpSHCWindows.addRow(i, windowsTop, windowsBottom, windowsLeft, windowsRight);
+                }
+            }
+
+            vboxSHCWindows.getChildren().add(gpSHCWindows);
+
+            // open/close door functionality
+            GridPane gpSHCDoors = new GridPane();
+            gpSHCDoors.setVgap(13);
+
+            for (int i = 0 ; i < roomArray.length ; i++) {
+                Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/DoorOpenTop.png"), 60, 27, true, false);
+                Image doorCloseTop = new Image(new FileInputStream("src/main/resources/Images/DoorCloseTop.png"), 60, 27, true, false);
+                Image doorOpenBottom = new Image(new FileInputStream("src/main/resources/Images/DoorOpenBottom.png"), 60, 27, true, false);
+                Image doorCloseBottom = new Image(new FileInputStream("src/main/resources/Images/DoorCloseBottom.png"), 60, 27, true, false);
+                Image doorOpenLeft = new Image(new FileInputStream("src/main/resources/Images/DoorOpenLeft.png"), 60, 27, true, false);
+                Image doorCloseLeft = new Image(new FileInputStream("src/main/resources/Images/DoorCloseLeft.png"), 60, 27, true, false);
+                Image doorOpenRight = new Image(new FileInputStream("src/main/resources/Images/DoorOpenRight.png"), 60, 27, true, false);
+                Image doorCloseRight = new Image(new FileInputStream("src/main/resources/Images/DoorCloseRight.png"), 60, 27, true, false);
+                ImageView doorsTop = new ImageView(doorCloseTop);
+                ImageView doorsLeft = new ImageView(doorCloseLeft);
+                ImageView doorsRight = new ImageView(doorCloseRight);
+                ImageView doorsBottom = new ImageView(doorCloseBottom);
+
+                int finalI = i;
+                ArrayList<Door> doorList = roomArray[i].getDoors();
+
+                for (int j = 0; j < doorList.size(); j++) {
+                    int finalJ = j;
+
+                    if (doorList.get(finalJ).getPosition().toString() == "TOP") {
+                        String connectedRoom = doorList.get(finalJ).getConnection();
+
+                        doorsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (doorList.get(finalJ).getPosition().toString() == "TOP") {
+                                    if (!doorList.get(finalJ).getOpenDoor()) {
+                                        doorList.get(finalJ).setOpenDoor(true);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(true);
+                                                }
+                                            }
+                                        }
+
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsTop.setImage(doorOpenTop);
+                                    } else {
+                                        doorList.get(finalJ).setOpenDoor(false);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(false);
+                                                }
+                                            }
+                                        }
+
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsTop.setImage(doorCloseTop);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
+                        String connectedRoom = doorList.get(finalJ).getConnection();
+
+                        doorsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
+                                    if (!doorList.get(finalJ).getOpenDoor()) {
+                                        doorList.get(finalJ).setOpenDoor(true);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(true);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsLeft.setImage(doorOpenLeft);
+                                    } else {
+                                        doorList.get(finalJ).setOpenDoor(false);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(false);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsLeft.setImage(doorCloseLeft);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
+                        String connectedRoom = doorList.get(finalJ).getConnection();
+
+                        doorsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
+                                    if (!doorList.get(finalJ).getOpenDoor()) {
+                                        doorList.get(finalJ).setOpenDoor(true);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(true);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsRight.setImage(doorOpenRight);
+                                    } else {
+                                        doorList.get(finalJ).setOpenDoor(false);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(false);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsRight.setImage(doorCloseRight);
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                        String connectedRoom = doorList.get(finalJ).getConnection();
+
+                        doorsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent e) {
+                                if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                                    if (!doorList.get(finalJ).getOpenDoor()) {
+                                        doorList.get(finalJ).setOpenDoor(true);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(true);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsBottom.setImage(doorOpenBottom);
+                                    } else {
+                                        doorList.get(finalJ).setOpenDoor(false);
+                                        for (int i = 0; i < roomArray.length; i++) {
+                                            if(roomArray[i].getName().equals(connectedRoom)) {
+                                                for (int j = 0; j < roomArray[i].getDoors().size(); j++) {
+                                                    if(roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                                                        roomArray[i].getDoors().get(j).setOpenDoor(false);
+                                                }
+                                            }
+                                        }
+                                        drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
+                                        doorsBottom.setImage(doorCloseBottom);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // when room has 1 door
+                if(doorList.size() == 1) {
+                    ImageView selectedDoors = new ImageView();
+
+                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("TOP"))
+                        selectedDoors = doorsTop;
+                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("BOTTOM"))
+                        selectedDoors = doorsBottom;
+                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("LEFT"))
+                        selectedDoors = doorsLeft;
+                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("RIGHT"))
+                        selectedDoors = doorsRight;
+                    gpSHCDoors.addRow(i, selectedDoors);
+                }
+
+                // when room has 2 doors
+                if(doorList.size() == 2) {
+                    ImageView[] selectedDoors = new ImageView[2];
+
+                    for(int j = 0; j < selectedDoors.length; j++) {
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                            selectedDoors[j] = doorsTop;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                            selectedDoors[j] = doorsBottom;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                            selectedDoors[j] = doorsLeft;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                            selectedDoors[j] = doorsRight;
+                    }
+                    gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1]);
+                }
+
+                // when room has 3 doors
+                if(doorList.size() == 3) {
+                    ImageView[] selectedDoors = new ImageView[3];
+
+                    for(int j = 0; j < selectedDoors.length; j++) {
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                            selectedDoors[j] = doorsTop;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                            selectedDoors[j] = doorsBottom;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                            selectedDoors[j] = doorsLeft;
+                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                            selectedDoors[j] = doorsRight;
+                    }
+                    gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1], selectedDoors[2]);
+                }
+
+                // when room has 4 doors
+                if(doorList.size() == 4) {
+                    gpSHCDoors.addRow(i, doorsTop, doorsBottom, doorsLeft, doorsRight);
+                }
+            }
+
+            vboxSHCDoors.getChildren().add(gpSHCDoors);
 
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
             alert.showAndWait();
         }
     }
-
 
     /**
      * Draws the room based on the cached static variables after this file has been submitted
@@ -618,35 +994,27 @@ public class LoginInfoController implements Initializable {
         gc.setFont(new Font(11));
         drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
     }
-
-    /**
-     * This function draws doors on the house layout
-     *
-     * @param x  first x coordinate of the door
-     * @param y  first y coordinate of the door
-     * @param x2 second x coordinate of the door
-     * @param y2 second y coordinate of the door
-     */
-    public void drawDoor(int x, int y, int x2, int y2) {
-        gc.setLineWidth(3);
-        gc.strokeLine(x, y, x2, y2);
-        gc.setLineWidth(1);
-    }
-
+    
     /**
      * This function draws windows on the house layout
      *
-     * @param room room where window is drawn
-     * @param x    x coordinate of top left corner of the room
-     * @param y    y coordinate top left corner of the room
+     * @param room room where window is situated
+     * @param position position of the window in the room
      */
-    public void drawWindows(Room room, int x, int y) {
-        gc.setLineWidth(3);
-        gc.setStroke(Color.LIGHTBLUE);
+    public void drawWindows(Room room, String position) {
+        int[] coordinates = roomPosition.get(room.getName());
+        int x = coordinates[0];
+        int y = coordinates[1];
+
+        gc.setLineWidth(2);
         for (Window window : room.getWindows()) {
+            if(window.getOpenWindow()) {
+                gc.setStroke(Color.BLUE);
+            }
+            else{
+                gc.setStroke(Color.BLACK);
+            }
             switch (window.getPosition()) {
-                case NONE -> {
-                }
                 case BOTTOM -> {
                     gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
                 }
@@ -679,7 +1047,7 @@ public class LoginInfoController implements Initializable {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            int[] coordinates = lights.get(name);
+            int[] coordinates = roomPosition.get(name);
             gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
         }
         else {
@@ -688,9 +1056,46 @@ public class LoginInfoController implements Initializable {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            int[] coordinates = lights.get(name);
+            int[] coordinates = roomPosition.get(name);
             gc.drawImage(img, coordinates[0] + 72, coordinates[1] + 2);
         }
+    }
+
+    /**
+     * This function will draw the doors in a given room.
+     *
+     * @param room where door will be
+     * @param position where door is situated
+     */
+    public void drawDoor(Room room, String position) {
+        int[] coordinates = roomPosition.get(room.getName());
+        int x = coordinates[0];
+        int y = coordinates[1];
+
+        gc.setLineWidth(2);
+        for (Door door : room.getDoors()) {
+            if (door.getOpenDoor()) {
+                gc.setStroke(Color.WHITE);
+            } else {
+                gc.setStroke(Color.SANDYBROWN);
+            }
+            switch (door.getPosition()) {
+                case BOTTOM -> {
+                    gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
+                }
+                case RIGHT -> {
+                    gc.strokeLine(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+                }
+                case TOP -> {
+                    gc.strokeLine(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
+                }
+                case LEFT -> {
+                    gc.strokeLine(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
+                }
+            }
+        }
+        gc.setLineWidth(1);
+        gc.setStroke(Color.BLACK);
     }
 
     /**
@@ -706,48 +1111,78 @@ public class LoginInfoController implements Initializable {
     public void drawRoom(Map<String, Room> roomHashMap, Room room, Set<Room> visited, Position previous, int x, int y) {
         visited.add(room);
 
-        switch (previous) {
-            case NONE -> {
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-                drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y + ROOM_SIZE, x + (ROOM_SIZE - DOOR_SIZE) / 2 + DOOR_SIZE, y + ROOM_SIZE);
-            }
-            case BOTTOM -> {
-                drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-                y += ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case RIGHT -> {
-                drawDoor(x + ROOM_SIZE, y + (ROOM_SIZE - DOOR_SIZE) / 2, x + ROOM_SIZE, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-                x += ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case TOP -> {
-                drawDoor(x + (ROOM_SIZE - DOOR_SIZE) / 2, y, x + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2, y);
-                y -= ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
-            }
-            case LEFT -> {
-                drawDoor(x, y + (ROOM_SIZE - DOOR_SIZE) / 2, x, y + DOOR_SIZE + (ROOM_SIZE - DOOR_SIZE) / 2);
-                x -= ROOM_SIZE;
-                gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
-                gc.fillText(room.getName(), x + 10, y + 15);
+        // if room is entrance or backyard no line is drawn
+        if (room.getName().equals("Entrance") || room.getName().equals("Backyard")) {
+            switch (previous) {
+                case NONE -> {
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case BOTTOM -> {
+                    y += ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case RIGHT -> {
+                    x += ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case TOP -> {
+                    y -= ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case LEFT -> {
+                    x -= ROOM_SIZE;
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
             }
         }
-        drawWindows(room, x, y);
+        else {
+            switch (previous) {
+                case NONE -> {
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case BOTTOM -> {
+                    y += ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case RIGHT -> {
+                    x += ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case TOP -> {
+                    y -= ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+                case LEFT -> {
+                    x -= ROOM_SIZE;
+                    gc.strokeRect(x, y, ROOM_SIZE, ROOM_SIZE);
+                    gc.fillText(room.getName(), x + 10, y + 15);
+                }
+            }
+        }
 
-        //updating a hashMap to get all the lights with their coordinates.
+        //updating a hashMap to get all the roomPosition with their coordinates.
         int[] coordinates = {x, y};
-        lights.put(room.getName(), coordinates);
+        roomPosition.put(room.getName(), coordinates);
 
         //setting a default value for light status which means that is off.
         room.setLightsOn(0);
 
         //draw the light for a room.
         drawLight(room);
+
+        //draw the window for a room
+        for(int i = 0; i < room.getWindows().size() ; i++) {
+            drawWindows(room, room.getWindows().get(i).getPosition().toString());
+        }
+
+        //draw the door for a room
+        for(int i = 0; i < room.getDoors().size() ; i++) {
+            drawDoor(room, room.getDoors().get(i).getPosition().toString());
+        }
 
         for (Door child : room.getDoors()) {
             Room nextRoom = roomHashMap.get(child.getConnection());
