@@ -1,5 +1,6 @@
 package controller;
 
+import constants.UserRoles;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
@@ -242,6 +243,12 @@ public class EditSimulationController implements Initializable {
         if (StringUtils.isNotEmpty(chosenLocation)) {
             userLocations.put(username, chosenLocation);
             ((Label) locationDisplay.lookup("#" + username + "Location")).setText(chosenLocation);
+            if (LoginInfoController.isAwayMode() && !chosenLocation.equals("Outside")) {
+                String userRole = RoleService.findRole(LoginInfoController.getUserParent()).get(username);
+                if (userRole.equals(UserRoles.STRANGER.toString()) || userRole.equals(UserRoles.GUEST.toString())) {
+                    LoginInfoController.consoleLogFile("Unknown person has been detected in the house");
+                }
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Location is empty");
             alert.showAndWait();

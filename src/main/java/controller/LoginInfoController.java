@@ -47,6 +47,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
 import java.io.File;
@@ -56,6 +57,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -114,6 +117,7 @@ public class LoginInfoController implements Initializable {
     private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
+    private static String consoleLog = "";
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -266,12 +270,15 @@ public class LoginInfoController implements Initializable {
             Date d = new Date(sysmillis);
             this.date.setText(formatDate.format(d));
             this.time.setText(formatTime.format(d));
-
         }
-//        if (Objects.nonNull(house)) {
-//            rooms.getItems().addAll(house.keySet());
-//            rooms.getSelectionModel().selectFirst();
-//        }
+
+        if (Objects.nonNull(house) && rooms != null) {
+            rooms.getItems().addAll(house.keySet());
+            rooms.getSelectionModel().selectFirst();
+        }
+      
+        console.appendText(consoleLog);
+
         awayModeON.setSelected(awayMode);
         awayModeOFF.setSelected(!awayMode);
 
@@ -486,12 +493,33 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
+     * The function appends text onto the consoleLog when it is not on the scene
+     *
+     * @param str String to append onto the console
+     */
+    public static void consoleLogFile(String str) {
+        updateConsoleLog(str);
+    }
+
+    /**
      * This function appends text onto the console
      *
-     * @param str String to appened on console
+     * @param str String to append onto the console
      */
     public void consoleLog(String str) {
-        this.console.appendText("[" + this.time.getText() + "] " + str + "\n");
+        updateConsoleLog(str);
+        this.console.setText(consoleLog);
+    }
+
+    /**
+     * This function is responsible for updating the cached logs
+     *
+     * @param str String to append onto the console
+     */
+    private static void updateConsoleLog(String str) {
+        String toAppend = "[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n";
+        consoleLog += toAppend;
+        ConsoleService.exportConsole(toAppend);
     }
 
     /**
