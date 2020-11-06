@@ -1185,8 +1185,6 @@ public class LoginInfoController implements Initializable {
                 int finalJ = j;
 
                 if (windowList.get(finalJ).getPosition().toString() == "TOP") {
-                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "TOP");
-                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsTop.setImage(windowCloseTop);
                     else {
@@ -1213,12 +1211,9 @@ public class LoginInfoController implements Initializable {
                             }
                         }
                     });
-                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
-                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "LEFT");
-                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsLeft.setImage(windowCloseLeft);
                     else {
@@ -1244,12 +1239,9 @@ public class LoginInfoController implements Initializable {
                             }
                         }
                     });
-                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
-                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "RIGHT");
-                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsRight.setImage(windowCloseRight);
                     else {
@@ -1275,12 +1267,9 @@ public class LoginInfoController implements Initializable {
                             }
                         }
                     });
-                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
-                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "BOTTOM");
-                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsBottom.setImage(windowCloseBottom);
                     else {
@@ -1306,7 +1295,6 @@ public class LoginInfoController implements Initializable {
                             }
                         }
                     });
-                    */
                 }
             }
 
@@ -1629,35 +1617,6 @@ public class LoginInfoController implements Initializable {
 
         vboxSHCDoors.getChildren().add(gpSHCDoors);
     }
-    
-    private void windowController(ImageView windows, ArrayList<Window> windowList, int finalI, int finalJ, Image windowClose, Image windowOpen, String position) {
-    	 if (!windowList.get(finalJ).getOpenWindow())
-             windows.setImage(windowClose);
-         else {
-             windows.setImage(windowOpen);
-         }
-         windows.setOnMousePressed(new EventHandler<MouseEvent>() {
-             @Override
-             public void handle(MouseEvent e) {
-                 if (windowList.get(finalJ).getPosition().toString() == position) {
-                 	if(windowList.get(finalJ).getBlocking()) {
-                 		consoleLog("This  window is blocked, unable to process action.");
-                 	} else {
-                 		if (!windowList.get(finalJ).getOpenWindow()) {
-                         	
-                             windowList.get(finalJ).setOpenWindow(true);
-                             drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                             windows.setImage(windowOpen);
-                         } else {
-                             windowList.get(finalJ).setOpenWindow(false);
-                             drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                             windows.setImage(windowClose);
-                         }
-                 	}
-                 }
-             }
-         });
-	}
 
 	/**
      * This function draws windows on the house layout
