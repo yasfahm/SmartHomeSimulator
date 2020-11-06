@@ -32,7 +32,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +46,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import java.util.Iterator;
 import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -54,7 +54,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -110,6 +109,8 @@ public class LoginInfoController implements Initializable {
     private ComboBox<String> rooms;
     @FXML
     private Label roomToLight;
+    @FXML
+    private TextField timeBeforeAlertInput;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -131,6 +132,9 @@ public class LoginInfoController implements Initializable {
     private Map<String, int[]> roomPosition = new HashMap<>();
     private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
+    private static String timeBeforeAlert;
+    private Map<String, String> userLocation = EditSimulationController.getUserLocations();
+    private Map<String, Integer> userPositions = new HashMap<>();
 
     /**
      * Sets up the logged in user as the active user
@@ -226,6 +230,19 @@ public class LoginInfoController implements Initializable {
 
     public TextField getTemperatureField() {
         return textFieldTemperature;
+    }
+
+    /**
+     * Get timeBeforeAlert
+     *
+     * @return timeBeforeAlert string
+     */
+    public static String getTimeBeforeAlert(){
+        return timeBeforeAlert;
+    }
+
+    public TextField getTimeBeforeAlertField() {
+        return timeBeforeAlertInput;
     }
 
     public static void setUsername(String username) {
@@ -371,43 +388,43 @@ public class LoginInfoController implements Initializable {
     }
 
     public void onMouseClickAwayToggleON(MouseEvent event) {
-    	if (!toggleText.getText().equals("ON")) {
-    		consoleLog("Simulation is off, enable to process action.");
-    	} else {
-	        Map<String, String> userLocations = EditSimulationController.getUserLocations();
-	        AtomicBoolean isNotInHouse = new AtomicBoolean(true);
-	        if (Objects.nonNull(userLocations)) {
-	            userLocations.keySet().forEach(user -> {
-	                if (!userLocations.get(user).equals("Outside")) {
-	                    isNotInHouse.set(false);
-	                }
-	            });
-	        }
-	        if (isNotInHouse.get()) {
-	        	if(closeWindowsDoorsLights()) {
-	        		consoleLog("Away mode turns on.");
-	                awayMode = true;
-	                awayModeON.setSelected(true);
-	        	}else {
-	        		awayModeOFF.setSelected(true);
-	        	}
-	        } else {
-	            consoleLog("Unable to turn Away Mode ON, there is someone in the house");
-	            awayMode = false;
-	            awayModeON.setSelected(false);
-	            awayModeOFF.setSelected(true);
-	        }
-    	}
+        if (!toggleText.getText().equals("ON")) {
+    		  consoleLog("Simulation is off, enable to process action.");
+    	  } else {
+            Map<String, String> userLocations = EditSimulationController.getUserLocations();
+            AtomicBoolean isNotInHouse = new AtomicBoolean(true);
+            if (Objects.nonNull(userLocations)) {
+                userLocations.keySet().forEach(user -> {
+                    if (!userLocations.get(user).equals("Outside")) {
+                        isNotInHouse.set(false);
+                    }
+                });
+            }
+            if (isNotInHouse.get()) {
+               if(closeWindowsDoorsLights()) {
+                    consoleLog("Away mode turns on.");
+                    awayMode = true;
+                    awayModeON.setSelected(true);
+              }else {
+                    awayModeOFF.setSelected(true);
+              }
+            } else {
+                consoleLog("Unable to turn Away Mode ON, there is someone in the house");
+                awayMode = false;
+                awayModeON.setSelected(false);
+                awayModeOFF.setSelected(true);
+            }
+          }
     }
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
-    	if (!toggleText.getText().equals("ON")) {
+      if (!toggleText.getText().equals("ON")) {
     		consoleLog("Simulation is off, enable to process action.");
     	} else {
-	    	consoleLog("Away mode turns off.");
-	        awayMode = false;
-	        awayModeOFF.setSelected(true);
-    	}
+          consoleLog("Away mode was turned off.");
+          awayMode = false;
+          awayModeOFF.setSelected(true);
+      }
     }
 
     /**
@@ -683,7 +700,7 @@ public class LoginInfoController implements Initializable {
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -693,6 +710,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsTop.setImage(windowCloseTop);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -707,7 +728,7 @@ public class LoginInfoController implements Initializable {
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -717,6 +738,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsLeft.setImage(windowCloseLeft);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -731,7 +756,7 @@ public class LoginInfoController implements Initializable {
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -741,6 +766,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsRight.setImage(windowCloseRight);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -755,7 +784,7 @@ public class LoginInfoController implements Initializable {
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -765,6 +794,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsBottom.setImage(windowCloseBottom);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -1090,7 +1123,7 @@ public class LoginInfoController implements Initializable {
 
             vboxSHCDoors.getChildren().add(gpSHCDoors);
             
-            consoleLog("Successively add house layout.");
+            consoleLog("Successfully added house layout.");
 
         } else {
         	consoleLog("Add house layout failed, please turn on the simulation first.");
@@ -1209,6 +1242,10 @@ public class LoginInfoController implements Initializable {
                                     }
                             	}
                             }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
+                            }
                         }
                     });
                 }
@@ -1236,6 +1273,10 @@ public class LoginInfoController implements Initializable {
 	                                    windowsLeft.setImage(windowCloseLeft);
 	                                }
                             	}
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
@@ -1265,6 +1306,10 @@ public class LoginInfoController implements Initializable {
 	                                }
                             	}
                             }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
+                            }
                         }
                     });
                 }
@@ -1292,6 +1337,10 @@ public class LoginInfoController implements Initializable {
 	                                    windowsBottom.setImage(windowCloseBottom);
 	                                }
                             	}
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
@@ -1616,9 +1665,43 @@ public class LoginInfoController implements Initializable {
         vboxSHCDoors.getChildren().clear();
 
         vboxSHCDoors.getChildren().add(gpSHCDoors);
+
+        System.out.println("test");
+
+        drawPeople();
+
+        //draw number of person(s) in each room
+        for (int i = 0; i < roomArray.length; i++) {
+            if(userPositions.get(roomArray[i].getName()) != null){
+                int numberOfPeople = userPositions.get(roomArray[i].getName());
+                int[] positions = roomPosition.get(roomArray[i].getName());
+                gc.fillText(String.valueOf(numberOfPeople) + " person(s)", positions[0] + 10, positions[1] + 35);
+            }
+        }
     }
 
-	/**
+    /**
+     * calculates the number of people in each room
+     */
+    public void drawPeople () {
+        Iterator<Map.Entry<String, String>> itr = userLocation.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> itr2 = userLocation.entrySet().iterator();
+
+        while(itr2.hasNext())
+        {
+            Map.Entry<String, String> entry = itr2.next();
+            userPositions.put(entry.getValue(), 0);
+        }
+
+        while(itr.hasNext())
+        {
+            Map.Entry<String, String> entry = itr.next();
+            userPositions.put(entry.getValue(), userPositions.get(entry.getValue()) + 1);
+        }
+    }
+
+
+    /**
      * This function draws windows on the house layout
      *
      * @param room room where window is situated
@@ -1996,7 +2079,6 @@ public class LoginInfoController implements Initializable {
         int index = 0;
         for (int i=0; i<roomArray.length; i++){
             if (roomArray[i].getName().equals(room)){
-                System.out.println(roomArray[i].getName());
                 index = i;
             }
         }
@@ -2007,7 +2089,11 @@ public class LoginInfoController implements Initializable {
     /**
      * This method closes all the windows, doors and lights when away mode is turned on
      */
+
     public boolean closeWindowsDoorsLights(){
+      if (roomArray == null) {
+            return false;
+        }
     	for (Room r: roomArray) {
     		ArrayList<Window> windowList = r.getWindows();
             for (Window w: windowList){
@@ -2034,4 +2120,17 @@ public class LoginInfoController implements Initializable {
         }
     	return true;
     }
+
+    /**
+     * This method sets the timeBeforeAlert variable
+     */
+    public void onSetTimeBeforeAlert(){
+        if (!awayMode) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return;
+        }
+        timeBeforeAlert = timeBeforeAlertInput.getText();
+    }
+
 }
