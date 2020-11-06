@@ -348,7 +348,7 @@ public class LoginInfoController implements Initializable {
     	}
         
     }
-    
+
     /**
      * On Enter functionality for the textFieldTemperature
      */
