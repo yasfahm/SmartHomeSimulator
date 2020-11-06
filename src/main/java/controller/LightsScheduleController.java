@@ -87,9 +87,8 @@ public class LightsScheduleController implements Initializable {
      *
      * @param actionEvent the event that triggers this function
      */
-    public void confirm(ActionEvent actionEvent) throws FileNotFoundException, ParseException {
+    public void confirm(ActionEvent actionEvent) throws ParseException {
         String room = rooms.getValue();
-
         String startTime = String.format("%02d:%02d", startHour.getValue(), startMinutes.getValue());
         String endTime = String.format("%02d:%02d", endHour.getValue(), endMinutes.getValue());
 

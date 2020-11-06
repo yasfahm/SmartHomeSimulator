@@ -233,6 +233,19 @@ public class LoginInfoController implements Initializable {
         return textFieldTemperature;
     }
 
+    /**
+     * Get timeBeforeAlert
+     *
+     * @return timeBeforeAlert string
+     */
+    public static String getTimeBeforeAlert(){
+        return timeBeforeAlert;
+    }
+
+    public TextField getTimeBeforeAlertField() {
+        return timeBeforeAlertInput;
+    }
+
     public static void setUsername(String username) {
         LoginInfoController.username = username;
     }
@@ -2029,6 +2042,9 @@ public class LoginInfoController implements Initializable {
      * This method closes all the windows, doors and lights when away mode is turned on
      */
     public void closeWindowsDoorsLights(){
+        if (roomArray == null) {
+            return;
+        }
         for (Room r: roomArray){
             r.setLightsOn(0);
             drawLight(r);
@@ -2049,7 +2065,7 @@ public class LoginInfoController implements Initializable {
     /**
      * This method sets the timeBeforeAlert variable
      */
-    public void setTimeBeforeAlert(){
+    public void onSetTimeBeforeAlert(){
         if (!awayMode) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
             alert.showAndWait();
@@ -2058,12 +2074,4 @@ public class LoginInfoController implements Initializable {
         timeBeforeAlert = timeBeforeAlertInput.getText();
     }
 
-    /**
-     * This method gets the timeBeforeAlert
-     *
-     * @return timeBeforeAlert string
-     */
-    public static String getTimeBeforeAlert(){
-        return timeBeforeAlert;
-    }
 }
