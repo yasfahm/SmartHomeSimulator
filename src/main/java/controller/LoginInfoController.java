@@ -32,7 +32,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +46,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import observerPattern.Subject;
 import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -54,7 +54,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -110,6 +109,8 @@ public class LoginInfoController implements Initializable {
     private ComboBox<String> rooms;
     @FXML
     private Label roomToLight;
+    @FXML
+    private TextField timeBeforeAlertInput;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -136,6 +137,7 @@ public class LoginInfoController implements Initializable {
     private GridPane gpSHCDoors = new GridPane();
     private GridPane gpSHCWindows = new GridPane();
     private GridPane gpSHCLights = new GridPane();
+    private static String timeBeforeAlert;
 
     /**
      * Sets up the logged in user as the active user
@@ -1729,14 +1731,17 @@ public class LoginInfoController implements Initializable {
      * @throws IOException if the view file is not found
      */
     public void scheduleLights(ActionEvent event) throws IOException {
-        if (!awayModeOffAlert()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.show();
+        if (!awayMode) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return;
         }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     /**
@@ -1836,18 +1841,24 @@ public class LoginInfoController implements Initializable {
         }
     }
 
+    /**
+     * This method sets the timeBeforeAlert variable
+     */
     public void setTimeBeforeAlert(){
-        if (!awayModeOffAlert()){
-            System.out.println("oh");
-        }
-    }
-
-    public boolean awayModeOffAlert(){
-        if (!awayMode){
+        if (!awayMode) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
             alert.showAndWait();
-            return true;
+            return;
         }
-        return false;
+        timeBeforeAlert = timeBeforeAlertInput.getText();
+    }
+
+    /**
+     * This method gets the timeBeforeAlert
+     *
+     * @return timeBeforeAlert string
+     */
+    public static String getTimeBeforeAlert(){
+        return timeBeforeAlert;
     }
 }

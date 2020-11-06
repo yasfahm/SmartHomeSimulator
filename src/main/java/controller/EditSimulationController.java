@@ -1,6 +1,5 @@
 package controller;
 
-import constants.UserRoles;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
@@ -19,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import observerPattern.Observer;
 import observerPattern.Subject;
 import observerPattern.UserLocationObserver;
 import org.apache.commons.lang3.StringUtils;

@@ -7,7 +7,7 @@ import java.util.Map;
 public class Subject {
 
     private Map<String, String> userLocations = EditSimulationController.getUserLocations();;
-    private Observer observer;
+    private UserLocationObserver observer;
 
     public void setUserLocations(String key, String value){
         this.userLocations.put(key, value);
