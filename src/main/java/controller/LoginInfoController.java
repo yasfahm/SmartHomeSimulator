@@ -46,7 +46,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import observerPattern.Subject;
 import java.util.Iterator;
 import service.ConsoleService;
 import service.HouseLayoutService;
@@ -133,10 +132,6 @@ public class LoginInfoController implements Initializable {
     private Map<String, int[]> roomPosition = new HashMap<>();
     private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
-    private GridPane gpSHCRooms = new GridPane();
-    private GridPane gpSHCDoors = new GridPane();
-    private GridPane gpSHCWindows = new GridPane();
-    private GridPane gpSHCLights = new GridPane();
     private static String timeBeforeAlert;
     private Map<String, String> userLocation = EditSimulationController.getUserLocations();
     private Map<String, Integer> userPositions = new HashMap<>();
@@ -1991,7 +1986,6 @@ public class LoginInfoController implements Initializable {
         int index = 0;
         for (int i=0; i<roomArray.length; i++){
             if (roomArray[i].getName().equals(room)){
-                System.out.println(roomArray[i].getName());
                 index = i;
             }
         }

@@ -247,7 +247,7 @@ public class EditSimulationController implements Initializable {
             Subject subject = new Subject();
             new UserLocationObserver(subject);
             subject.setUserLocations(username, chosenLocation);
-            subject.notifyAllObservers();
+            subject.notifyObserver();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Location is empty");
             alert.showAndWait();
