@@ -57,7 +57,7 @@ public class ConsoleService {
 			}
 		}
 		
-		java.io.PrintWriter output = null;
+		PrintWriter output = null;
 		try {
 			output = new java.io.PrintWriter(file);
 		} catch (FileNotFoundException e) {
