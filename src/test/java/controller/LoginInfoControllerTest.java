@@ -3,12 +3,14 @@ package controller;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +20,12 @@ import org.mockito.Mockito;
 import org.testfx.framework.junit5.ApplicationTest;
 import service.DatabaseService;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -31,6 +37,9 @@ public class LoginInfoControllerTest extends ApplicationTest {
 
     LoginInfoController controller;
     FXMLLoader loader;
+
+    EditSimulationController editSimulationController;
+    FXMLLoader editSimulationLoader;
 
     static DB db;
     static MockedStatic<EditSimulationController> mock;
@@ -60,6 +69,9 @@ public class LoginInfoControllerTest extends ApplicationTest {
         loader = new FXMLLoader(getClass().getResource("/view/loginInfo.fxml"));
         loader.load();
         controller = loader.getController();
+        PrintWriter printWriter = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+        printWriter.print("");
+        printWriter.close();
     }
 
     @Test
@@ -107,5 +119,39 @@ public class LoginInfoControllerTest extends ApplicationTest {
 
         controller.onMouseClickAwayToggleON(null);
         assertFalse(LoginInfoController.isAwayMode());
+    }
+
+    @Test
+    public void should_set_time_before_alert_on_user_input_away_mode() {
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        controller.onMouseClickAwayToggleON(null);
+        controller.getTimeBeforeAlertField().setText("10");
+        controller.onSetTimeBeforeAlert();
+        assertEquals("10", controller.getTimeBeforeAlert());
+    }
+
+    @Test
+    public void should_notify_users_when_motion_detected_away_mode() throws IOException {
+        editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+        editSimulationLoader.load();
+        editSimulationController = editSimulationLoader.getController();
+
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        controller.onMouseClickAwayToggleON(null);
+        controller.getTimeBeforeAlertField().setText("10");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("user1", "Kitchen");
+        mock.when(EditSimulationController::getUserLocations).thenReturn(map);
+        editSimulationController.getRoomsMove().setValue("Kitchen");
+        editSimulationController.changeLocation(new ActionEvent());
+
+        Scanner scanner = new Scanner(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+        String line = "";
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+        }
+        assertEquals("user1 was detected in the Kitchen during Away Mode. " +
+                "Authorities will be alerted in 10 minutes.", line.substring(22));
     }
 }
