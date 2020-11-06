@@ -524,7 +524,6 @@ public class LoginInfoController implements Initializable {
      */
     private static void updateConsoleLog(String str) {
         String toAppend = "[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n";
-        System.out.println("toAppend:"+toAppend);
         ConsoleService.exportConsole(toAppend);
     }
 
