@@ -29,7 +29,6 @@ public class ConsoleService {
      */
     public static void exportConsole(final String consoleLog) {
     	consoleList.add(consoleLog);
-    	System.out.println("APPENED " + consoleLog);
         printWriter.append(consoleLog);
         printWriter.flush();
     }
@@ -50,7 +49,6 @@ public class ConsoleService {
 		String path = "src/main/resources/consoleLogs.txt";
 		File file = new File(path);
 		if(!file.exists()) {
-			System.out.println("File not exist");
 			File newLog = new File(path);
 			try {
 				newLog.createNewFile();
