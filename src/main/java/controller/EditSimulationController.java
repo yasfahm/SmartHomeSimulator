@@ -133,7 +133,7 @@ public class EditSimulationController implements Initializable {
         }
         locationDisplay.getChildren().add(processRows());
 
-        windowToBlock.setText("Select room: ");
+        windowToBlock.setText("Select Window: ");
         if (Objects.nonNull(house)) {
             roomsBlock.getItems().addAll(house.keySet());
             roomsBlock.getSelectionModel().selectFirst();
