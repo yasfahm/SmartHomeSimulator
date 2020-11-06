@@ -1729,17 +1729,14 @@ public class LoginInfoController implements Initializable {
      * @throws IOException if the view file is not found
      */
     public void scheduleLights(ActionEvent event) throws IOException {
-        if (!awayMode){
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
-            alert.showAndWait();
-            return;
+        if (!awayModeOffAlert()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setScene(new Scene(root));
+            stage.show();
         }
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(root));
-        stage.show();
     }
 
     /**
@@ -1837,5 +1834,20 @@ public class LoginInfoController implements Initializable {
                 drawDoor(r, d.getPosition().toString());
             }
         }
+    }
+
+    public void setTimeBeforeAlert(){
+        if (!awayModeOffAlert()){
+            System.out.println("oh");
+        }
+    }
+
+    public boolean awayModeOffAlert(){
+        if (!awayMode){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return true;
+        }
+        return false;
     }
 }
