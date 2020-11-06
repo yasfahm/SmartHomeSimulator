@@ -192,10 +192,9 @@ public class EditSimulationController implements Initializable {
                 LoginInfoController.consoleLogFile("The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.");
                 break;
             }
-            
         }
     }
-    
+
     /**
      * Action event on change dynamic content with combobox for window list
      * @param event The event that called this function
