@@ -1,5 +1,6 @@
 package controller;
 
+import constants.UserRoles;
 import entity.CommandType;
 import entity.PermissionType;
 import javafx.beans.value.ChangeListener;
@@ -19,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.EnumUtils;
+import service.PermissionService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,7 +82,7 @@ public class UserPermissionsController {
         permissionTypeList = EnumUtils.getEnumList(PermissionType.class);
         currentPermissions = userPermissions.get(username);
         if (Objects.isNull(currentPermissions)) {
-            currentPermissions = new HashMap<>();
+            currentPermissions = PermissionService.getDefaultPermissions(UserRoles.valueOf(username));
         }
         Set<CommandType> difference = SetUtils.difference(new HashSet<>(commandTypeList), currentPermissions.keySet());
         difference.forEach(commandType -> {
