@@ -131,6 +131,8 @@ public class LoginInfoController implements Initializable {
     private Label labelDoor;
     @FXML
     private AnchorPane permissionsList;
+    @FXML
+    private Label labelAwayMode;
   
     private static String userParent;
     private static Map<String, Room> house;
@@ -471,6 +473,7 @@ public class LoginInfoController implements Initializable {
                     consoleLog("Away mode turns on.");
                     awayMode = true;
                     awayModeON.setSelected(true);
+                    labelAwayMode.setText("Away mode is on");
               }else {
                     awayModeOFF.setSelected(true);
               }
@@ -490,6 +493,7 @@ public class LoginInfoController implements Initializable {
           consoleLog("Away mode was turned off.");
           awayMode = false;
           awayModeOFF.setSelected(true);
+          labelAwayMode.setText("Away mode is off");
       }
     }
 
@@ -677,6 +681,14 @@ public class LoginInfoController implements Initializable {
             labelLight.setText("LIGHT");
             labelWindow.setText("WINDOW");
             labelDoor.setText("DOOR");
+
+            //show the away mode status on house layout
+            if (awayMode) {
+                labelAwayMode.setText("Away mode is on");
+            }
+            else {
+                labelAwayMode.setText("Away mode is off");
+            }
 
             roomArray = HouseLayoutService.parseHouseLayout(file);
             HashMap<String, Room> rooms = new HashMap<>();
@@ -1218,6 +1230,14 @@ public class LoginInfoController implements Initializable {
         labelLight.setText("LIGHT");
         labelWindow.setText("WINDOW");
         labelDoor.setText("DOOR");
+
+        //show the away mode status on house layout
+        if (awayMode) {
+            labelAwayMode.setText("Away mode is on");
+        }
+        else {
+            labelAwayMode.setText("Away mode is off");
+        }
 
         gc = houseRender.getGraphicsContext2D();
         gc.setFont(new Font(11));
