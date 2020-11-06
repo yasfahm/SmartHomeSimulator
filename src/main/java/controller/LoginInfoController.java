@@ -32,7 +32,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,7 +54,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,6 +109,8 @@ public class LoginInfoController implements Initializable {
     private ComboBox<String> rooms;
     @FXML
     private Label roomToLight;
+    @FXML
+    private TextField timeBeforeAlertInput;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -132,10 +132,9 @@ public class LoginInfoController implements Initializable {
     private Map<String, int[]> roomPosition = new HashMap<>();
     private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
+    private static String timeBeforeAlert;
     private Map<String, String> userLocation = EditSimulationController.getUserLocations();
     private Map<String, Integer> userPositions = new HashMap<>();
-
-
 
     /**
      * Sets up the logged in user as the active user
@@ -383,7 +382,7 @@ public class LoginInfoController implements Initializable {
             });
         }
         if (isNotInHouse.get()) {
-        	consoleLog("Away mode turns on.");
+        	consoleLog("Away mode was turned on.");
             awayMode = true;
             awayModeON.setSelected(true);
             closeWindowsDoorsLights();
@@ -396,7 +395,7 @@ public class LoginInfoController implements Initializable {
     }
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
-    	consoleLog("Away mode turns off.");
+    	consoleLog("Away mode was turned off.");
         awayMode = false;
         awayModeOFF.setSelected(true);
     }
@@ -1093,7 +1092,7 @@ public class LoginInfoController implements Initializable {
 
             vboxSHCDoors.getChildren().add(gpSHCDoors);
             
-            consoleLog("Successively add house layout.");
+            consoleLog("Successfully added house layout.");
 
         } else {
         	consoleLog("Add house layout failed, please turn on the simulation first.");
@@ -2019,7 +2018,6 @@ public class LoginInfoController implements Initializable {
         int index = 0;
         for (int i=0; i<roomArray.length; i++){
             if (roomArray[i].getName().equals(room)){
-                System.out.println(roomArray[i].getName());
                 index = i;
             }
         }
@@ -2046,5 +2044,26 @@ public class LoginInfoController implements Initializable {
                 drawDoor(r, d.getPosition().toString());
             }
         }
+    }
+
+    /**
+     * This method sets the timeBeforeAlert variable
+     */
+    public void setTimeBeforeAlert(){
+        if (!awayMode) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+            alert.showAndWait();
+            return;
+        }
+        timeBeforeAlert = timeBeforeAlertInput.getText();
+    }
+
+    /**
+     * This method gets the timeBeforeAlert
+     *
+     * @return timeBeforeAlert string
+     */
+    public static String getTimeBeforeAlert(){
+        return timeBeforeAlert;
     }
 }

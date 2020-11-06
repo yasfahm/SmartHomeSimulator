@@ -1,6 +1,5 @@
 package controller;
 
-import constants.UserRoles;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
@@ -19,6 +18,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import observerPattern.Subject;
+import observerPattern.UserLocationObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.RoleService;
 import java.io.IOException;
@@ -243,12 +244,10 @@ public class EditSimulationController implements Initializable {
         if (StringUtils.isNotEmpty(chosenLocation)) {
             userLocations.put(username, chosenLocation);
             ((Label) locationDisplay.lookup("#" + username + "Location")).setText(chosenLocation);
-            if (LoginInfoController.isAwayMode() && !chosenLocation.equals("Outside")) {
-                String userRole = RoleService.findRole(LoginInfoController.getUserParent()).get(username);
-                if (userRole.equals(UserRoles.STRANGER.toString()) || userRole.equals(UserRoles.GUEST.toString())) {
-                    LoginInfoController.consoleLogFile("Unknown person has been detected in the house");
-                }
-            }
+            Subject subject = new Subject();
+            new UserLocationObserver(subject);
+            subject.setUserLocations(username, chosenLocation);
+            subject.notifyObserver();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Location is empty");
             alert.showAndWait();

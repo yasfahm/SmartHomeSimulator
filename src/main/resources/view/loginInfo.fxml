@@ -138,8 +138,14 @@
                                                                 <Label text="Lights Schedule" style="-fx-font-size: 20px;"/>
                                                                  <Label fx:id="roomToLight" text="Lights will remain on in selected rooms"/>
                                                                  <Button onAction="#scheduleLights" style="-fx-background-color: white; -fx-text-fill: black;" text="Add" />
+                                                                 <VBox spacing="0">
+                                                                     <Label wrapText="true" text="How much time should pass"/>
+                                                                     <Label wrapText="true" text="before alerting authorities?"/>
+                                                                 </VBox>
+                                                                 <TextField fx:id="timeBeforeAlertInput" promptText="Enter time in minutes" onAction="#setTimeBeforeAlert"/>
                                                              </VBox>
-                                                         </children></AnchorPane>
+                                                         </children>
+                                                          </AnchorPane>
                                                                     </content>
                                                                 </Tab>
                                                                 <Tab style="-fx-background-color: #FFEB3B;" text="SHH">

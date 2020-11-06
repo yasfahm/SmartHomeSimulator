@@ -2,7 +2,6 @@ package controller;
 
 import constants.UserRoles;
 import entity.UserRole;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
