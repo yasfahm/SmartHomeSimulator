@@ -1,6 +1,7 @@
 package controller;
 
 import constants.Position;
+import constants.UserRoles;
 import entity.CommandType;
 import entity.Door;
 import entity.PermissionType;
@@ -55,6 +56,7 @@ import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
+import service.PermissionService;
 import service.RoleService;
 import java.io.File;
 import java.io.FileInputStream;
@@ -366,19 +368,16 @@ public class LoginInfoController implements Initializable {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(6);
         Map<String, Map<CommandType, PermissionType>> userPerms = UserPermissionsController.getUserPermissions();
+        if (StringUtils.isEmpty(userRole.getText())) {
+            return null;
+        }
         if (Objects.isNull(userPerms)) {
-            Map<CommandType, PermissionType> currentPermissions = new HashMap<>();
-            EnumUtils.getEnumList(CommandType.class).forEach(commandType -> {
-                currentPermissions.put(commandType, PermissionType.RESTRICTED);
-            });
+            Map<CommandType, PermissionType> currentPermissions = PermissionService.getDefaultPermissions(UserRoles.valueOf(userRole.getText()));
             Map<String, Map<CommandType, PermissionType>> mapToAdd = new HashMap<>();
             mapToAdd.put(username, currentPermissions);
             UserPermissionsController.setUserPermissions(mapToAdd);
         } else if (Objects.isNull(userPerms.get(username))) {
-            Map<CommandType, PermissionType> currentPermissions = new HashMap<>();
-            EnumUtils.getEnumList(CommandType.class).forEach(commandType -> {
-                currentPermissions.put(commandType, PermissionType.RESTRICTED);
-            });
+            Map<CommandType, PermissionType> currentPermissions = PermissionService.getDefaultPermissions(UserRoles.valueOf(userRole.getText()));
             userPerms.put(username, currentPermissions);
             UserPermissionsController.setUserPermissions(userPerms);
         }
@@ -566,7 +565,10 @@ public class LoginInfoController implements Initializable {
                     Map<String, String> userLocs = EditSimulationController.getUserLocations();
                     loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
                     if (StringUtils.isNotEmpty(username)) {
-                        permissionsList.getChildren().add(processRows());
+                        Node toAdd = processRows();
+                        if (Objects.nonNull(toAdd)) {
+                            permissionsList.getChildren().add(toAdd);
+                        }
                     }
                 }
             }
