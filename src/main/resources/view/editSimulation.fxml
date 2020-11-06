@@ -19,15 +19,21 @@
             <Button fx:id="button" layoutX="258.0" layoutY="139.0" mnemonicParsing="false" onAction="#changeLocation" stylesheets="@application.css" text="Confirm" />
             <Button fx:id="button" layoutX="775.0" layoutY="695.0" mnemonicParsing="false" onAction="#goToLoginInfo" text="Go Back" />
             <Label fx:id="userToMove" layoutX="15.0" layoutY="82.0" text="Edit User's Location" />
-            <Label fx:id="windowToBlock" layoutX="19.0" layoutY="468.0" text="Room to block window:" />
+            <Label fx:id="windowToBlock" layoutX="19.0" layoutY="468.0" text="Room to un/block window:" />
             <ComboBox fx:id="roomsMove" layoutX="208.0" layoutY="85.0" prefWidth="150.0" />
 
-            <ComboBox fx:id="roomsBlock" layoutX="208.0" layoutY="427.0" prefWidth="150.0" />
-            <ComboBox fx:id="windows" layoutX="208.0" layoutY="470.0" prefWidth="150.0" />
+            <ComboBox fx:id="roomsBlock" layoutX="208.0" layoutY="427.0" onMouseClicked="#cb_selectWindowOnChange" prefWidth="150.0" />
+            <ComboBox fx:id="windows" layoutX="208.0" layoutY="470.0" onAction="#cb_onWindowChange" prefWidth="150.0" />
             <Label layoutX="19.0" layoutY="424.0" prefHeight="17.0" prefWidth="123.0" text="Select window:" />
-            <Button fx:id="button" layoutX="258.0" layoutY="521.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Confirm" />
+            <Button fx:id="button" layoutX="258.0" layoutY="521.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Action" />
+            <Button layoutX="258.0" layoutY="562.0" mnemonicParsing="false" onAction="#getWindowsBlocking" stylesheets="@application.css" text="Display" />
             <AnchorPane fx:id="locationDisplay" layoutX="464.0" layoutY="69.0" prefHeight="215.0" prefWidth="415.0" />
             <TextArea fx:id="windowNote" layoutX="469.0" layoutY="375.0" prefHeight="247.0" prefWidth="396.0" style="-fx-background-color: #455A64;" styleClass="custom" stylesheets="@application.css" />
+            <Label fx:id="windowBlockStatus" layoutX="213.0" layoutY="495.0" prefHeight="19.0" prefWidth="140.0" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Italic" size="10.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
