@@ -14,14 +14,14 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-color: #455A64;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
         <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" styleClass="root" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -111,10 +111,14 @@
                                                                                     <items>
                                                                                         <AnchorPane fx:id="anchorSHC" minHeight="0.0" minWidth="0.0" prefHeight="275.0" prefWidth="363.0" style="-fx-background-color: #455A64;">
                                                                      <children>
-                                                                        <VBox fx:id="vboxSHCRooms" layoutX="13.0" layoutY="14.0" prefHeight="130.0" prefWidth="84.0" />
-                                                                        <VBox fx:id="vboxSHCLights" layoutX="101.0" layoutY="14.0" prefHeight="130.0" prefWidth="20.0" />
-                                                                        <VBox fx:id="vboxSHCWindows" layoutX="126.0" layoutY="14.0" prefHeight="130.0" prefWidth="100.0" />
-                                                                        <VBox fx:id="vboxSHCDoors" layoutX="232.0" layoutY="14.0" prefHeight="130.0" prefWidth="100.0" />
+                                                                        <VBox fx:id="vboxSHCRooms" layoutX="13.0" layoutY="38.0" prefHeight="130.0" prefWidth="84.0" />
+                                                                        <VBox fx:id="vboxSHCLights" layoutX="101.0" layoutY="38.0" prefHeight="130.0" prefWidth="20.0" />
+                                                                        <VBox fx:id="vboxSHCWindows" layoutX="126.0" layoutY="38.0" prefHeight="130.0" prefWidth="100.0" />
+                                                                        <VBox fx:id="vboxSHCDoors" layoutX="232.0" layoutY="38.0" prefHeight="130.0" prefWidth="100.0" />
+                                                                        <Label fx:id="labelRoomName" layoutX="13.0" layoutY="9.0" prefHeight="19.0" prefWidth="65.0" />
+                                                                        <Label fx:id="labelLight" layoutX="93.0" layoutY="10.0" />
+                                                                        <Label fx:id="labelWindow" layoutX="159.0" layoutY="10.0" />
+                                                                        <Label fx:id="labelDoor" layoutX="265.0" layoutY="10.0" />
                                                                      </children>
                                                                                         </AnchorPane>
                                                                                     </items>

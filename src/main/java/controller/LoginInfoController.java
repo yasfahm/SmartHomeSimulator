@@ -122,8 +122,16 @@ public class LoginInfoController implements Initializable {
     @FXML
     private TextField timeBeforeAlertInput;
     @FXML
+    private Label labelRoomName;
+    @FXML
+    private Label labelLight;
+    @FXML
+    private Label labelWindow;
+    @FXML
+    private Label labelDoor;
+    @FXML
     private AnchorPane permissionsList;
-
+  
     private static String userParent;
     private static Map<String, Room> house;
     private static Room[] roomArray;
@@ -665,6 +673,11 @@ public class LoginInfoController implements Initializable {
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(window);
 
+            labelRoomName.setText("ROOM");
+            labelLight.setText("LIGHT");
+            labelWindow.setText("WINDOW");
+            labelDoor.setText("DOOR");
+
             roomArray = HouseLayoutService.parseHouseLayout(file);
             HashMap<String, Room> rooms = new HashMap<>();
             for (Room room : roomArray) {
@@ -1201,6 +1214,11 @@ public class LoginInfoController implements Initializable {
      * Draws the room based on the cached static variables after this file has been submitted
      */
     public void drawRoomFromCache() throws FileNotFoundException {
+        labelRoomName.setText("ROOM");
+        labelLight.setText("LIGHT");
+        labelWindow.setText("WINDOW");
+        labelDoor.setText("DOOR");
+
         gc = houseRender.getGraphicsContext2D();
         gc.setFont(new Font(11));
         gc.setFill(Color.WHITE);
