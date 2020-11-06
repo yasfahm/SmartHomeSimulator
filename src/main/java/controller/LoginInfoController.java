@@ -47,6 +47,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import observerPattern.Subject;
+import java.util.Iterator;
 import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -119,7 +120,6 @@ public class LoginInfoController implements Initializable {
     private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private final Text toggleText = new Text();
-    private static String consoleLog = "";
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -138,6 +138,8 @@ public class LoginInfoController implements Initializable {
     private GridPane gpSHCWindows = new GridPane();
     private GridPane gpSHCLights = new GridPane();
     private static String timeBeforeAlert;
+    private Map<String, String> userLocation = EditSimulationController.getUserLocations();
+    private Map<String, Integer> userPositions = new HashMap<>();
 
     /**
      * Sets up the logged in user as the active user
@@ -192,6 +194,7 @@ public class LoginInfoController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        console.setText(ConsoleService.getConsole());
     }
 
     /**
@@ -266,7 +269,6 @@ public class LoginInfoController implements Initializable {
         // any action at the first initialization
         if (firstLaunch) {
             firstLaunch = false;
-
             ChangeDateTimeController.setParentController(this);
             LightsScheduleController.setParentController(this);
 
@@ -277,15 +279,17 @@ public class LoginInfoController implements Initializable {
             Date d = new Date(sysmillis);
             this.date.setText(formatDate.format(d));
             this.time.setText(formatTime.format(d));
+            ConsoleService.initialize();
+            consoleLog("System initialized");
         }
+        
+        console.setText(ConsoleService.getConsole());
 
         if (Objects.nonNull(house) && rooms != null) {
             rooms.getItems().addAll(house.keySet());
             rooms.getSelectionModel().selectFirst();
         }
       
-        console.appendText(consoleLog);
-
         awayModeON.setSelected(awayMode);
         awayModeOFF.setSelected(!awayMode);
 
@@ -330,7 +334,7 @@ public class LoginInfoController implements Initializable {
         toggleText.setTranslateX(60);
         toggleText.setTranslateY(30);
         toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
-
+        
         root.getChildren().addAll(toggle, toggleText);
     }
 
@@ -344,12 +348,11 @@ public class LoginInfoController implements Initializable {
         textFieldTemperature.setText(temperature.getText());
         textFieldTemperature.setPrefWidth(20 + (temperature.getText().length() * 5));
         hBoxTemperature.getChildren().add(0, textFieldTemperature);
-
         textFieldTemperature.requestFocus();
-
         textFieldTemperature.setOnAction(e -> {  // on enter key
             changeTemperatureOnEnter();
         });
+        
     }
 
     /**
@@ -366,9 +369,11 @@ public class LoginInfoController implements Initializable {
             temperature.setText(textFieldTemperature.getText());
             textFieldTemperature.clear();
             temperatureInInt = Integer.parseInt(temperature.getText());
+            consoleLog("Change outside temperature to " + temperatureInInt);
         } else {
-            consoleLog("Please enter a valid temperature input.");
+            consoleLog("Please enter a valid input for outside temperature.");
         }
+        
     }
 
     public void onMouseClickAwayToggleON(MouseEvent event) {
@@ -382,6 +387,7 @@ public class LoginInfoController implements Initializable {
             });
         }
         if (isNotInHouse.get()) {
+        	consoleLog("Away mode was turned on.");
             awayMode = true;
             awayModeON.setSelected(true);
             closeWindowsDoorsLights();
@@ -394,6 +400,7 @@ public class LoginInfoController implements Initializable {
     }
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
+    	consoleLog("Away mode was turned off.");
         awayMode = false;
         awayModeOFF.setSelected(true);
     }
@@ -516,7 +523,7 @@ public class LoginInfoController implements Initializable {
      */
     public void consoleLog(String str) {
         updateConsoleLog(str);
-        this.console.setText(consoleLog);
+        console.appendText("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n");
     }
 
     /**
@@ -526,7 +533,6 @@ public class LoginInfoController implements Initializable {
      */
     private static void updateConsoleLog(String str) {
         String toAppend = "[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n";
-        consoleLog += toAppend;
         ConsoleService.exportConsole(toAppend);
     }
 
@@ -584,15 +590,19 @@ public class LoginInfoController implements Initializable {
             drawRoom(rooms, roomArray[0], traversed, Position.NONE, lastX, lastY);
 
             // creating a room label which has the name of the room.
+            GridPane gpSHCRooms = new GridPane();
             gpSHCRooms.setVgap(21.3);
+
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Label room = new Label();
                 room.setText(roomArray[i].getName());
                 gpSHCRooms.addRow(i, room);
             }
+            vboxSHCRooms.getChildren().clear();
 
             vboxSHCRooms.getChildren().add(gpSHCRooms);
 
+            GridPane gpSHCLights = new GridPane();
             gpSHCLights.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -600,6 +610,13 @@ public class LoginInfoController implements Initializable {
                 Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
                 ImageView light = new ImageView(lightOff);
                 int finalI = i;
+
+                if (roomArray[finalI].getLightsOn() == 0)
+                    light.setImage(lightOff);
+                else {
+                    light.setImage(lightOn);
+                }
+
                 light.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
@@ -617,10 +634,12 @@ public class LoginInfoController implements Initializable {
                 });
                 gpSHCLights.addRow(i, light);
             }
+            vboxSHCLights.getChildren().clear();
 
             vboxSHCLights.getChildren().add(gpSHCLights);
 
             // open/close window functionality
+            GridPane gpSHCWindows = new GridPane();
             gpSHCWindows.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -628,7 +647,12 @@ public class LoginInfoController implements Initializable {
                 Image windowCloseBottom = new Image(new FileInputStream("src/main/resources/Images/windowCloseBottom.png"), 60, 27, true, false);
                 Image windowCloseLeft = new Image(new FileInputStream("src/main/resources/Images/windowCloseLeft.png"), 60, 27, true, false);
                 Image windowCloseRight = new Image(new FileInputStream("src/main/resources/Images/windowCloseRight.png"), 60, 27, true, false);
+                Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+                Image windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+                Image windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+                Image windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
                 Image windowEmpty = new Image(new FileInputStream("src/main/resources/Images/windowEmpty.png"), 60, 27, true, false);
+
                 ImageView windowsTop = new ImageView(windowCloseTop);
                 ImageView windowsLeft = new ImageView(windowCloseLeft);
                 ImageView windowsRight = new ImageView(windowCloseRight);
@@ -642,6 +666,11 @@ public class LoginInfoController implements Initializable {
                     int finalJ = j;
 
                     if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsTop.setImage(windowCloseTop);
+                        else {
+                            windowsTop.setImage(windowOpenTop);
+                        }
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -649,7 +678,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsTop.setImage(windowCloseTop);
+                                        windowsTop.setImage(windowOpenTop);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -661,6 +690,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsLeft.setImage(windowCloseLeft);
+                        else {
+                            windowsLeft.setImage(windowOpenLeft);
+                        }
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -668,7 +702,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsLeft.setImage(windowCloseLeft);
+                                        windowsLeft.setImage(windowOpenLeft);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -680,6 +714,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsRight.setImage(windowCloseRight);
+                        else {
+                            windowsRight.setImage(windowOpenRight);
+                        }
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -687,7 +726,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsRight.setImage(windowCloseRight);
+                                        windowsRight.setImage(windowOpenRight);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -699,6 +738,11 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                        if (!windowList.get(finalJ).getOpenWindow())
+                            windowsBottom.setImage(windowCloseBottom);
+                        else {
+                            windowsBottom.setImage(windowOpenBottom);
+                        }
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
@@ -706,7 +750,7 @@ public class LoginInfoController implements Initializable {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                        windowsBottom.setImage(windowCloseBottom);
+                                        windowsBottom.setImage(windowOpenBottom);
                                     } else {
                                         windowList.get(finalJ).setOpenWindow(false);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -778,9 +822,12 @@ public class LoginInfoController implements Initializable {
                 }
             }
 
+            vboxSHCWindows.getChildren().clear();
+
             vboxSHCWindows.getChildren().add(gpSHCWindows);
 
             // open/close door functionality
+            GridPane gpSHCDoors = new GridPane();
             gpSHCDoors.setVgap(13);
 
             for (int i = 0 ; i < roomArray.length ; i++) {
@@ -788,6 +835,11 @@ public class LoginInfoController implements Initializable {
                 Image doorCloseBottom = new Image(new FileInputStream("src/main/resources/Images/DoorCloseBottom.png"), 60, 27, true, false);
                 Image doorCloseLeft = new Image(new FileInputStream("src/main/resources/Images/DoorCloseLeft.png"), 60, 27, true, false);
                 Image doorCloseRight = new Image(new FileInputStream("src/main/resources/Images/DoorCloseRight.png"), 60, 27, true, false);
+                Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/doorOpenTop.png"), 60, 27, true, false);
+                Image doorOpenBottom = new Image(new FileInputStream("src/main/resources/Images/doorOpenBottom.png"), 60, 27, true, false);
+                Image doorOpenLeft = new Image(new FileInputStream("src/main/resources/Images/doorOpenLeft.png"), 60, 27, true, false);
+                Image doorOpenRight = new Image(new FileInputStream("src/main/resources/Images/doorOpenRight.png"), 60, 27, true, false);
+
                 ImageView doorsTop = new ImageView(doorCloseTop);
                 ImageView doorsLeft = new ImageView(doorCloseLeft);
                 ImageView doorsRight = new ImageView(doorCloseRight);
@@ -801,6 +853,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "TOP") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsTop.setImage(doorCloseTop);
+                        else {
+                            doorsTop.setImage(doorOpenTop);
+                        }
 
                         doorsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -818,7 +875,7 @@ public class LoginInfoController implements Initializable {
                                         }
 
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsTop.setImage(doorCloseTop);
+                                        doorsTop.setImage(doorOpenTop);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -840,6 +897,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsLeft.setImage(doorCloseLeft);
+                        else {
+                            doorsLeft.setImage(doorOpenLeft);
+                        }
 
                         doorsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -856,7 +918,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsLeft.setImage(doorCloseLeft);
+                                        doorsLeft.setImage(doorOpenLeft);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -877,6 +939,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsRight.setImage(doorCloseRight);
+                        else {
+                            doorsRight.setImage(doorOpenRight);
+                        }
 
                         doorsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -893,7 +960,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsRight.setImage(doorCloseRight);
+                                        doorsRight.setImage(doorOpenRight);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -914,6 +981,11 @@ public class LoginInfoController implements Initializable {
 
                     if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
                         String connectedRoom = doorList.get(finalJ).getConnection();
+                        if (!doorList.get(finalJ).getOpenDoor())
+                            doorsBottom.setImage(doorCloseBottom);
+                        else {
+                            doorsBottom.setImage(doorOpenBottom);
+                        }
 
                         doorsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
@@ -930,7 +1002,7 @@ public class LoginInfoController implements Initializable {
                                             }
                                         }
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                        doorsBottom.setImage(doorCloseBottom);
+                                        doorsBottom.setImage(doorOpenBottom);
                                     } else {
                                         doorList.get(finalJ).setOpenDoor(false);
                                         for (int i = 0; i < roomArray.length; i++) {
@@ -1005,10 +1077,15 @@ public class LoginInfoController implements Initializable {
                 }
             }
 
+            vboxSHCDoors.getChildren().clear();
+
             vboxSHCDoors.getChildren().add(gpSHCDoors);
+            
+            consoleLog("Successfully added house layout.");
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first");
+        	consoleLog("Add house layout failed, please turn on the simulation first.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first.");
             alert.showAndWait();
         }
     }
@@ -1023,6 +1100,7 @@ public class LoginInfoController implements Initializable {
         drawRoom(house, roomArray[0], new HashSet<>(), Position.NONE, 130, 190);
 
         // creating a room label which has the name of the room.
+        GridPane gpSHCRooms = new GridPane();
         gpSHCRooms.setVgap(21.3);
         for (int i = 0 ; i < roomArray.length ; i++) {
             Label room = new Label();
@@ -1030,8 +1108,11 @@ public class LoginInfoController implements Initializable {
             gpSHCRooms.addRow(i, room);
         }
 
+        vboxSHCRooms.getChildren().clear();
+
         vboxSHCRooms.getChildren().add(gpSHCRooms);
 
+        GridPane gpSHCLights = new GridPane();
         gpSHCLights.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1040,6 +1121,11 @@ public class LoginInfoController implements Initializable {
             Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
             ImageView light = new ImageView(lightOff);
             int finalI = i;
+            if (roomArray[finalI].getLightsOn() == 0)
+                light.setImage(lightOff);
+            else {
+                light.setImage(lightOn);
+            }
             light.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
@@ -1058,9 +1144,12 @@ public class LoginInfoController implements Initializable {
             gpSHCLights.addRow(i, light);
         }
 
+        vboxSHCLights.getChildren().clear();
+
         vboxSHCLights.getChildren().add(gpSHCLights);
 
         // open/close window functionality
+        GridPane gpSHCWindows = new GridPane();
         gpSHCWindows.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1069,6 +1158,11 @@ public class LoginInfoController implements Initializable {
             Image windowCloseLeft = new Image(new FileInputStream("src/main/resources/Images/windowCloseLeft.png"), 60, 27, true, false);
             Image windowCloseRight = new Image(new FileInputStream("src/main/resources/Images/windowCloseRight.png"), 60, 27, true, false);
             Image windowEmpty = new Image(new FileInputStream("src/main/resources/Images/windowEmpty.png"), 60, 27, true, false);
+            Image windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+            Image windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+            Image windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+            Image windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
+
             ImageView windowsTop = new ImageView(windowCloseTop);
             ImageView windowsLeft = new ImageView(windowCloseLeft);
             ImageView windowsRight = new ImageView(windowCloseRight);
@@ -1082,6 +1176,11 @@ public class LoginInfoController implements Initializable {
                 int finalJ = j;
 
                 if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsTop.setImage(windowCloseTop);
+                    else {
+                        windowsTop.setImage(windowOpenTop);
+                    }
                     windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1089,7 +1188,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsTop.setImage(windowCloseTop);
+                                    windowsTop.setImage(windowOpenTop);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1101,6 +1200,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsLeft.setImage(windowCloseLeft);
+                    else {
+                        windowsLeft.setImage(windowOpenLeft);
+                    }
                     windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1108,7 +1212,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsLeft.setImage(windowCloseLeft);
+                                    windowsLeft.setImage(windowOpenLeft);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1120,6 +1224,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsRight.setImage(windowCloseRight);
+                    else {
+                        windowsRight.setImage(windowOpenRight);
+                    }
                     windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1127,7 +1236,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsRight.setImage(windowCloseRight);
+                                    windowsRight.setImage(windowOpenRight);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1139,6 +1248,11 @@ public class LoginInfoController implements Initializable {
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                    if (!windowList.get(finalJ).getOpenWindow())
+                        windowsBottom.setImage(windowCloseBottom);
+                    else {
+                        windowsBottom.setImage(windowOpenBottom);
+                    }
                     windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
@@ -1146,7 +1260,7 @@ public class LoginInfoController implements Initializable {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsBottom.setImage(windowCloseBottom);
+                                    windowsBottom.setImage(windowOpenBottom);
                                 } else {
                                     windowList.get(finalJ).setOpenWindow(false);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1218,9 +1332,12 @@ public class LoginInfoController implements Initializable {
             }
         }
 
+        vboxSHCWindows.getChildren().clear();
+
         vboxSHCWindows.getChildren().add(gpSHCWindows);
 
         // open/close door functionality
+        GridPane gpSHCDoors = new GridPane();
         gpSHCDoors.setVgap(13);
 
         for (int i = 0 ; i < roomArray.length ; i++) {
@@ -1228,6 +1345,11 @@ public class LoginInfoController implements Initializable {
             Image doorCloseBottom = new Image(new FileInputStream("src/main/resources/Images/DoorCloseBottom.png"), 60, 27, true, false);
             Image doorCloseLeft = new Image(new FileInputStream("src/main/resources/Images/DoorCloseLeft.png"), 60, 27, true, false);
             Image doorCloseRight = new Image(new FileInputStream("src/main/resources/Images/DoorCloseRight.png"), 60, 27, true, false);
+            Image doorOpenTop = new Image(new FileInputStream("src/main/resources/Images/doorOpenTop.png"), 60, 27, true, false);
+            Image doorOpenBottom = new Image(new FileInputStream("src/main/resources/Images/doorOpenBottom.png"), 60, 27, true, false);
+            Image doorOpenLeft = new Image(new FileInputStream("src/main/resources/Images/doorOpenLeft.png"), 60, 27, true, false);
+            Image doorOpenRight = new Image(new FileInputStream("src/main/resources/Images/doorOpenRight.png"), 60, 27, true, false);
+
             ImageView doorsTop = new ImageView(doorCloseTop);
             ImageView doorsLeft = new ImageView(doorCloseLeft);
             ImageView doorsRight = new ImageView(doorCloseRight);
@@ -1241,6 +1363,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "TOP") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsTop.setImage(doorCloseTop);
+                    else {
+                        doorsTop.setImage(doorOpenTop);
+                    }
 
                     doorsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1258,7 +1385,7 @@ public class LoginInfoController implements Initializable {
                                     }
 
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsTop.setImage(doorCloseTop);
+                                    doorsTop.setImage(doorOpenTop);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1280,6 +1407,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "LEFT") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsLeft.setImage(doorCloseLeft);
+                    else {
+                        doorsLeft.setImage(doorOpenLeft);
+                    }
 
                     doorsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1296,7 +1428,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsLeft.setImage(doorCloseLeft);
+                                    doorsLeft.setImage(doorOpenLeft);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1317,6 +1449,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "RIGHT") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsRight.setImage(doorCloseRight);
+                    else {
+                        doorsRight.setImage(doorOpenRight);
+                    }
 
                     doorsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1333,7 +1470,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsRight.setImage(doorCloseRight);
+                                    doorsRight.setImage(doorOpenRight);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1354,6 +1491,11 @@ public class LoginInfoController implements Initializable {
 
                 if (doorList.get(finalJ).getPosition().toString() == "BOTTOM") {
                     String connectedRoom = doorList.get(finalJ).getConnection();
+                    if (!doorList.get(finalJ).getOpenDoor())
+                        doorsBottom.setImage(doorCloseBottom);
+                    else {
+                        doorsBottom.setImage(doorOpenBottom);
+                    }
 
                     doorsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
@@ -1370,7 +1512,7 @@ public class LoginInfoController implements Initializable {
                                         }
                                     }
                                     drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
-                                    doorsBottom.setImage(doorCloseBottom);
+                                    doorsBottom.setImage(doorOpenBottom);
                                 } else {
                                     doorList.get(finalJ).setOpenDoor(false);
                                     for (int i = 0; i < roomArray.length; i++) {
@@ -1445,9 +1587,44 @@ public class LoginInfoController implements Initializable {
             }
         }
 
+        vboxSHCDoors.getChildren().clear();
+
         vboxSHCDoors.getChildren().add(gpSHCDoors);
+
+        System.out.println("test");
+
+        drawPeople();
+
+        //draw number of person(s) in each room
+        for (int i = 0; i < roomArray.length; i++) {
+            if(userPositions.get(roomArray[i].getName()) != null){
+                int numberOfPeople = userPositions.get(roomArray[i].getName());
+                int[] positions = roomPosition.get(roomArray[i].getName());
+                gc.fillText(String.valueOf(numberOfPeople) + " person(s)", positions[0] + 10, positions[1] + 35);
+            }
+        }
     }
-    
+
+    /**
+     * calculates the number of people in each room
+     */
+    public void drawPeople () {
+        Iterator<Map.Entry<String, String>> itr = userLocation.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> itr2 = userLocation.entrySet().iterator();
+
+        while(itr2.hasNext())
+        {
+            Map.Entry<String, String> entry = itr2.next();
+            userPositions.put(entry.getValue(), 0);
+        }
+
+        while(itr.hasNext())
+        {
+            Map.Entry<String, String> entry = itr.next();
+            userPositions.put(entry.getValue(), userPositions.get(entry.getValue()) + 1);
+        }
+    }
+
     /**
      * This function draws windows on the house layout
      *
@@ -1678,7 +1855,7 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -1702,6 +1879,7 @@ public class LoginInfoController implements Initializable {
             window.setScene(editScene);
             window.show();
         } else {
+        	consoleLog("Please input the house to change location.");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
             alert.showAndWait();
         }
@@ -1731,7 +1909,8 @@ public class LoginInfoController implements Initializable {
      * @throws IOException if the view file is not found
      */
     public void scheduleLights(ActionEvent event) throws IOException {
-        if (!awayMode) {
+        if (!awayMode){
+        	consoleLog("Away mode is turned off, cannot schedule the lights");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
             alert.showAndWait();
             return;
