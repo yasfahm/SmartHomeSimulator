@@ -1,2 +1,6 @@
-[2020-11-06T16:47:11] System initialized
-[2020-11-06T16:47:20] Successfully added house layout.
+[2020-11-06T18:27:11] System initialized
+[2020-11-06T18:27:19] Successfully added house layout.
+[2020-11-06T18:27:33] The window at the RIGHT in the Living Room has been blocked.
+[2020-11-06T18:27:46] The window at the TOP in the Bedroom 2 has been blocked.
+[2020-11-06T18:27:48] The window at the LEFT in the Bedroom 2 has been blocked.
+[2020-11-06T18:27:50] The window at the BOTTOM in the Bedroom 2 has been blocked.
