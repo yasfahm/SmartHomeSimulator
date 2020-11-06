@@ -47,6 +47,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import java.util.Iterator;
 import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -132,6 +133,10 @@ public class LoginInfoController implements Initializable {
     private Map<String, int[]> roomPosition = new HashMap<>();
     private Map<String, Date[]> lightsSchedule = new HashMap<>();
     private String timeStr;
+    private Map<String, String> userLocation = EditSimulationController.getUserLocations();
+    private Map<String, Integer> userPositions = new HashMap<>();
+
+
 
     /**
      * Sets up the logged in user as the active user
@@ -1575,8 +1580,41 @@ public class LoginInfoController implements Initializable {
         vboxSHCDoors.getChildren().clear();
 
         vboxSHCDoors.getChildren().add(gpSHCDoors);
+
+        System.out.println("test");
+
+        drawPeople();
+
+        //draw number of person(s) in each room
+        for (int i = 0; i < roomArray.length; i++) {
+            if(userPositions.get(roomArray[i].getName()) != null){
+                int numberOfPeople = userPositions.get(roomArray[i].getName());
+                int[] positions = roomPosition.get(roomArray[i].getName());
+                gc.fillText(String.valueOf(numberOfPeople) + " person(s)", positions[0] + 10, positions[1] + 35);
+            }
+        }
     }
-    
+
+    /**
+     * calculates the number of people in each room
+     */
+    public void drawPeople () {
+        Iterator<Map.Entry<String, String>> itr = userLocation.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> itr2 = userLocation.entrySet().iterator();
+
+        while(itr2.hasNext())
+        {
+            Map.Entry<String, String> entry = itr2.next();
+            userPositions.put(entry.getValue(), 0);
+        }
+
+        while(itr.hasNext())
+        {
+            Map.Entry<String, String> entry = itr.next();
+            userPositions.put(entry.getValue(), userPositions.get(entry.getValue()) + 1);
+        }
+    }
+
     /**
      * This function draws windows on the house layout
      *
