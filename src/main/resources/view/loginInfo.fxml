@@ -173,6 +173,7 @@
                                                                 <Label style="-fx-font-size: 20px;" stylesheets="@application.css" text="House" textAlignment="CENTER" BorderPane.alignment="CENTER" />
                                              </top>
                                                         </BorderPane>
+                                          <Label fx:id="labelAwayMode" layoutX="9.0" layoutY="38.0" prefHeight="17.0" prefWidth="126.0" />
                                                     </children>
                                                 </AnchorPane>
                                             </items>
