@@ -667,7 +667,7 @@ public class LoginInfoController implements Initializable {
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -677,6 +677,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsTop.setImage(windowCloseTop);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -691,7 +695,7 @@ public class LoginInfoController implements Initializable {
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -701,6 +705,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsLeft.setImage(windowCloseLeft);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -715,7 +723,7 @@ public class LoginInfoController implements Initializable {
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -725,6 +733,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsRight.setImage(windowCloseRight);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -739,7 +751,7 @@ public class LoginInfoController implements Initializable {
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -749,6 +761,10 @@ public class LoginInfoController implements Initializable {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsBottom.setImage(windowCloseBottom);
                                     }
+                                }
+                                else {
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -1174,7 +1190,7 @@ public class LoginInfoController implements Initializable {
                     windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                            if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1184,6 +1200,10 @@ public class LoginInfoController implements Initializable {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsTop.setImage(windowCloseTop);
                                 }
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
@@ -1198,7 +1218,7 @@ public class LoginInfoController implements Initializable {
                     windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                            if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1208,6 +1228,10 @@ public class LoginInfoController implements Initializable {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsLeft.setImage(windowCloseLeft);
                                 }
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
@@ -1222,7 +1246,7 @@ public class LoginInfoController implements Initializable {
                     windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1232,6 +1256,10 @@ public class LoginInfoController implements Initializable {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsRight.setImage(windowCloseRight);
                                 }
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
@@ -1246,7 +1274,7 @@ public class LoginInfoController implements Initializable {
                     windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1256,6 +1284,10 @@ public class LoginInfoController implements Initializable {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsBottom.setImage(windowCloseBottom);
                                 }
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                alert.showAndWait();
                             }
                         }
                     });
