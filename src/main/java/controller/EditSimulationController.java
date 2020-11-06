@@ -133,7 +133,7 @@ public class EditSimulationController implements Initializable {
         }
         locationDisplay.getChildren().add(processRows());
 
-        windowToBlock.setText("Select room: ");
+        windowToBlock.setText("Select Window: ");
         if (Objects.nonNull(house)) {
             roomsBlock.getItems().addAll(house.keySet());
             roomsBlock.getSelectionModel().selectFirst();
@@ -226,19 +226,6 @@ public class EditSimulationController implements Initializable {
     public void updateWindowBlockStatus(boolean bool) {
     	this.windowBlockStatus.setText(bool ? "Blocked" : " ");
     	this.button.setText(bool? "Unblock" : "Block");
-    }
-
-    /**
-     * Function responsible for blocking windows
-     *
-     * @param event The event that called this function
-     */
-    public void getWindowsBlocking(ActionEvent event) {
-        String[] list = windowsList(room);
-        System.out.println(room.getName());
-        for (int i = 0; i < windowsList(room).length; i++) {
-            System.out.println("\t" + list[i]);
-        }
     }
 
     /**
