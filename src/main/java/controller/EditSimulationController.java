@@ -229,19 +229,6 @@ public class EditSimulationController implements Initializable {
     }
 
     /**
-     * Function responsible for blocking windows
-     *
-     * @param event The event that called this function
-     */
-    public void getWindowsBlocking(ActionEvent event) {
-        String[] list = windowsList(room);
-        System.out.println(room.getName());
-        for (int i = 0; i < windowsList(room).length; i++) {
-            System.out.println("\t" + list[i]);
-        }
-    }
-
-    /**
      * Method that will create the grid placed in the {@link AnchorPane}.
      * Also calls the {@link RoleService} to obtain the Users and Roles.
      *

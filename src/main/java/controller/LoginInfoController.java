@@ -1776,8 +1776,6 @@ public class LoginInfoController implements Initializable {
 
         vboxSHCDoors.getChildren().add(gpSHCDoors);
 
-        System.out.println("test");
-
         drawPeople();
 
         //draw number of person(s) in each room

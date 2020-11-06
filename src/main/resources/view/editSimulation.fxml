@@ -26,7 +26,6 @@
             <ComboBox fx:id="windows" layoutX="208.0" layoutY="470.0" onAction="#cb_onWindowChange" prefWidth="150.0" />
             <Label layoutX="19.0" layoutY="424.0" prefHeight="17.0" prefWidth="123.0" text="Select Room:" />
             <Button fx:id="button" layoutX="258.0" layoutY="521.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Action" />
-            <Button layoutX="258.0" layoutY="562.0" mnemonicParsing="false" onAction="#getWindowsBlocking" stylesheets="@application.css" text="Display" />
             <AnchorPane fx:id="locationDisplay" layoutX="464.0" layoutY="69.0" prefHeight="215.0" prefWidth="415.0" />
             <TextArea fx:id="windowNote" layoutX="469.0" layoutY="375.0" prefHeight="247.0" prefWidth="396.0" style="-fx-background-color: #455A64;" styleClass="custom" stylesheets="@application.css" />
             <Label fx:id="windowBlockStatus" layoutX="213.0" layoutY="495.0" prefHeight="19.0" prefWidth="140.0" textAlignment="CENTER" textFill="WHITE">
