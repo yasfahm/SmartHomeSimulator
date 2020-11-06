@@ -185,7 +185,6 @@ public class LoginInfoController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        console.setText(ConsoleService.getConsole());
     }
 
     /**
@@ -335,17 +334,21 @@ public class LoginInfoController implements Initializable {
      * @param event The event that triggered the onClick method
      */
     public void temperatureOnClick(MouseEvent event) {
-        invisibleContainer.getChildren().add(temperature);
-        textFieldTemperature.setText(temperature.getText());
-        textFieldTemperature.setPrefWidth(20 + (temperature.getText().length() * 5));
-        hBoxTemperature.getChildren().add(0, textFieldTemperature);
-        textFieldTemperature.requestFocus();
-        textFieldTemperature.setOnAction(e -> {  // on enter key
-            changeTemperatureOnEnter();
-        });
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	        invisibleContainer.getChildren().add(temperature);
+	        textFieldTemperature.setText(temperature.getText());
+	        textFieldTemperature.setPrefWidth(20 + (temperature.getText().length() * 5));
+	        hBoxTemperature.getChildren().add(0, textFieldTemperature);
+	        textFieldTemperature.requestFocus();
+	        textFieldTemperature.setOnAction(e -> {  // on enter key
+	            changeTemperatureOnEnter();
+	        });
+    	}
         
     }
-
+    
     /**
      * On Enter functionality for the textFieldTemperature
      */
@@ -368,32 +371,43 @@ public class LoginInfoController implements Initializable {
     }
 
     public void onMouseClickAwayToggleON(MouseEvent event) {
-        Map<String, String> userLocations = EditSimulationController.getUserLocations();
-        AtomicBoolean isNotInHouse = new AtomicBoolean(true);
-        if (Objects.nonNull(userLocations)) {
-            userLocations.keySet().forEach(user -> {
-                if (!userLocations.get(user).equals("Outside")) {
-                    isNotInHouse.set(false);
-                }
-            });
-        }
-        if (isNotInHouse.get()) {
-        	consoleLog("Away mode turns on.");
-            awayMode = true;
-            awayModeON.setSelected(true);
-            closeWindowsDoorsLights();
-        } else {
-            consoleLog("Unable to turn Away Mode ON, there is someone in the house");
-            awayMode = false;
-            awayModeON.setSelected(false);
-            awayModeOFF.setSelected(true);
-        }
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	        Map<String, String> userLocations = EditSimulationController.getUserLocations();
+	        AtomicBoolean isNotInHouse = new AtomicBoolean(true);
+	        if (Objects.nonNull(userLocations)) {
+	            userLocations.keySet().forEach(user -> {
+	                if (!userLocations.get(user).equals("Outside")) {
+	                    isNotInHouse.set(false);
+	                }
+	            });
+	        }
+	        if (isNotInHouse.get()) {
+	        	if(closeWindowsDoorsLights()) {
+	        		consoleLog("Away mode turns on.");
+	                awayMode = true;
+	                awayModeON.setSelected(true);
+	        	}else {
+	        		awayModeOFF.setSelected(true);
+	        	}
+	        } else {
+	            consoleLog("Unable to turn Away Mode ON, there is someone in the house");
+	            awayMode = false;
+	            awayModeON.setSelected(false);
+	            awayModeOFF.setSelected(true);
+	        }
+    	}
     }
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
-    	consoleLog("Away mode turns off.");
-        awayMode = false;
-        awayModeOFF.setSelected(true);
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	    	consoleLog("Away mode turns off.");
+	        awayMode = false;
+	        awayModeOFF.setSelected(true);
+    	}
     }
 
     /**
@@ -534,18 +548,22 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToUserSettings(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
-        Parent userRoles = loader.load();
-        Scene userRolesScene = new Scene(userRoles);
-
-        UserRolesController controller = loader.getController();
-        controller.setUsername(user.getText());
-
-        // stage info
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(userRolesScene);
-        window.show();
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
+	        Parent userRoles = loader.load();
+	        Scene userRolesScene = new Scene(userRoles);
+	
+	        UserRolesController controller = loader.getController();
+	        controller.setUsername(user.getText());
+	
+	        // stage info
+	        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	        window.setScene(userRolesScene);
+	        window.show();
+    	}
     }
 
     /**
@@ -1167,6 +1185,8 @@ public class LoginInfoController implements Initializable {
                 int finalJ = j;
 
                 if (windowList.get(finalJ).getPosition().toString() == "TOP") {
+                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "TOP");
+                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsTop.setImage(windowCloseTop);
                     else {
@@ -1176,21 +1196,29 @@ public class LoginInfoController implements Initializable {
                         @Override
                         public void handle(MouseEvent e) {
                             if (windowList.get(finalJ).getPosition().toString() == "TOP") {
-                                if (!windowList.get(finalJ).getOpenWindow()) {
-                                    windowList.get(finalJ).setOpenWindow(true);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsTop.setImage(windowOpenTop);
-                                } else {
-                                    windowList.get(finalJ).setOpenWindow(false);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsTop.setImage(windowCloseTop);
-                                }
+                            	if(windowList.get(finalJ).getBlocking()) {
+                            		consoleLog("This  window is blocked, unable to process action.");
+                            	} else {
+                            		if (!windowList.get(finalJ).getOpenWindow()) {
+                                    	
+                                        windowList.get(finalJ).setOpenWindow(true);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsTop.setImage(windowOpenTop);
+                                    } else {
+                                        windowList.get(finalJ).setOpenWindow(false);
+                                        drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                                        windowsTop.setImage(windowCloseTop);
+                                    }
+                            	}
                             }
                         }
                     });
+                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
+                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "LEFT");
+                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsLeft.setImage(windowCloseLeft);
                     else {
@@ -1200,21 +1228,28 @@ public class LoginInfoController implements Initializable {
                         @Override
                         public void handle(MouseEvent e) {
                             if (windowList.get(finalJ).getPosition().toString() == "LEFT") {
-                                if (!windowList.get(finalJ).getOpenWindow()) {
-                                    windowList.get(finalJ).setOpenWindow(true);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsLeft.setImage(windowOpenLeft);
-                                } else {
-                                    windowList.get(finalJ).setOpenWindow(false);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsLeft.setImage(windowCloseLeft);
-                                }
+                            	if(windowList.get(finalJ).getBlocking()) {
+                            		consoleLog("This  window is blocked, unable to process action.");
+                            	} else {
+	                                if (!windowList.get(finalJ).getOpenWindow()) {
+	                                    windowList.get(finalJ).setOpenWindow(true);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsLeft.setImage(windowOpenLeft);
+	                                } else {
+	                                    windowList.get(finalJ).setOpenWindow(false);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsLeft.setImage(windowCloseLeft);
+	                                }
+                            	}
                             }
                         }
                     });
+                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
+                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "RIGHT");
+                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsRight.setImage(windowCloseRight);
                     else {
@@ -1224,21 +1259,28 @@ public class LoginInfoController implements Initializable {
                         @Override
                         public void handle(MouseEvent e) {
                             if (windowList.get(finalJ).getPosition().toString() == "RIGHT") {
-                                if (!windowList.get(finalJ).getOpenWindow()) {
-                                    windowList.get(finalJ).setOpenWindow(true);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsRight.setImage(windowOpenRight);
-                                } else {
-                                    windowList.get(finalJ).setOpenWindow(false);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsRight.setImage(windowCloseRight);
-                                }
+                            	if(windowList.get(finalJ).getBlocking()) {
+                            		consoleLog("This  window is blocked, unable to process action.");
+                            	} else {
+	                                if (!windowList.get(finalJ).getOpenWindow()) {
+	                                    windowList.get(finalJ).setOpenWindow(true);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsRight.setImage(windowOpenRight);
+	                                } else {
+	                                    windowList.get(finalJ).setOpenWindow(false);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsRight.setImage(windowCloseRight);
+	                                }
+                            	}
                             }
                         }
                     });
+                    */
                 }
 
                 if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
+                	windowController(windowsTop, windowList,finalI,finalJ,windowCloseTop,windowOpenTop, "BOTTOM");
+                	/*
                     if (!windowList.get(finalJ).getOpenWindow())
                         windowsBottom.setImage(windowCloseBottom);
                     else {
@@ -1248,18 +1290,23 @@ public class LoginInfoController implements Initializable {
                         @Override
                         public void handle(MouseEvent e) {
                             if (windowList.get(finalJ).getPosition().toString() == "BOTTOM") {
-                                if (!windowList.get(finalJ).getOpenWindow()) {
-                                    windowList.get(finalJ).setOpenWindow(true);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsBottom.setImage(windowOpenBottom);
-                                } else {
-                                    windowList.get(finalJ).setOpenWindow(false);
-                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
-                                    windowsBottom.setImage(windowCloseBottom);
-                                }
+                            	if(windowList.get(finalJ).getBlocking()) {
+                            		consoleLog("This  window is blocked, unable to process action.");
+                            	} else {
+	                                if (!windowList.get(finalJ).getOpenWindow()) {
+	                                    windowList.get(finalJ).setOpenWindow(true);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsBottom.setImage(windowOpenBottom);
+	                                } else {
+	                                    windowList.get(finalJ).setOpenWindow(false);
+	                                    drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+	                                    windowsBottom.setImage(windowCloseBottom);
+	                                }
+                            	}
                             }
                         }
                     });
+                    */
                 }
             }
 
@@ -1583,7 +1630,36 @@ public class LoginInfoController implements Initializable {
         vboxSHCDoors.getChildren().add(gpSHCDoors);
     }
     
-    /**
+    private void windowController(ImageView windows, ArrayList<Window> windowList, int finalI, int finalJ, Image windowClose, Image windowOpen, String position) {
+    	 if (!windowList.get(finalJ).getOpenWindow())
+             windows.setImage(windowClose);
+         else {
+             windows.setImage(windowOpen);
+         }
+         windows.setOnMousePressed(new EventHandler<MouseEvent>() {
+             @Override
+             public void handle(MouseEvent e) {
+                 if (windowList.get(finalJ).getPosition().toString() == position) {
+                 	if(windowList.get(finalJ).getBlocking()) {
+                 		consoleLog("This  window is blocked, unable to process action.");
+                 	} else {
+                 		if (!windowList.get(finalJ).getOpenWindow()) {
+                         	
+                             windowList.get(finalJ).setOpenWindow(true);
+                             drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                             windows.setImage(windowOpen);
+                         } else {
+                             windowList.get(finalJ).setOpenWindow(false);
+                             drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
+                             windows.setImage(windowClose);
+                         }
+                 	}
+                 }
+             }
+         });
+	}
+
+	/**
      * This function draws windows on the house layout
      *
      * @param room room where window is situated
@@ -1813,12 +1889,16 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the scene file cannot be read
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(root));
-        stage.show();
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
+	        Parent root = loader.load();
+	        Stage stage = new Stage();
+	        stage.initStyle(StageStyle.TRANSPARENT);
+	        stage.setScene(new Scene(root));
+	        stage.show();
+    	}
     }
 
     /**
@@ -1828,19 +1908,23 @@ public class LoginInfoController implements Initializable {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToEdit(ActionEvent event) throws IOException {
-        if (Objects.nonNull(house)) {
-            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
-            Scene editScene = new Scene(edit);
-
-            // stage info
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            window.setScene(editScene);
-            window.show();
-        } else {
-        	consoleLog("Please input the house to change location.");
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
-            alert.showAndWait();
-        }
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	        if (Objects.nonNull(house)) {
+	            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+	            Scene editScene = new Scene(edit);
+	
+	            // stage info
+	            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	            window.setScene(editScene);
+	            window.show();
+	        } else {
+	        	consoleLog("Please input the house to change location.");
+	            Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
+	            alert.showAndWait();
+	        }
+    	}
 
     }
 
@@ -1867,18 +1951,22 @@ public class LoginInfoController implements Initializable {
      * @throws IOException if the view file is not found
      */
     public void scheduleLights(ActionEvent event) throws IOException {
-        if (!awayMode){
-        	consoleLog("Away mode is turned off, cannot schedule the lights");
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
-            alert.showAndWait();
-            return;
-        }
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(root));
-        stage.show();
+    	if (!toggleText.getText().equals("ON")) {
+    		consoleLog("Simulation is off, enable to process action.");
+    	} else {
+	        if (!awayMode){
+	        	consoleLog("Away mode is turned off, cannot schedule the lights");
+	            Alert alert = new Alert(Alert.AlertType.WARNING, "Away mode is turned off");
+	            alert.showAndWait();
+	            return;
+	        }
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/lightsSchedule.fxml"));
+	        Parent root = loader.load();
+	        Stage stage = new Stage();
+	        stage.initStyle(StageStyle.TRANSPARENT);
+	        stage.setScene(new Scene(root));
+	        stage.show();
+    	}
     }
 
     /**
@@ -1960,7 +2048,16 @@ public class LoginInfoController implements Initializable {
     /**
      * This method closes all the windows, doors and lights when away mode is turned on
      */
-    public void closeWindowsDoorsLights(){
+    public boolean closeWindowsDoorsLights(){
+    	for (Room r: roomArray) {
+    		ArrayList<Window> windowList = r.getWindows();
+            for (Window w: windowList){
+            	if(w.getBlocking()&&w.getOpenWindow()) {
+            		consoleLog("Cannot activate away mode, one of the window is blocked by object.");
+            		return false;
+            	}
+            }
+    	}
         for (Room r: roomArray){
             r.setLightsOn(0);
             drawLight(r);
@@ -1976,5 +2073,6 @@ public class LoginInfoController implements Initializable {
                 drawDoor(r, d.getPosition().toString());
             }
         }
+    	return true;
     }
 }

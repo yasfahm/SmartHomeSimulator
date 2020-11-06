@@ -1,6 +1,7 @@
 package entity;
 
 import constants.Position;
+import controller.LoginInfoController;
 
 /**
  * class Window to represent a Window object in the house
