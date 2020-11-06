@@ -419,7 +419,7 @@ public class LoginInfoController implements Initializable {
 
     public void onMouseClickAwayToggleOFF(MouseEvent event) {
       if (!toggleText.getText().equals("ON")) {
-    		consoleLog("Simulation is off, enable to process action.");
+    		consoleLog("Simulation is off, unable to process action.");
     	} else {
           consoleLog("Away mode was turned off.");
           awayMode = false;
@@ -566,7 +566,7 @@ public class LoginInfoController implements Initializable {
      */
     public void goToUserSettings(ActionEvent event) throws IOException {
     	if (!toggleText.getText().equals("ON")) {
-    		consoleLog("Simulation is off, enable to process action.");
+    		consoleLog("Simulation is off, unable to process action.");
     	} else {
 	        FXMLLoader loader = new FXMLLoader();
 	        loader.setLocation(getClass().getResource("/view/userRoles.fxml"));
@@ -1932,7 +1932,7 @@ public class LoginInfoController implements Initializable {
      */
     public void bt_changeDateTimeOnClick(ActionEvent event) throws IOException {
     	if (!toggleText.getText().equals("ON")) {
-    		consoleLog("Simulation is off, enable to process action.");
+    		consoleLog("Simulation is off, unable to process action.");
     	} else {
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/changeDateTime.fxml"));
 	        Parent root = loader.load();
