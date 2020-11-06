@@ -1,8 +1,11 @@
 package controller;
 
 import constants.Position;
+import entity.CommandType;
 import entity.Door;
+import entity.PermissionType;
 import entity.Room;
+import entity.UserRole;
 import entity.Window;
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
@@ -10,6 +13,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -47,6 +51,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import java.util.Iterator;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
 import service.RoleService;
@@ -69,6 +75,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class LoginInfoController implements Initializable {
 
@@ -111,6 +119,8 @@ public class LoginInfoController implements Initializable {
     private Label roomToLight;
     @FXML
     private TextField timeBeforeAlertInput;
+    @FXML
+    private AnchorPane permissionsList;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -347,6 +357,55 @@ public class LoginInfoController implements Initializable {
     }
 
     /**
+     * Method that will create the grid placed in the {@link AnchorPane}.
+     * Also calls the {@link RoleService} to obtain the Users and Permissions.
+     *
+     * @return The grid pane used by the display
+     */
+    private GridPane processRows() {
+        AtomicInteger index = new AtomicInteger();
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(6);
+        Map<String, Map<CommandType, PermissionType>> userPerms = UserPermissionsController.getUserPermissions();
+        if (Objects.isNull(userPerms)) {
+            Map<CommandType, PermissionType> currentPermissions = new HashMap<>();
+            EnumUtils.getEnumList(CommandType.class).forEach(commandType -> {
+                currentPermissions.put(commandType, PermissionType.RESTRICTED);
+            });
+            Map<String, Map<CommandType, PermissionType>> mapToAdd = new HashMap<>();
+            mapToAdd.put(username, currentPermissions);
+            UserPermissionsController.setUserPermissions(mapToAdd);
+        } else if (Objects.isNull(userPerms.get(username))) {
+            Map<CommandType, PermissionType> currentPermissions = new HashMap<>();
+            EnumUtils.getEnumList(CommandType.class).forEach(commandType -> {
+                currentPermissions.put(commandType, PermissionType.RESTRICTED);
+            });
+            userPerms.put(username, currentPermissions);
+            UserPermissionsController.setUserPermissions(userPerms);
+        }
+        UserPermissionsController.getUserPermissions().get(username).forEach((key, value) -> {
+            gridPane.addRow(gridPane.getRowCount(), createUserLabel(key.toString(), key.toString()), createUserLabel("Permission:", ""), createUserLabel(value.toString(), key + "Permission"));
+            index.getAndIncrement();
+        });
+        return gridPane;
+    }
+
+    /**
+     * Creates a Label with the specified value
+     *
+     * @param value The value placed in the label
+     * @param id    The value used for the label's ID
+     * @return The label with the value and ID
+     */
+    private Node createUserLabel(final String value, final String id) {
+        Label userLabel = new Label();
+        userLabel.setMinWidth(100);
+        userLabel.setId(id);
+        userLabel.setText(value);
+        return userLabel;
+    }
+
+    /**
      * On Click function for the temperature label
      *
      * @param event The event that triggered the onClick method
@@ -486,11 +545,15 @@ public class LoginInfoController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (Objects.nonNull(newValue) && !newValue.equals(oldValue)) {
+                    permissionsList.getChildren().clear();
                     username = newValue;
                     selectedUser.getSelectionModel().select(newValue);
                     userRole.setText(listOfUsers.get(newValue));
-                    Map userLocs = EditSimulationController.getUserLocations();
+                    Map<String, String> userLocs = EditSimulationController.getUserLocations();
                     loc.setText(Objects.isNull(userLocs) ? "Outside" : userLocs.get(username).toString());
+                    if (StringUtils.isNotEmpty(username)) {
+                        permissionsList.getChildren().add(processRows());
+                    }
                 }
             }
         });

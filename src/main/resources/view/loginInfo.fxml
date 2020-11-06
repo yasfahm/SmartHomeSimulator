@@ -96,6 +96,8 @@
                                                                           <Button layoutX="214.0" layoutY="84.0" mnemonicParsing="false" onAction="#goToUserSettings" style="-fx-background-color: white; -fx-text-fill: black;" text="User Control" />
                                                                           <Label fx:id="userRole" layoutX="48.0" layoutY="35.0" text="User Group" />
                                                                   <ComboBox fx:id="selectedUser" layoutX="184.0" layoutY="30.0" prefHeight="25.0" prefWidth="120.0" />
+                                                                  <Label layoutX="48.0" layoutY="175.0" text="Permissions" />
+                                                                  <AnchorPane fx:id="permissionsList" layoutX="14.0" layoutY="203.0" prefHeight="318.0" prefWidth="306.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children></AnchorPane>
@@ -121,7 +123,7 @@
                                                                         </AnchorPane>
                                                                     </content>
                                                                 </Tab>
-                                                                <Tab style="-fx-background-color: #FFC107;" text="SHP" >
+                                                                <Tab style="-fx-background-color: #FFC107;" text="SHP">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                          <children>
@@ -135,14 +137,14 @@
                                                          </children>
                                                          <children>
                                                              <VBox layoutX="35.0" layoutY="100.0" spacing="10.0">
-                                                                <Label text="Lights Schedule" style="-fx-font-size: 20px;"/>
-                                                                 <Label fx:id="roomToLight" text="Lights will remain on in selected rooms"/>
+                                                                <Label style="-fx-font-size: 20px;" text="Lights Schedule" />
+                                                                 <Label fx:id="roomToLight" text="Lights will remain on in selected rooms" />
                                                                  <Button onAction="#scheduleLights" style="-fx-background-color: white; -fx-text-fill: black;" text="Add" />
                                                                  <VBox spacing="0">
-                                                                     <Label wrapText="true" text="How much time should pass"/>
-                                                                     <Label wrapText="true" text="before alerting authorities?"/>
+                                                                     <Label text="How much time should pass" wrapText="true" />
+                                                                     <Label text="before alerting authorities?" wrapText="true" />
                                                                  </VBox>
-                                                                 <TextField fx:id="timeBeforeAlertInput" promptText="Enter time in minutes" onAction="#onSetTimeBeforeAlert"/>
+                                                                 <TextField fx:id="timeBeforeAlertInput" onAction="#onSetTimeBeforeAlert" promptText="Enter time in minutes" />
                                                              </VBox>
                                                          </children>
                                                           </AnchorPane>
