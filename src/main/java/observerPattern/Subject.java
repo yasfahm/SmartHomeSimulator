@@ -25,3 +25,4 @@ public class Subject {
         observer.update();
         }
     }
+    
