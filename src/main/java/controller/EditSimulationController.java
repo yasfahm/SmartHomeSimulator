@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -51,6 +52,10 @@ public class EditSimulationController implements Initializable {
     private AnchorPane locationDisplay;
     @FXML
     private TextArea windowNote;
+    @FXML
+    private Label windowBlockStatus;
+    @FXML
+    private Button button;
     private Map<String, Room> house;
     private String username;
     private double xOffset = 0;
@@ -114,7 +119,6 @@ public class EditSimulationController implements Initializable {
      * @param location  The URL of the resource file
      * @param resources The set of resources used
      */
-    @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username = LoginInfoController.getUsername();
@@ -165,22 +169,63 @@ public class EditSimulationController implements Initializable {
     }
 
     /**
-     * Function responsible for blocking windows
+     * Function responsible for unblocking/blocking windows
      *
      * @param event The event that called this function
      */
     public void windowsBlocked(ActionEvent event) {
-        String message = "The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.\n";
-        String log = windowNote.getText();
-        windowNote.setText(log + message);
-
-        int selectedWindow = 0;
+    	int selectedWindow = 0;
         for (int i = 0; i < room.getWindows().size(); i++) {
             if (room.getWindows().get(i).getPosition().toString().equals(windows.getValue())) {
                 selectedWindow = i;
-                room.getWindows().get(selectedWindow).setBlocking(true);
+                String message = "";
+                if(!room.getWindows().get(selectedWindow).getBlocking()) {
+                	room.getWindows().get(selectedWindow).setBlocking(true);
+                	message = "The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.\n";
+                	updateWindowBlockStatus(true);
+                } else {
+                	room.getWindows().get(selectedWindow).setBlocking(false);
+                	message = "The window at the " + windows.getValue() + " in the " + room.getName() + " has been unblocked.\n";
+                	updateWindowBlockStatus(false);
+                }
+                String log = windowNote.getText();
+                windowNote.setText(log + message);
+                LoginInfoController.consoleLogFile("The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.");
+                break;
             }
         }
+    }
+
+    /**
+     * Action event on change dynamic content with combobox for window list
+     * @param event The event that called this function
+     */
+    public void cb_onWindowChange(ActionEvent event) {
+    	int selectedWindow = 0;
+        for (int i = 0; i < room.getWindows().size(); i++) {
+            if (room.getWindows().get(i).getPosition().toString().equals(windows.getValue())) {
+            	selectedWindow = i;
+            	updateWindowBlockStatus(room.getWindows().get(selectedWindow).getBlocking());
+        	}
+        }
+    }
+    
+    /**
+     * Action event on change combobox for room list
+     * @param event The event that called this function
+     */
+    public void cb_selectWindowOnChange(MouseEvent event) {
+    	this.windowBlockStatus.setText(" ");
+    	this.button.setText("Action");
+    }
+    
+    /**
+     * Update windows status label
+     * @param bool The status of windows (blocked/unblocked)
+     */
+    public void updateWindowBlockStatus(boolean bool) {
+    	this.windowBlockStatus.setText(bool ? "Blocked" : " ");
+    	this.button.setText(bool? "Unblock" : "Block");
     }
 
     /**
