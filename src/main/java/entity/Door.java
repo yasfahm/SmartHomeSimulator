@@ -77,12 +77,7 @@ public class Door {
      * @param openDoor opening  of the window
      */
     public void setOpenDoor(boolean openDoor) {
-    	if(this.lock) {
-    		LoginInfoController.consoleLogFile("This door is locked");
-    	} else {
-    		this.openDoor = openDoor;
-    	}
-        
+    	this.openDoor = openDoor;        
     }
 
 	public boolean getLock() {
