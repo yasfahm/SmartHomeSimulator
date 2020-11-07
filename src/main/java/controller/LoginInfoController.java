@@ -846,6 +846,7 @@ public class LoginInfoController implements Initializable {
                                     }
                                 }
                                 else {
+                                	consoleLog("This window is blocked");
                                     Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
                                     alert.showAndWait();
                                 }
@@ -877,6 +878,7 @@ public class LoginInfoController implements Initializable {
                                     }
                                 }
                                 else {
+                                	consoleLog("This window is blocked");
                                     Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
                                     alert.showAndWait();
                                 }
@@ -908,6 +910,7 @@ public class LoginInfoController implements Initializable {
                                     }
                                 }
                                 else {
+                                	consoleLog("This window is blocked");
                                     Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
                                     alert.showAndWait();
                                 }
@@ -939,6 +942,7 @@ public class LoginInfoController implements Initializable {
                                     }
                                 }
                                 else {
+                                	consoleLog("This window is blocked");
                                     Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
                                     alert.showAndWait();
                                 }
