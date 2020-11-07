@@ -1,6 +1,7 @@
 package entity;
 
 import constants.Position;
+import controller.LoginInfoController;
 
 /**
  * class Door to represent a Door object in the house
@@ -9,6 +10,7 @@ public class Door {
     private Position position;
     private String connection;
     private boolean openDoor;
+    private boolean lock;
 
     /**
      * Constructor for class Door
@@ -75,7 +77,15 @@ public class Door {
      * @param openDoor opening  of the window
      */
     public void setOpenDoor(boolean openDoor) {
-        this.openDoor = openDoor;
+    	this.openDoor = openDoor;        
     }
+
+	public boolean getLock() {
+		return lock;
+	}
+
+	public void setLock(boolean lock) {
+		this.lock = lock;
+	}
 
 }
