@@ -3,6 +3,9 @@ package controller;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import entity.Door;
+import entity.Room;
+import entity.Window;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -19,9 +22,13 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.testfx.framework.junit5.ApplicationTest;
 import service.DatabaseService;
+import service.HouseLayoutService;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -153,5 +160,31 @@ public class LoginInfoControllerTest extends ApplicationTest {
         }
         assertEquals("user1 was detected in the Kitchen during Away Mode. " +
                 "Authorities will be alerted in 10 minutes.", line.substring(22));
+    }
+
+    @Test
+    public void should_open_close_window() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+        Room room = rooms.get("Living Room");
+        ArrayList<Window> windowsList = room.getWindows();
+        HashMap<String, Window> windows = new HashMap<>();
+        for (Window window : windowsList) {
+            windows.put(window.getPosition().toString(), window);
+        }
+        Window window = windows.get("RIGHT");
+        window.setBlocking(true);
+        window.setOpenWindow(true);
+        assertEquals(window.getOpenWindow(), false);
+
+        window.setBlocking(false);
+        window.setOpenWindow(true);
+        window.setBlocking(true);
+        window.setOpenWindow(false);
+        assertEquals(window.getOpenWindow(), true);
     }
 }

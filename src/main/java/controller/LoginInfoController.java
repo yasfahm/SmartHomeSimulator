@@ -832,8 +832,9 @@ public class LoginInfoController implements Initializable {
                     int finalJ = j;
 
                     if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
-                        if (!windowList.get(finalJ).getOpenWindow())
+                        if (!windowList.get(finalJ).getOpenWindow()) {
                             windowsTop.setImage(windowCloseTop);
+                        }
                         else {
                             windowsTop.setImage(windowOpenTop);
                         }
@@ -864,8 +865,9 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
-                        if (!windowList.get(finalJ).getOpenWindow())
+                        if (!windowList.get(finalJ).getOpenWindow()) {
                             windowsLeft.setImage(windowCloseLeft);
+                        }
                         else {
                             windowsLeft.setImage(windowOpenLeft);
                         }
@@ -896,8 +898,9 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
-                        if (!windowList.get(finalJ).getOpenWindow())
+                        if (!windowList.get(finalJ).getOpenWindow()) {
                             windowsRight.setImage(windowCloseRight);
+                        }
                         else {
                         	windowsRight.setImage(windowOpenRight);
                         }
@@ -928,8 +931,9 @@ public class LoginInfoController implements Initializable {
                     }
 
                     if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
-                        if (!windowList.get(finalJ).getOpenWindow())
+                        if (!windowList.get(finalJ).getOpenWindow()) {
                             windowsBottom.setImage(windowCloseBottom);
+                        }
                         else {
                             windowsBottom.setImage(windowOpenBottom);
                         }

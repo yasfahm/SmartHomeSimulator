@@ -74,7 +74,10 @@ public class Window {
      * @param openWindow opening  of the window
      */
     public void setOpenWindow(boolean openWindow) {
-        this.openWindow = openWindow;
+        if(!this.getBlocking()) {
+            this.openWindow = openWindow;
+        }
+
     }
 
 }
