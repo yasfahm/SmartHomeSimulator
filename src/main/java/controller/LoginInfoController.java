@@ -6,7 +6,6 @@ import entity.CommandType;
 import entity.Door;
 import entity.PermissionType;
 import entity.Room;
-import entity.UserRole;
 import entity.Window;
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
@@ -14,7 +13,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,7 +50,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import java.util.Iterator;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
@@ -78,7 +75,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class LoginInfoController implements Initializable {
 
@@ -140,7 +136,7 @@ public class LoginInfoController implements Initializable {
     private static String username;
     private static boolean awayMode;
     private static BooleanProperty booleanProperty;
-    private final Text toggleText = new Text();
+    private Text toggleText = new Text();
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -211,6 +207,15 @@ public class LoginInfoController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Set the toggleText
+     *
+     * @param text text of the toggleText
+     */
+    public void setToggleText(String text) {
+        toggleText = new Text(text);
     }
 
     /**
@@ -431,7 +436,6 @@ public class LoginInfoController implements Initializable {
 	            changeTemperatureOnEnter();
 	        });
     	}
-        
     }
 
     /**
@@ -2240,31 +2244,30 @@ public class LoginInfoController implements Initializable {
      */
 
     public boolean closeWindowsDoorsLights(){
-      if (roomArray == null) {
-            return false;
-        }
-    	for (Room r: roomArray) {
-    		ArrayList<Window> windowList = r.getWindows();
-            for (Window w: windowList){
-            	if(w.getBlocking()&&w.getOpenWindow()) {
-            		consoleLog("Cannot activate away mode, one of the window is blocked by object.");
-            		return false;
-            	}
+        if (roomArray !=  null) {
+            for (Room r : roomArray) {
+                ArrayList<Window> windowList = r.getWindows();
+                for (Window w : windowList) {
+                    if (w.getBlocking() && w.getOpenWindow()) {
+                        consoleLog("Cannot activate away mode, one of the window is blocked by object.");
+                        return false;
+                    }
+                }
             }
-    	}
-        for (Room r: roomArray){
-            r.setLightsOn(0);
-            drawLight(r);
+            for (Room r : roomArray) {
+                r.setLightsOn(0);
+                drawLight(r);
 
-            ArrayList<Window> windowList = r.getWindows();
-            for (Window w: windowList){
-                w.setOpenWindow(false);
-                drawWindows(r, w.getPosition().toString());
-            }
-            ArrayList<Door> doorList = r.getDoors();
-            for (Door d: doorList){
-                d.setOpenDoor(false);
-                drawDoor(r, d.getPosition().toString());
+                ArrayList<Window> windowList = r.getWindows();
+                for (Window w : windowList) {
+                    w.setOpenWindow(false);
+                    drawWindows(r, w.getPosition().toString());
+                }
+                ArrayList<Door> doorList = r.getDoors();
+                for (Door d : doorList) {
+                    d.setOpenDoor(false);
+                    drawDoor(r, d.getPosition().toString());
+                }
             }
         }
     	return true;
