@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -26,10 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import service.RegistrationService;
 import service.RoleService;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -132,7 +132,11 @@ public class UserRolesController {
         List<UserRole> userRoles = RoleService.getRoles(parentUser);
         if (Objects.nonNull(userRoles)) {
             userRoles.forEach(result -> {
-                gridPane.addRow(gridPane.getRowCount(), createUserLabel(result.getUsername(), index.get()), createRoleComboBox(result.getRole().toString(), index.get()), createPermissionsButton(index.get()), createDeleteButton(index.get()));
+                try {
+                    gridPane.addRow(gridPane.getRowCount(), createUserLabel(result.getUsername(), index.get()), createRoleComboBox(result.getRole().toString(), index.get()), createPermissionsButton(index.get()), createDeleteButton(index.get()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 index.getAndIncrement();
             });
         }
@@ -184,9 +188,13 @@ public class UserRolesController {
      * @param index The index used to create the ID used to fetch its linked username label's value.
      * @return The delete button
      */
-    private Node createDeleteButton(final int index) {
-        Button deleteButton = new Button();
-        deleteButton.setText("DELETE");
+    private Node createDeleteButton(final int index) throws FileNotFoundException {
+//        Button deleteButton = new Button();
+//        deleteButton = new Button(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 14, true, false);
+//        FileInputStream input = new FileInputStream("resources/images/iconmonstr-home-6-48.png");
+        Image image = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 14, true, false);
+        ImageView imageView = new ImageView(image);
+        Button deleteButton = new Button("", imageView);
         deleteButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -199,7 +207,7 @@ public class UserRolesController {
                     RegistrationService.deleteUser(parentUser, userToDelete.getText());
                     userToDelete.setTextFill(Color.LIGHTGRAY);
                     comboBoxToDelete.setDisable(true);
-                    deleteButton.setText("This user has been deleted");
+                    deleteButton.setText("Deleted");
                     deleteButton.setDisable(true);
                 }
             }
