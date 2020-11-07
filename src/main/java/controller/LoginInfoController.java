@@ -477,7 +477,7 @@ public class LoginInfoController implements Initializable {
                     consoleLog("Away mode turns on.");
                     awayMode = true;
                     awayModeON.setSelected(true);
-                   labelAwayMode.setText("Away mode is on");
+                    labelAwayMode.setText("Away mode is on");
               }else {
                     awayModeOFF.setSelected(true);
               }
