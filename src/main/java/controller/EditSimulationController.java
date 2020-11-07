@@ -282,6 +282,8 @@ public class EditSimulationController implements Initializable {
             new UserLocationObserver(subject);
             subject.setUserLocations(username, chosenLocation);
             subject.notifyObserver();
+            LoginInfoController.consoleLogFile("Moved " + username + " to " + chosenLocation);
+            windowNote.appendText("Moved " + username + " to " + chosenLocation+"\n");
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Location is empty");
             alert.showAndWait();
