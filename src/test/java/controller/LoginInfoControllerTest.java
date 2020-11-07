@@ -69,6 +69,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
         loader = new FXMLLoader(getClass().getResource("/view/loginInfo.fxml"));
         loader.load();
         controller = loader.getController();
+        controller.setToggleText("ON");
         PrintWriter printWriter = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
         printWriter.print("");
         printWriter.close();
@@ -116,7 +117,6 @@ public class LoginInfoControllerTest extends ApplicationTest {
     @Test
     public void should_not_allow_away_mode() {
         mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "not outside"));
-
         controller.onMouseClickAwayToggleON(null);
         assertFalse(LoginInfoController.isAwayMode());
     }
