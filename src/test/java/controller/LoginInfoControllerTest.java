@@ -187,4 +187,42 @@ public class LoginInfoControllerTest extends ApplicationTest {
         window.setOpenWindow(false);
         assertEquals(window.getOpenWindow(), true);
     }
+
+    @Test
+    public void should_open_close_door() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+        Room room = rooms.get("Living Room");
+        ArrayList<Door> doorsList = room.getDoors();
+        HashMap<String, Door> doors = new HashMap<>();
+        for (Door door : doorsList) {
+            doors.put(door.getPosition().toString(), door);
+        }
+        Door door = doors.get("BOTTOM");
+        door.setOpenDoor(true);
+        assertEquals(door.getOpenDoor(), true);
+
+        door.setOpenDoor(false);
+        assertEquals(door.getOpenDoor(), false);
+    }
+
+    @Test
+    public void should_turn_on_off_light() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+        Room room = rooms.get("Living Room");
+        room.setLightsOn(1);
+        assertEquals(room.getLightsOn(), 1);
+
+        room.setLightsOn(0);
+        assertEquals(room.getLightsOn(), 0);
+    }
 }
