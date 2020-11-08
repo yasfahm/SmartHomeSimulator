@@ -7,6 +7,7 @@ import entity.Door;
 import entity.PermissionType;
 import entity.Room;
 import entity.Window;
+import interfaces.MainController;
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
 import javafx.animation.KeyFrame;
@@ -28,18 +29,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -49,7 +55,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
@@ -69,16 +74,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import javafx.scene.control.Button;
 
-public class LoginInfoController implements Initializable {
+public class LoginInfoController implements Initializable, MainController {
 
     /**
      * declaring variables
@@ -141,7 +145,7 @@ public class LoginInfoController implements Initializable {
     private static boolean awayMode;
     private static BooleanProperty booleanProperty;
     private static boolean autoMode = false;
-    private Text toggleText = new Text();
+    private final Text toggleText = new Text();
 
     private GraphicsContext gc;
     private double xOffset = 0;
@@ -212,15 +216,6 @@ public class LoginInfoController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Set the toggleText
-     *
-     * @param text text of the toggleText
-     */
-    public void setToggleText(String text) {
-        toggleText = new Text(text);
     }
 
     /**
@@ -728,6 +723,9 @@ public class LoginInfoController implements Initializable {
             fileChooser.getExtensionFilters().add(extFilter);
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(window);
+            if (Objects.isNull(file)) {
+                return;
+            }
 
             labelRoomName.setText("ROOM");
             labelLight.setText("LIGHT");

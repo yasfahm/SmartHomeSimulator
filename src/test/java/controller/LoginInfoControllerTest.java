@@ -76,7 +76,13 @@ public class LoginInfoControllerTest extends ApplicationTest {
         loader = new FXMLLoader(getClass().getResource("/view/loginInfo.fxml"));
         loader.load();
         controller = loader.getController();
-        controller.setToggleText("ON");
+
+        AnchorPane parent = controller.getAnc();
+        LoginInfoController.ToggleSwitch selector = from(parent).lookup("#toggleSwitch").query();
+        Event.fireEvent(selector, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+
         PrintWriter printWriter = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
         printWriter.print("");
         printWriter.close();
@@ -105,6 +111,9 @@ public class LoginInfoControllerTest extends ApplicationTest {
         AnchorPane parent = controller.getAnc();
 
         LoginInfoController.ToggleSwitch selector = from(parent).lookup("#toggleSwitch").query();
+        Event.fireEvent(selector, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
 
         Text text = from(parent).lookup("#toggleText").queryText();
 

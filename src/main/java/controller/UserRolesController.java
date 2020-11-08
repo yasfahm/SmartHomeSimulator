@@ -2,6 +2,7 @@ package controller;
 
 import constants.UserRoles;
 import entity.UserRole;
+import interfaces.SubController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -29,7 +30,11 @@ import org.json.JSONObject;
 import service.RegistrationService;
 import service.RoleService;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Controller responsible for the view for User Control
  */
-public class UserRolesController {
+public class UserRolesController implements SubController {
 
     /**
      * Values is the location for the username label, the role box, and the remove button

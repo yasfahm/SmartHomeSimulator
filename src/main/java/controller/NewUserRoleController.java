@@ -115,6 +115,9 @@ public class NewUserRoleController {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+        if (Objects.isNull(file)) {
+            return;
+        }
 
         JSONTokener tokener = new JSONTokener(Files.readString(file.toPath()));
         JSONObject object = new JSONObject(tokener);

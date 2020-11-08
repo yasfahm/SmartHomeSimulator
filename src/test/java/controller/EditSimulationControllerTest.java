@@ -80,7 +80,7 @@ public class EditSimulationControllerTest extends ApplicationTest {
     @Test
     public void create_and_set_user_location() {
         Map<String, String> map = EditSimulationController.getUserLocations();
-        assertEquals(map.size(), 4);
+        assertEquals(map.keySet().size(), 4);
 
         controller.setUsername("testUser1");
         ComboBox<String> selector = from((Node) loader.getRoot()).lookup("#roomsMove").queryComboBox();
@@ -88,7 +88,7 @@ public class EditSimulationControllerTest extends ApplicationTest {
         controller.changeLocation(new ActionEvent());
 
         map = EditSimulationController.getUserLocations();
-        assertEquals(map.size(), 4);
+        assertEquals(map.keySet().size(), 4);
         assertEquals(map.get("testUser1"), "Outside");
     }
 

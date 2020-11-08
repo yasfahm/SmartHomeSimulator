@@ -3,6 +3,7 @@ package controller;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
+import interfaces.SubController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Controller responsible for the editing of user location
  */
-public class EditSimulationController implements Initializable {
+public class EditSimulationController implements Initializable, SubController {
     /**
      * declaring variables
      */

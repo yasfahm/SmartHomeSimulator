@@ -1,5 +1,6 @@
 package controller;
 
+import interfaces.SubController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +17,7 @@ import java.io.IOException;
 /**
  * Controller responsible for the control and flow of the starting, StartUp, scene
  */
-public class StartUpController {
+public class StartUpController implements SubController {
     /**
      * declaring variables
      */
