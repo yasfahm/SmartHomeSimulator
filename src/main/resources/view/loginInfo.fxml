@@ -150,7 +150,7 @@
                                                                      <Label text="How much time should pass" wrapText="true" />
                                                                      <Label text="before alerting authorities?" wrapText="true" />
                                                                  </VBox>
-                                                                 <TextField fx:id="timeBeforeAlertInput" onAction="#onSetTimeBeforeAlert" promptText="Enter time in minutes" />
+                                                                 <TextField fx:id="timeBeforeAlertInput" onAction="#onSetTimeBeforeAlert" promptText="Enter time in seconds" />
                                                              </VBox>
                                                          </children>
                                                           </AnchorPane>

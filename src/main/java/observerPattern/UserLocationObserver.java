@@ -13,6 +13,7 @@ public class UserLocationObserver{
      * declaring variables
      */
     protected Subject subject;
+    private static LoginInfoController parentController;
 
     /**
      * @param subject The subject
@@ -35,9 +36,19 @@ public class UserLocationObserver{
             if (LoginInfoController.isAwayMode() && !userLocations.get(person).equals("Outside")) {
                 LoginInfoController.consoleLogFile(person + " was detected in the " +
                         userLocations.get(person)+ " during Away Mode. Authorities will be alerted in " +
-                        timeBeforeAlert + " minutes.");
+                        timeBeforeAlert + " seconds.");
+                parentController.sendNotification(timeBeforeAlert);
             }
         }
+    }
+
+    /**
+     * This function assign controller variable of the loginInfo pane
+     *
+     * @param loginInfoController
+     */
+    public static void setParentController(LoginInfoController loginInfoController) {
+        parentController = loginInfoController;
     }
 }
 
