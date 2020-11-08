@@ -46,12 +46,10 @@ public class ConsoleService {
      * Initialize process, check potential IO problem
      */
 	public static void initialize() {
-		String path = "src/main/resources/consoleLogs.txt";
-		File file = new File(path);
+		File file = FileUtils.getFile("src", "main", "resources", "consoleLogs.txt");
 		if(!file.exists()) {
-			File newLog = new File(path);
 			try {
-				newLog.createNewFile();
+				FileUtils.touch(file);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

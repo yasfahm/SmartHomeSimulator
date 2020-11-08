@@ -148,6 +148,30 @@ public class LoginInfoControllerTest extends ApplicationTest {
         door.setOpenDoor(false);
         assertEquals(door.getOpenDoor(), false);
     }
+    
+    @Test
+    public void should_lock_door() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+        Room room = rooms.get("Living Room");
+        ArrayList<Door> doorsList = room.getDoors();
+        HashMap<String, Door> doors = new HashMap<>();
+        for (Door door : doorsList) {
+            doors.put(door.getPosition().toString(), door);
+        }
+        Door door = doors.get("BOTTOM");
+        door.setOpenDoor(true);
+        door.setLock(true);
+        assertEquals(door.getLock(), true);
+        assertEquals(door.getOpenDoor(), false);
+        
+        door.setLock(false);
+        assertEquals(door.getLock(), false);
+    }
 
     /**
      * Use case 5, Delivery 2
@@ -196,6 +220,16 @@ public class LoginInfoControllerTest extends ApplicationTest {
         room.setLightsOn(0);
         assertEquals(room.getLightsOn(), 0);
     }
+    
+    /**
+     * Use case 7, Delivery 2
+     */
+    @Test
+    public void should_turn_on_auto_mode() throws IOException{
+        controller.autoModeOnClick(null);
+        assertTrue(controller.getAutoMode());
+        controller.autoModeOnClick(null);
+    }
 
     /**
      * Use case 8, Delivery 2
@@ -221,7 +255,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
      */
     @Test
     public void should_notify_users_when_motion_detected_away_mode() throws IOException {
-        editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+    	editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
         editSimulationLoader.load();
         editSimulationController = editSimulationLoader.getController();
 
@@ -258,5 +292,70 @@ public class LoginInfoControllerTest extends ApplicationTest {
         controller.getTimeBeforeAlertField().setText("10");
         controller.onSetTimeBeforeAlert();
         assertEquals("10", controller.getTimeBeforeAlert());
+    }
+    
+    
+    @Test
+    public void should_lock_doors_in_auto_mode() throws IOException{
+        controller.setRoomArray(new File("src/test/resources/houseLayout.txt"));
+        Room[] roomArray = controller.getRoomArray();
+        controller.autoModeOnClick(null);
+        
+    	editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+        editSimulationLoader.load();
+        editSimulationController = editSimulationLoader.getController();
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        Map<String, String> map = new HashMap<>();
+        map.put("user1", "Kitchen");
+        mock.when(EditSimulationController::getUserLocations).thenReturn(map);
+        editSimulationController.getRoomsMove().setValue("Kitchen");
+        editSimulationController.changeLocation(new ActionEvent());
+        
+        controller.updateAutoDoors();
+        
+        roomArray = controller.getRoomArray();
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) rooms.put(room.getName(), room);
+        Room[] roomArr = {rooms.get("Garage"),rooms.get("Entrance"),rooms.get("Backyard")};
+        boolean isAllDoorLocked = true;
+        for(Room r : roomArr){
+        	ArrayList<Door> doorLs = r.getDoors();
+            for(Door d : doorLs) {
+    			if(!d.getLock()) isAllDoorLocked = false;
+            }
+        }
+        
+        assertTrue(isAllDoorLocked);
+        controller.setRoomArray(null);
+        controller.autoModeOnClick(null);
+    }
+    
+    @Test
+    public void should_auto_open_light_where_user_at_in_auto_mode() throws IOException{
+        controller.setRoomArray(new File("src/test/resources/houseLayout.txt"));
+        Room[] roomArray = controller.getRoomArray();
+        controller.autoModeOnClick(null);
+        
+    	editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+        editSimulationLoader.load();
+        editSimulationController = editSimulationLoader.getController();
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        
+        Map<String, String> map = new HashMap<>();
+        map.put("user1", "Kitchen");
+        mock.when(EditSimulationController::getUserLocations).thenReturn(map);
+        editSimulationController.getRoomsMove().setValue("Kitchen");
+        editSimulationController.changeLocation(new ActionEvent());
+        
+        controller.updateAutoLights();
+        
+        roomArray = controller.getRoomArray();
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) rooms.put(room.getName(), room);
+        Room room = rooms.get("Kitchen");
+
+        assertTrue(room.getLightsOn()==1);
+        controller.setRoomArray(null);
+        controller.autoModeOnClick(null);
     }
 }
