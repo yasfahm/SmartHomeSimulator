@@ -346,11 +346,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
         Room room = rooms.get("Kitchen");
 
         assertTrue(room.getLightsOn()==1);
-        
         controller.setRoomArray(null);
         controller.autoModeOnClick(null);
     }
-    
-    
-    
 }
