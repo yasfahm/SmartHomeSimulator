@@ -120,7 +120,7 @@
                                                                         <Label fx:id="labelWindow" layoutX="159.0" layoutY="10.0" />
                                                                         <Label fx:id="labelDoor" layoutX="265.0" layoutY="10.0" />
                                                                         <Button fx:id="autoModeBt" layoutX="213.0" layoutY="381.0" mnemonicParsing="false" onAction="#autoModeOnClick" text="OFF" />
-                                                                        <Label layoutX="61.0" layoutY="386.0" text="Away Mode" />
+                                                                        <Label layoutX="61.0" layoutY="386.0" text="Auto Mode" />
                                                                      </children>
                                                                                         </AnchorPane>
                                                                                     </items>
