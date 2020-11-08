@@ -518,6 +518,7 @@ public class LoginInfoController implements Initializable {
                     consoleLog("Away mode turns on.");
                     awayMode = true;
                     awayModeON.setSelected(true);
+                    labelAwayMode.setTextFill(Color. WHITE);
                     labelAwayMode.setText("Away mode is on");
               }else {
                     awayModeOFF.setSelected(true);
@@ -543,6 +544,7 @@ public class LoginInfoController implements Initializable {
           consoleLog("Away mode was turned off.");
           awayMode = false;
           awayModeOFF.setSelected(true);
+          labelAwayMode.setTextFill(Color. WHITE);
           labelAwayMode.setText("Away mode is off");
       }
     }
@@ -734,9 +736,11 @@ public class LoginInfoController implements Initializable {
 
             //show the away mode status on house layout
             if (awayMode) {
+                labelAwayMode.setTextFill(Color. WHITE);
                 labelAwayMode.setText("Away mode is on");
             }
             else {
+                labelAwayMode.setTextFill(Color. WHITE);
                 labelAwayMode.setText("Away mode is off");
             }
 
@@ -854,7 +858,7 @@ public class LoginInfoController implements Initializable {
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
-                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                     alert.showAndWait();
                                 }
                             }
@@ -887,7 +891,7 @@ public class LoginInfoController implements Initializable {
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
-                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                     alert.showAndWait();
                                 }
                             }
@@ -920,7 +924,7 @@ public class LoginInfoController implements Initializable {
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
-                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                     alert.showAndWait();
                                 }
                             }
@@ -953,7 +957,7 @@ public class LoginInfoController implements Initializable {
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
-                                    Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                     alert.showAndWait();
                                 }
                             }
@@ -1303,9 +1307,11 @@ public class LoginInfoController implements Initializable {
 
         //show the away mode status on house layout
         if (awayMode) {
+            labelAwayMode.setTextFill(Color. WHITE);
             labelAwayMode.setText("Away mode is on");
         }
         else {
+            labelAwayMode.setTextFill(Color. WHITE);
             labelAwayMode.setText("Away mode is off");
         }
 
@@ -1409,10 +1415,10 @@ public class LoginInfoController implements Initializable {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsTop.setImage(windowCloseTop);
                                 }
-								
+
                             } else {
                             	consoleLog("This window is blocked");
-                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                 alert.showAndWait();
                             }
                         }
@@ -1444,7 +1450,7 @@ public class LoginInfoController implements Initializable {
 								
                             } else {
                             	consoleLog("This window is blocked");
-                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                 alert.showAndWait();
                             }
                         }
@@ -1476,7 +1482,7 @@ public class LoginInfoController implements Initializable {
 								
                             } else {
                             	consoleLog("This window is blocked");
-                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                 alert.showAndWait();
                             }
                         }
@@ -1508,7 +1514,7 @@ public class LoginInfoController implements Initializable {
 								
                             } else {
                             	consoleLog("This window is blocked");
-                                Alert alert = new Alert(Alert.AlertType.WARNING, "this window path is blocked.");
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
                                 alert.showAndWait();
                             }
                         }
@@ -1933,7 +1939,7 @@ public class LoginInfoController implements Initializable {
      */
     public void drawBlockWindow(Room room, Position position) throws FileNotFoundException {
         String name = room.getName();
-        Image block = null;
+        Image block;
         int[] coordinates = roomPosition.get(name);
         ArrayList<Window> windowList = room.getWindows();
         for (int i = 0; i < windowList.size(); i++) {
@@ -2008,7 +2014,7 @@ public class LoginInfoController implements Initializable {
         gc.setLineWidth(2);
         for (Door door : room.getDoors()) {
             if (door.getOpenDoor()) {
-                gc.setStroke(Color.WHITE);
+                gc.setStroke(Color.web("#455A64"));
             } else {
                 gc.setStroke(Color.SANDYBROWN);
             }
