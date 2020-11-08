@@ -347,8 +347,8 @@ public class LoginInfoController implements Initializable {
         clock.play();
 
         setupCurrentUser();
-        
         if(autoMode) {
+        	autoModeBt.setText("ON");
         	updateAutoLights();
     		updateAutoDoors();
         }
@@ -710,6 +710,24 @@ public class LoginInfoController implements Initializable {
 	        window.setScene(userRolesScene);
 	        window.show();
     	}
+    }
+    
+    /**
+     * Function setter for room array
+     * @param file File of room list
+     * @throws IOException IOException when access File
+     */
+    public void setRoomArray(File file) throws IOException {
+    	if(file==null) roomArray=null;
+    	else roomArray = HouseLayoutService.parseHouseLayout(file);
+    }
+    
+    /**
+     * Function getter for room array
+     * @return
+     */
+    public Room[] getRoomArray() {
+    	return roomArray;
     }
 
     /**
@@ -2322,6 +2340,8 @@ public class LoginInfoController implements Initializable {
     /**
 	 * Auto controll door lock states
 	 * Room to auto locked: entrance, backyard and garage, +outside
+     * @param username 
+     * @param roomArray2 
 	 */
 	public void updateAutoDoors() {
 		if(roomArray!=null && autoMode) {
@@ -2363,14 +2383,6 @@ public class LoginInfoController implements Initializable {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Setter for autoMode
-	 * @param autoMode New autoMode value
-	 */
-	public void setAutoMode(boolean autoMode) {
-		this.autoMode = autoMode;
 	}
 
     /**

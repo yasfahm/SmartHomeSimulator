@@ -1,7 +1,6 @@
 package entity;
 
 import constants.Position;
-import controller.LoginInfoController;
 
 /**
  * class Door to represent a Door object in the house
@@ -85,6 +84,7 @@ public class Door {
 	}
 
 	public void setLock(boolean lock) {
+		if(lock)  this.openDoor = false;
 		this.lock = lock;
 	}
 
