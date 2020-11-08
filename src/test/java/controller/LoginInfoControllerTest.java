@@ -115,53 +115,34 @@ public class LoginInfoControllerTest extends ApplicationTest {
         assertEquals("ON", text.getText());
     }
 
+    /**
+     * Use case 4, Delivery 2
+     */
     @Test
-    public void should_allow_away_mode() {
-        controller.onMouseClickAwayToggleON(null);
-        assertTrue(LoginInfoController.isAwayMode());
-    }
-
-    @Test
-    public void should_not_allow_away_mode() {
-        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "not outside"));
-        controller.onMouseClickAwayToggleON(null);
-        assertFalse(LoginInfoController.isAwayMode());
-    }
-
-    @Test
-    public void should_set_time_before_alert_on_user_input_away_mode() {
-        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
-        controller.onMouseClickAwayToggleON(null);
-        controller.getTimeBeforeAlertField().setText("10");
-        controller.onSetTimeBeforeAlert();
-        assertEquals("10", controller.getTimeBeforeAlert());
-    }
-
-    @Test
-    public void should_notify_users_when_motion_detected_away_mode() throws IOException {
-        editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
-        editSimulationLoader.load();
-        editSimulationController = editSimulationLoader.getController();
-
-        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
-        controller.onMouseClickAwayToggleON(null);
-        controller.getTimeBeforeAlertField().setText("10");
-
-        Map<String, String> map = new HashMap<>();
-        map.put("user1", "Kitchen");
-        mock.when(EditSimulationController::getUserLocations).thenReturn(map);
-        editSimulationController.getRoomsMove().setValue("Kitchen");
-        editSimulationController.changeLocation(new ActionEvent());
-
-        Scanner scanner = new Scanner(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
-        String line = "";
-        while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
+    public void should_open_close_door() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
         }
-        assertEquals("user1 was detected in the Kitchen during Away Mode. " +
-                "Authorities will be alerted in 10 minutes.", line.substring(22));
+        Room room = rooms.get("Living Room");
+        ArrayList<Door> doorsList = room.getDoors();
+        HashMap<String, Door> doors = new HashMap<>();
+        for (Door door : doorsList) {
+            doors.put(door.getPosition().toString(), door);
+        }
+        Door door = doors.get("BOTTOM");
+        door.setOpenDoor(true);
+        assertEquals(door.getOpenDoor(), true);
+
+        door.setOpenDoor(false);
+        assertEquals(door.getOpenDoor(), false);
     }
 
+    /**
+     * Use case 5, Delivery 2
+     */
     @Test
     public void should_open_close_window() throws IOException {
         File file = new File("src/test/resources/houseLayout.txt");
@@ -188,28 +169,9 @@ public class LoginInfoControllerTest extends ApplicationTest {
         assertEquals(window.getOpenWindow(), true);
     }
 
-    @Test
-    public void should_open_close_door() throws IOException {
-        File file = new File("src/test/resources/houseLayout.txt");
-        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
-        HashMap<String, Room> rooms = new HashMap<>();
-        for (Room room : roomArray) {
-            rooms.put(room.getName(), room);
-        }
-        Room room = rooms.get("Living Room");
-        ArrayList<Door> doorsList = room.getDoors();
-        HashMap<String, Door> doors = new HashMap<>();
-        for (Door door : doorsList) {
-            doors.put(door.getPosition().toString(), door);
-        }
-        Door door = doors.get("BOTTOM");
-        door.setOpenDoor(true);
-        assertEquals(door.getOpenDoor(), true);
-
-        door.setOpenDoor(false);
-        assertEquals(door.getOpenDoor(), false);
-    }
-
+    /**
+     * Use case 6, Delivery 2
+     */
     @Test
     public void should_turn_on_off_light() throws IOException {
         File file = new File("src/test/resources/houseLayout.txt");
@@ -224,5 +186,68 @@ public class LoginInfoControllerTest extends ApplicationTest {
 
         room.setLightsOn(0);
         assertEquals(room.getLightsOn(), 0);
+    }
+
+    /**
+     * Use case 8, Delivery 2
+     */
+    @Test
+    public void should_allow_away_mode() {
+        controller.onMouseClickAwayToggleON(null);
+        assertTrue(LoginInfoController.isAwayMode());
+    }
+
+    /**
+     * Use case 8, Delivery 2
+     */
+    @Test
+    public void should_not_allow_away_mode() {
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "not outside"));
+        controller.onMouseClickAwayToggleON(null);
+        assertFalse(LoginInfoController.isAwayMode());
+    }
+
+    /**
+     * Use case 9, Delivery 2
+     */
+    @Test
+    public void should_notify_users_when_motion_detected_away_mode() throws IOException {
+        editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+        editSimulationLoader.load();
+        editSimulationController = editSimulationLoader.getController();
+
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        controller.onMouseClickAwayToggleON(null);
+        controller.getTimeBeforeAlertField().setText("10");
+        controller.onSetTimeBeforeAlert();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("user1", "Kitchen");
+        mock.when(EditSimulationController::getUserLocations).thenReturn(map);
+        editSimulationController.getRoomsMove().setValue("Kitchen");
+        editSimulationController.changeLocation(new ActionEvent());
+
+        Scanner scanner = new Scanner(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+        String line = "";
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            if(line.contains("user1 was detected in the Kitchen during Away Mode.")){
+                break;
+            }
+        }
+        assertEquals("user1 was detected in the Kitchen during Away Mode. " +
+                "Authorities will be alerted in 10 minutes.", line.substring(22));
+    }
+
+    /**
+     * Use case 10, Delivery 2
+     */
+    @Test
+    public void should_set_time_before_alert_on_user_input_away_mode() {
+        mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
+        controller.onMouseClickAwayToggleON(null);
+        controller.getTimeBeforeAlertField().setText("10");
+        controller.onSetTimeBeforeAlert();
+        assertEquals("10", controller.getTimeBeforeAlert());
     }
 }

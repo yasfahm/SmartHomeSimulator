@@ -19,6 +19,6 @@ Type <code>gradlew run</code>, execute the program.
 
 Install openssl using homebrew: brew install openssl
 
-Open the terminal, go to the clonned repository then use chmod +x gradlew to give gradle permission.
+Open the terminal, go to the cloned repository then use chmod +x gradlew to give gradle permission.
 
 Then use this command to run the program: ./gradlew run

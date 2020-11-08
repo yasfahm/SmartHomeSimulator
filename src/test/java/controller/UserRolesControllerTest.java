@@ -49,6 +49,10 @@ public class UserRolesControllerTest extends ApplicationTest {
 
     }
 
+    /**
+     * Use Case 2, Delivery 2
+     * @throws IOException
+     */
     @Test
     public void should_export_user_profiles() throws IOException {
         File file = FileUtils.getFile("src", "test", "resources", "testExport.txt");
