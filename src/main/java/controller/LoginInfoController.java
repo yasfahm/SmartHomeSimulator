@@ -2340,8 +2340,6 @@ public class LoginInfoController implements Initializable {
     /**
 	 * Auto controll door lock states
 	 * Room to auto locked: entrance, backyard and garage, +outside
-     * @param username 
-     * @param roomArray2 
 	 */
 	public void updateAutoDoors() {
 		if(roomArray!=null && autoMode) {
