@@ -1,0 +1,4 @@
+[2020-11-23T21:27:18] System initialized
+[2020-11-23T21:27:18] Away mode turns on.
+[2020-11-23T21:27:18] user1 was detected in the Kitchen during Away Mode. Authorities will be alerted in 10 seconds.
+[2020-11-23T21:27:18] Moved user1 to Kitchen

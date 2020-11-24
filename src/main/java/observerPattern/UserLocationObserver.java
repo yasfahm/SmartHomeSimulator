@@ -1,6 +1,7 @@
 package observerPattern;
 
 import controller.LoginInfoController;
+import entity.ConsoleComponents;
 
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class UserLocationObserver{
             if (LoginInfoController.isAwayMode() && !userLocations.get(person).equals("Outside")) {
                 LoginInfoController.consoleLogFile(person + " was detected in the " +
                         userLocations.get(person)+ " during Away Mode. Authorities will be alerted in " +
-                        timeBeforeAlert + " seconds.");
+                        timeBeforeAlert + " seconds.", ConsoleComponents.SHS);
                 parentController.sendNotification(timeBeforeAlert);
             }
         }

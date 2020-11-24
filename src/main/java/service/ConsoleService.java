@@ -11,12 +11,16 @@ import java.util.List;
 
 public class ConsoleService {
 
-    private static PrintWriter printWriter = null;
+    private static PrintWriter printWriterGeneral = null;
+    private static PrintWriter printWriterSHS = null;
+    private static PrintWriter printWriterSHH = null;
     private static List<String> consoleList = new ArrayList<String>();
 
     static {
         try {
-            printWriter = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+            printWriterGeneral = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+			printWriterSHS = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogsSHS.txt"));
+			printWriterSHH = new PrintWriter(FileUtils.getFile("src", "main", "resources", "consoleLogsSHH.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -29,16 +33,38 @@ public class ConsoleService {
      */
     public static void exportConsole(final String consoleLog) {
     	consoleList.add(consoleLog);
-        printWriter.append(consoleLog);
-        printWriter.flush();
+        printWriterGeneral.append(consoleLog);
+        printWriterGeneral.flush();
+    }
+
+    /**
+     * Function responsible for updating the log file for SHS
+     *
+     * @param consoleLog The string to be appended onto the log file
+     */
+    public static void exportConsoleSHS(final String consoleLog) {
+    	exportConsole(consoleLog);
+        printWriterSHS.append(consoleLog);
+		printWriterSHS.flush();
+    }
+
+    /**
+     * Function responsible for updating the log file for SHH
+     *
+     * @param consoleLog The string to be appended onto the log file
+     */
+    public static void exportConsoleSHH(final String consoleLog) {
+        exportConsole(consoleLog);
+        printWriterSHH.append(consoleLog);
+		printWriterSHH.flush();
     }
     
     /**
-     * Return the comple console list as string
+     * Return the compiled console list as string
      * @return console log string list
      */
     public static String getConsole() {
-    	return String.join("",consoleList);
+    	return String.join("", consoleList);
     }
     
 

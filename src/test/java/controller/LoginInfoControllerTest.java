@@ -271,15 +271,28 @@ public class LoginInfoControllerTest extends ApplicationTest {
         editSimulationController.changeLocation(new ActionEvent());
 
         Scanner scanner = new Scanner(FileUtils.getFile("src", "main", "resources", "consoleLogs.txt"));
+        Scanner scannerSHS = new Scanner(FileUtils.getFile("src", "main", "resources", "consoleLogsSHS.txt"));
         String line = "";
+        String lineSHS = "";
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
-            if(line.contains("user1 was detected in the Kitchen during Away Mode.")){
+            if (line.contains("user1 was detected in the Kitchen during Away Mode.")){
                 break;
             }
         }
+
+        while (scannerSHS.hasNextLine()) {
+            lineSHS = scannerSHS.nextLine();
+            if (lineSHS.contains("user1 was detected in the Kitchen during Away Mode.")){
+                break;
+            }
+        }
+
         assertEquals("user1 was detected in the Kitchen during Away Mode. " +
-                "Authorities will be alerted in 10 minutes.", line.substring(22));
+                "Authorities will be alerted in 10 seconds.", line.substring(22));
+
+        assertEquals("user1 was detected in the Kitchen during Away Mode. " +
+                "Authorities will be alerted in 10 seconds.", lineSHS.substring(22));
     }
 
     /**

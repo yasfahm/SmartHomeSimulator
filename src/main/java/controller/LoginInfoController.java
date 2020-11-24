@@ -3,6 +3,7 @@ package controller;
 import constants.Position;
 import constants.UserRoles;
 import entity.CommandType;
+import entity.ConsoleComponents;
 import entity.Door;
 import entity.PermissionType;
 import entity.Room;
@@ -659,8 +660,8 @@ public class LoginInfoController implements Initializable, MainController {
      *
      * @param str String to append onto the console
      */
-    public static void consoleLogFile(String str) {
-        updateConsoleLog(str);
+    public static void consoleLogFile(String str, ConsoleComponents consoleComponents) {
+        updateConsoleLog(str, consoleComponents);
     }
 
     /**
@@ -669,7 +670,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @param str String to append onto the console
      */
     public void consoleLog(String str) {
-        updateConsoleLog(str);
+        updateConsoleLog(str, ConsoleComponents.SHS);
         console.appendText("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n");
     }
 
@@ -678,9 +679,19 @@ public class LoginInfoController implements Initializable, MainController {
      *
      * @param str String to append onto the console
      */
-    private static void updateConsoleLog(String str) {
+    private static void updateConsoleLog(String str, ConsoleComponents consoleComponents) {
         String toAppend = "[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n";
-        ConsoleService.exportConsole(toAppend);
+        switch (consoleComponents) {
+            case SHH ->  {
+                ConsoleService.exportConsoleSHH(toAppend);
+                break;
+            }
+            case SHS -> {
+                ConsoleService.exportConsoleSHS(toAppend);
+                break;
+            }
+            default -> ConsoleService.exportConsole(toAppend);
+        }
     }
 
     /**
@@ -1893,6 +1904,10 @@ public class LoginInfoController implements Initializable, MainController {
      * calculates the number of people in each room
      */
     public void drawPeople () {
+        if (Objects.isNull(userLocation)) {
+            return;
+        }
+
         Iterator<Map.Entry<String, String>> itr = userLocation.entrySet().iterator();
         Iterator<Map.Entry<String, String>> itr2 = userLocation.entrySet().iterator();
 

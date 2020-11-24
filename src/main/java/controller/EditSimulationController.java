@@ -1,5 +1,6 @@
 package controller;
 
+import entity.ConsoleComponents;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
@@ -191,7 +192,7 @@ public class EditSimulationController implements Initializable, SubController {
                 }
                 String log = windowNote.getText();
                 windowNote.setText(log + message);
-                LoginInfoController.consoleLogFile("The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.");
+                LoginInfoController.consoleLogFile("The window at the " + windows.getValue() + " in the " + room.getName() + " has been blocked.", ConsoleComponents.SHS);
                 break;
             }
         }
@@ -283,7 +284,7 @@ public class EditSimulationController implements Initializable, SubController {
             new UserLocationObserver(subject);
             subject.setUserLocations(username, chosenLocation);
             subject.notifyObserver();
-            LoginInfoController.consoleLogFile("Moved " + username + " to " + chosenLocation);
+            LoginInfoController.consoleLogFile("Moved " + username + " to " + chosenLocation, ConsoleComponents.SHS);
             windowNote.appendText("Moved " + username + " to " + chosenLocation+"\n");
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Location is empty");

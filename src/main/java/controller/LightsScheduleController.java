@@ -1,5 +1,6 @@
 package controller;
 
+import entity.ConsoleComponents;
 import entity.Room;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -94,7 +95,7 @@ public class LightsScheduleController implements Initializable {
 
         String times = startTime + "-" + endTime;
         parentController.setRoomLightSchedule(room, times);
-        LoginInfoController.consoleLogFile("New light schedule for " + startTime + " to " + endTime+".");
+        LoginInfoController.consoleLogFile("New light schedule for " + startTime + " to " + endTime+".", ConsoleComponents.SHS);
         Stage stage = (Stage) rooms.getScene().getWindow();
         stage.close();
     }
