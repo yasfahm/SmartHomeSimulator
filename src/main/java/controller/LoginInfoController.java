@@ -2,12 +2,7 @@ package controller;
 
 import constants.Position;
 import constants.UserRoles;
-import entity.CommandType;
-import entity.ConsoleComponents;
-import entity.Door;
-import entity.PermissionType;
-import entity.Room;
-import entity.Window;
+import entity.*;
 import interfaces.MainController;
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
@@ -71,16 +66,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -151,6 +137,8 @@ public class LoginInfoController implements Initializable, MainController {
     private VBox vboxRooms;
     @FXML
     private TextField textZoneName;
+    @FXML
+    private VBox vboxZones;
   
     private static String userParent;
     private static Map<String, Room> house;
@@ -178,6 +166,10 @@ public class LoginInfoController implements Initializable, MainController {
     private Map<String, Integer> userPositions = new HashMap<>();
     private HashMap<String, Room> availableRooms = new HashMap<>();
     private HashMap<String, Room> selectedRooms = new HashMap<>();
+    private GridPane gpZone = new GridPane();
+    private GridPane gpRooms = new GridPane();
+
+
 
 
     /**
@@ -2195,7 +2187,6 @@ public class LoginInfoController implements Initializable, MainController {
         comboRoom.getItems().addAll(availableRooms.keySet());
         Label room = new Label();
         room.setText(selectedRoom);
-        GridPane gpRooms = new GridPane();
 
         Image deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
         ImageView delete = new ImageView(deleteIcon);
@@ -2213,6 +2204,21 @@ public class LoginInfoController implements Initializable, MainController {
 
         gpRooms.addRow(gpRooms.getRowCount(), room, delete);
         vboxRooms.getChildren().add(gpRooms);
+    }
+
+    public void createZone(ActionEvent event) {
+        gpRooms.getChildren().clear();
+        Collection<Room> values = selectedRooms.values();
+        ArrayList<Room> listOfRooms = new ArrayList<Room>(values);
+        Zone zone = new Zone(textZoneName.getText(), listOfRooms);
+        selectedRooms.forEach((k, v) -> {
+            Label room = new Label();
+            room.setText(v.getName());
+            gpZone.addRow(gpZone.getRowCount(), room);
+        });
+        selectedRooms.clear();
+        vboxZones.getChildren().addAll(gpZone);
+//        gpZone.getChildren().addAll(sele)
     }
 
     /**
