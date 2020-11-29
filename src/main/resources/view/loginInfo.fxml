@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-color: #455A64;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
         <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" styleClass="root" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -158,7 +158,20 @@
                                                                 </Tab>
                                                                 <Tab style="-fx-background-color: #FFEB3B;" text="SHH">
                                                                     <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane fx:id="aPZone" layoutX="6.0" layoutY="-1.0" prefHeight="288.0" prefWidth="335.0">
+                                                               <children>
+                                                                  <Label layoutX="118.0" layoutY="14.0" prefHeight="19.0" prefWidth="100.0" text="create a zone" />
+                                                                  <ComboBox fx:id="comboRoom" layoutX="14.0" layoutY="78.0" prefHeight="27.0" prefWidth="143.0" />
+                                                                  <Label layoutX="14.0" layoutY="48.0" text="select a room: " />
+                                                                  <VBox fx:id="vboxRooms" layoutX="14.0" layoutY="144.0" prefHeight="144.0" prefWidth="160.0" />
+                                                                  <Button fx:id="buttonAddRoom" layoutX="191.0" layoutY="78.0" mnemonicParsing="false" text="add this room" />
+                                                                  <Button fx:id="buttonCreateZone" layoutX="191.0" layoutY="131.0" mnemonicParsing="false" text="create the zone" />
+                                                                  <Label layoutX="12.0" layoutY="122.0" text="selected rooms:" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children></AnchorPane>
                                                                     </content>
                                                                 </Tab>
                                                             </tabs>

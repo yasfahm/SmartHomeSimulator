@@ -139,6 +139,14 @@ public class LoginInfoController implements Initializable, MainController {
     private Label labelAwayMode;
     @FXML
 	private Button autoModeBt;
+    @FXML
+    private AnchorPane aPZone;
+    @FXML
+    private ComboBox comboRoom;
+    @FXML
+    private Button buttonAddRoom;
+    @FXML
+    private Button buttonCreateZone;
   
     private static String userParent;
     private static Map<String, Room> house;
@@ -304,6 +312,7 @@ public class LoginInfoController implements Initializable, MainController {
     public void initialize(URL location, ResourceBundle resources) {
         // any action at the first initialization
         if (firstLaunch) {
+            aPZone.setVisible(false);
             firstLaunch = false;
             ChangeDateTimeController.setParentController(this);
             LightsScheduleController.setParentController(this);
@@ -1317,7 +1326,9 @@ public class LoginInfoController implements Initializable, MainController {
             
             consoleLog("Successfully added house layout.");
 
-            
+            aPZone.setVisible(true);
+
+            comboRoom.getItems().addAll(rooms.keySet());
 
         } else {
         	consoleLog("Add house layout failed, please turn on the simulation first.");
