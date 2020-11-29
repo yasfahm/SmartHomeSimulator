@@ -1317,6 +1317,8 @@ public class LoginInfoController implements Initializable, MainController {
             
             consoleLog("Successfully added house layout.");
 
+            
+
         } else {
         	consoleLog("Add house layout failed, please turn on the simulation first.");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please turn on the simulation first.");

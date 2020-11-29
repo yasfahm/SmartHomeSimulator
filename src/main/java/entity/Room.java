@@ -11,6 +11,7 @@ public class Room {
     private ArrayList<Door> doors;
     private int lightsOn;
     private int lightsTotal;
+    private double roomTemperature;
 
     /**
      * Constructor for class Room
@@ -19,12 +20,14 @@ public class Room {
      * @param windows     windows in the room
      * @param doors       doors in the room
      * @param lightsTotal total lights in the room
+     * @param roomTemperature temperature of the room
      */
-    private Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal) {
+    private Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal, double roomTemperature) {
         this.name = name;
         this.windows = windows;
         this.doors = doors;
         this.lightsTotal = lightsTotal;
+        this.roomTemperature = roomTemperature;
     }
 
     /**
@@ -70,6 +73,20 @@ public class Room {
     }
 
     /**
+     * @return temperature of the room
+     */
+    public double getTemperature() {
+        return roomTemperature;
+    }
+
+    /**
+     * @param roomTemperature temperature of the room
+     */
+    public void setTemperature(double roomTemperature) {
+        this.roomTemperature = roomTemperature;
+    }
+
+    /**
      * @return windows in the room
      */
     public ArrayList<Window> getWindows() {
@@ -106,6 +123,7 @@ public class Room {
         private ArrayList<Door> doors;
         private int lightsOn;
         private int lightsTotal;
+        private double roomTemperature;
 
         public Builder(final String name) {
             this.name = name;
@@ -131,8 +149,13 @@ public class Room {
             return this;
         }
 
+        public Builder withRoomTemperature(final int roomTemperature) {
+            this.roomTemperature = roomTemperature;
+            return this;
+        }
+
         public Room build() {
-            return new Room(name, windows, doors, lightsTotal);
+            return new Room(name, windows, doors, lightsTotal, roomTemperature);
         }
     }
 }
