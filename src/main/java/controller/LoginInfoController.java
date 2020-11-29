@@ -142,11 +142,15 @@ public class LoginInfoController implements Initializable, MainController {
     @FXML
     private AnchorPane aPZone;
     @FXML
-    private ComboBox comboRoom;
+    private ComboBox<String> comboRoom;
     @FXML
     private Button buttonAddRoom;
     @FXML
     private Button buttonCreateZone;
+    @FXML
+    private VBox vboxRooms;
+    @FXML
+    private TextField textZoneName;
   
     private static String userParent;
     private static Map<String, Room> house;
@@ -172,6 +176,9 @@ public class LoginInfoController implements Initializable, MainController {
     private static String timeBeforeAlert;
     private Map<String, String> userLocation = EditSimulationController.getUserLocations();
     private Map<String, Integer> userPositions = new HashMap<>();
+    private HashMap<String, Room> availableRooms = new HashMap<>();
+    private HashMap<String, Room> selectedRooms = new HashMap<>();
+
 
     /**
      * Sets up the logged in user as the active user
@@ -1328,7 +1335,11 @@ public class LoginInfoController implements Initializable, MainController {
 
             aPZone.setVisible(true);
 
-            comboRoom.getItems().addAll(rooms.keySet());
+            for (Room room : roomArray) {
+                if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+                    availableRooms.put(room.getName(), room);
+            }
+            comboRoom.getItems().addAll(availableRooms.keySet());
 
         } else {
         	consoleLog("Add house layout failed, please turn on the simulation first.");
@@ -2170,6 +2181,38 @@ public class LoginInfoController implements Initializable, MainController {
             if (!visited.contains(nextRoom))
                 drawRoom(roomHashMap, nextRoom, visited, child.getPosition(), x, y);
         }
+    }
+
+    /**
+     * This function creates list of selected rooms.
+     *
+     * @param event The event that called this function
+     */
+    public void addRoom(ActionEvent event) throws FileNotFoundException {
+        String selectedRoom = comboRoom.getValue();
+        selectedRooms.put(selectedRoom, availableRooms.remove(selectedRoom));
+        comboRoom.getItems().clear();
+        comboRoom.getItems().addAll(availableRooms.keySet());
+        Label room = new Label();
+        room.setText(selectedRoom);
+        GridPane gpRooms = new GridPane();
+
+        Image deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
+        ImageView delete = new ImageView(deleteIcon);
+
+        delete.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                availableRooms.put(selectedRoom, selectedRooms.remove(availableRooms));
+                comboRoom.getItems().clear();
+                comboRoom.getItems().addAll(availableRooms.keySet());
+                gpRooms.getChildren().remove(room);
+                gpRooms.getChildren().remove(delete);
+            }
+        });
+
+        gpRooms.addRow(gpRooms.getRowCount(), room, delete);
+        vboxRooms.getChildren().add(gpRooms);
     }
 
     /**
