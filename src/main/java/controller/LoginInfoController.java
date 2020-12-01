@@ -2213,6 +2213,11 @@ public class LoginInfoController implements Initializable, MainController {
         vboxRooms.getChildren().add(gpRooms);
     }
 
+    /**
+     * This function will create the zone and show it on the screen with the delete functionality
+     *
+     * @param event that calls this function
+     */
     public void createZone(ActionEvent event) {
         gpRooms.getChildren().clear();
         String zoneName = textZoneName.getText();
@@ -2235,6 +2240,10 @@ public class LoginInfoController implements Initializable, MainController {
                 e.printStackTrace();
             }
             ImageView delete = new ImageView(deleteIcon);
+            TextField temp1 = new TextField();
+            TextField temp2 = new TextField();
+            TextField temp3 = new TextField();
+            Button setTemp = new Button();
 
             delete.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
@@ -2247,13 +2256,39 @@ public class LoginInfoController implements Initializable, MainController {
                     gpZone.getChildren().remove(zone_name);
                     gpZone.getChildren().remove(room);
                     gpZone.getChildren().remove(delete);
+                    gpZone.getChildren().remove(temp1);
+                    gpZone.getChildren().remove(temp2);
+                    gpZone.getChildren().remove(temp3);
+                    gpZone.getChildren().remove(setTemp);
                     gpRooms.getChildren().remove(room);
                     gpRooms.getChildren().remove(delete);
                 }
             });
 
+            double[] temps = new double[3];
+//            morning.setText("8am-4pm");
+            temp1.setPrefWidth(50);
+            temp1.setPromptText(String.valueOf(zone.getZoneTemp()[0]));
+            temp2.setPrefWidth(50);
+            temp2.setPromptText(String.valueOf(zone.getZoneTemp()[1]));
+            temp3.setPrefWidth(50);
+            temp3.setPromptText(String.valueOf(zone.getZoneTemp()[2]));
+            setTemp.setText("set");
+            setTemp.setMaxWidth(35);
+            setTemp.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    temps[0] = Double.parseDouble(temp1.getText());
+                    temps[1] = Double.parseDouble(temp2.getText());
+                    temps[2] = Double.parseDouble(temp3.getText());
+                    zone.setZoneTemp(temps);
 
-            gpZone.addRow(gpZone.getRowCount(), zone_name, room, delete);
+                    System.out.println(zone.getZoneTemp()[0] + "---" +zone.getZoneTemp()[1] + "---" + zone.getZoneTemp()[2]);
+                }
+            });
+
+
+            gpZone.addRow(gpZone.getRowCount(), zone_name, room, delete, temp1, temp2, temp3, setTemp);
         });
         selectedRooms.clear();
 

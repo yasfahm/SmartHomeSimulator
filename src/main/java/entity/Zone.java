@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Zone {
     private String name;
     private ArrayList<Room> rooms;
-    private double zoneTemperature;
+    private double[] zoneTemperature = new double[3];
 
     /**
      * Constructor
@@ -49,18 +49,18 @@ public class Zone {
     /**
      * @return temperature of the zone
      */
-    public double getZoneTemp() {
+    public double[] getZoneTemp() {
         return zoneTemperature;
     }
 
     /**
      * @param zoneTemperature temperature of the zone
      */
-    public void setZoneTemp(double zoneTemperature) {
+    public void setZoneTemp(double[] zoneTemperature) {
         this.zoneTemperature = zoneTemperature;
-        for (int i = 0 ; i < rooms.size() ; i++) {
-            rooms.get(i).setTemperature(zoneTemperature);
-        }
+//        for (int i = 0 ; i < rooms.size() ; i++) {
+//            rooms.get(i).setTemperature(zoneTemperature);
+//        }
     }
 }
 
