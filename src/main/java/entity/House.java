@@ -5,6 +5,7 @@ package entity;
  */
 public class House {
     private Room[] rooms;
+    private Zone[] zones;
 
     /**
      * Constructor for class House
@@ -29,4 +30,15 @@ public class House {
         this.rooms = rooms;
     }
 
+    /**
+     *
+     * @return zones in the house
+     */
+    public Zone[] getZones() { return zones; }
+
+    /**
+     *
+     * @param zones zones in the house
+     */
+    public void setZones(Zone[] zones) { this.zones = zones; }
 }

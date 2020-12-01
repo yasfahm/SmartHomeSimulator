@@ -166,10 +166,14 @@ public class LoginInfoController implements Initializable, MainController {
     private Map<String, Integer> userPositions = new HashMap<>();
     private HashMap<String, Room> availableRooms = new HashMap<>();
     private HashMap<String, Room> selectedRooms = new HashMap<>();
+    private HashMap<String, Room> allRooms = new HashMap<>();
+    private HashMap<String, Zone> zones = new HashMap<>();
+
     private GridPane gpZone = new GridPane();
     private GridPane gpRooms = new GridPane();
 
-
+    public LoginInfoController() {
+    }
 
 
     /**
@@ -1330,6 +1334,7 @@ public class LoginInfoController implements Initializable, MainController {
             for (Room room : roomArray) {
                 if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
                     availableRooms.put(room.getName(), room);
+                    allRooms.put(room.getName(), room);
             }
             comboRoom.getItems().addAll(availableRooms.keySet());
 
@@ -2182,7 +2187,8 @@ public class LoginInfoController implements Initializable, MainController {
      */
     public void addRoom(ActionEvent event) throws FileNotFoundException {
         String selectedRoom = comboRoom.getValue();
-        selectedRooms.put(selectedRoom, availableRooms.remove(selectedRoom));
+        selectedRooms.put(selectedRoom, allRooms.get(selectedRoom));
+        availableRooms.remove(selectedRoom);
         comboRoom.getItems().clear();
         comboRoom.getItems().addAll(availableRooms.keySet());
         Label room = new Label();
@@ -2203,22 +2209,56 @@ public class LoginInfoController implements Initializable, MainController {
         });
 
         gpRooms.addRow(gpRooms.getRowCount(), room, delete);
+        vboxRooms.getChildren().clear();
         vboxRooms.getChildren().add(gpRooms);
     }
 
     public void createZone(ActionEvent event) {
         gpRooms.getChildren().clear();
+        String zoneName = textZoneName.getText();
         Collection<Room> values = selectedRooms.values();
         ArrayList<Room> listOfRooms = new ArrayList<Room>(values);
-        Zone zone = new Zone(textZoneName.getText(), listOfRooms);
+        Zone zone = new Zone(zoneName, listOfRooms);
+        zones.put(zoneName, zone);
         selectedRooms.forEach((k, v) -> {
             Label room = new Label();
-            room.setText(v.getName());
-            gpZone.addRow(gpZone.getRowCount(), room);
+            Label zone_name = new Label();
+            String roomName = v.getName();
+            room.setText(roomName);
+            zone_name.setText(zoneName + ": ");
+
+
+            Image deleteIcon = null;
+            try {
+                deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            ImageView delete = new ImageView(deleteIcon);
+
+            delete.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    availableRooms.put(roomName, allRooms.get(roomName));
+                    comboRoom.getItems().clear();
+                    comboRoom.getItems().addAll(availableRooms.keySet());
+                    listOfRooms.remove(room);
+                    zone.setRooms(listOfRooms);
+                    gpZone.getChildren().remove(zone_name);
+                    gpZone.getChildren().remove(room);
+                    gpZone.getChildren().remove(delete);
+                    gpRooms.getChildren().remove(room);
+                    gpRooms.getChildren().remove(delete);
+                }
+            });
+
+
+            gpZone.addRow(gpZone.getRowCount(), zone_name, room, delete);
         });
         selectedRooms.clear();
+
+        vboxZones.getChildren().clear();
         vboxZones.getChildren().addAll(gpZone);
-//        gpZone.getChildren().addAll(sele)
     }
 
     /**
