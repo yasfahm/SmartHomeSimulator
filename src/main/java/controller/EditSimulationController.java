@@ -21,8 +21,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import observerPattern.SHPObserver;
 import observerPattern.Subject;
-import observerPattern.UserLocationObserver;
+import observerPattern.SHPObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.RoleService;
 import java.io.IOException;
@@ -281,7 +282,7 @@ public class EditSimulationController implements Initializable, SubController {
                 ((Label) locationDisplay.lookup("#" + username + "Location")).setText(chosenLocation);
             }
             Subject subject = new Subject();
-            new UserLocationObserver(subject);
+            new SHPObserver(subject);
             subject.setUserLocations(username, chosenLocation);
             subject.notifyObserver();
             LoginInfoController.consoleLogFile("Moved " + username + " to " + chosenLocation, ConsoleComponents.SHS);

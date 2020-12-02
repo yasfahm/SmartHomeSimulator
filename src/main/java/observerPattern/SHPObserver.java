@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * class UserLocationObserver
  */
-public class UserLocationObserver{
+public class SHPObserver extends Observer{
 
     /**
      * declaring variables
@@ -19,7 +19,7 @@ public class UserLocationObserver{
     /**
      * @param subject The subject
      */
-    public UserLocationObserver(Subject subject){
+    public SHPObserver(Subject subject){
         this.subject = subject;
         this.subject.attach(this);
     }

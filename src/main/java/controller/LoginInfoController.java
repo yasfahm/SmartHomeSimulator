@@ -56,7 +56,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import observerPattern.UserLocationObserver;
+import observerPattern.SHPObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
@@ -307,7 +307,7 @@ public class LoginInfoController implements Initializable, MainController {
             firstLaunch = false;
             ChangeDateTimeController.setParentController(this);
             LightsScheduleController.setParentController(this);
-            UserLocationObserver.setParentController(this);
+            SHPObserver.setParentController(this);
             SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
             SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
             long sysmillis = System.currentTimeMillis();
@@ -2450,6 +2450,10 @@ public class LoginInfoController implements Initializable, MainController {
      * @param timeDelay the timeDelay to wait
      */
     public void sendNotification(String timeDelay){
+        if (timeDelay == "0"){
+            consoleLog("Notification sent to user. The time before alerting authorities of " + timeDelay
+                    + " seconds has been elapsed.");
+        }
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(Double.parseDouble(timeDelay)), e -> {
                     consoleLog("Notification sent to user. The time before alerting authorities of " + timeDelay

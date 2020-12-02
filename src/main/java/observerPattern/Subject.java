@@ -2,6 +2,8 @@ package observerPattern;
 
 import controller.EditSimulationController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +15,7 @@ public class Subject {
      * declaring variables
      */
     private Map<String, String> userLocations = EditSimulationController.getUserLocations();;
-    private UserLocationObserver observer;
+    private List<Observer> observers = new ArrayList<Observer>();
 
     /**
      * This function sets userLocations
@@ -36,16 +38,18 @@ public class Subject {
     /**
      * Attach the observer to the Subject
      *
-     * @param userLocationObserver userLocationObserver to attach
+     * @param observer observer to attach
      */
-    public void attach(UserLocationObserver userLocationObserver){
-        this.observer = userLocationObserver;
+    public void attach(Observer observer){
+        observers.add(observer);
     }
 
     /**
      * This function notifies the observer when a change occurs
      */
     public void notifyObserver(){
-        observer.update();
+        for (Observer observer: observers){
+            observer.update();
+        }
     }
 }
