@@ -141,7 +141,9 @@ public class LoginInfoController implements Initializable, MainController {
     @FXML
     private VBox vboxZones;
     @FXML
-    private VBox vboxRoomsTemp;
+    private VBox vboxActualTemp;
+    @FXML
+    private VBox vboxDesiredTemp;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -175,6 +177,7 @@ public class LoginInfoController implements Initializable, MainController {
     private GridPane gpZone = new GridPane();
     private GridPane gpRooms = new GridPane();
     private GridPane gpRoomsTemp = new GridPane();
+    private GridPane gpActualTemp = new GridPane();
 
     public LoginInfoController() {
     }
@@ -798,34 +801,48 @@ public class LoginInfoController implements Initializable, MainController {
             }
 
             //display the current and desired temperature of each room in SHH tab
+            gpRoomsTemp.getChildren().clear();
+            vboxDesiredTemp.getChildren().clear();
+            for (Room room : roomArray) {
+                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                    Label roomName = new Label();
+                    Label desiredRoomTemp = new Label();
+                    TextField textFieldRoom = new TextField();
+                    Button setNewTemperature = new Button();
+                    setNewTemperature.setOnAction(new EventHandler<ActionEvent>()
+                    {
+                        @Override
+                        public void handle(ActionEvent e) {
+                            room.setTemperature(Double.parseDouble(setNewTemperature.getText()));
+                        }
+                    });
+                    desiredRoomTemp.setMaxWidth(40);
+                    roomName.setText(" " + room.getName());
+                    desiredRoomTemp.setText("  " + room.getTemperature());
+                    textFieldRoom.setMaxWidth(40);
+                    setNewTemperature.setMaxWidth(30);
+                    setNewTemperature.setText("set");
+                    gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, desiredRoomTemp);
+                }
+            }
+            vboxDesiredTemp.getChildren().add(gpRoomsTemp);
+
+            //display the current and desired temperature of each room in SHH tab
             time.textProperty().addListener((obs, oldV, newV) -> {
-                gpRoomsTemp.getChildren().clear();
-                vboxRoomsTemp.getChildren().clear();
+                gpActualTemp.getChildren().clear();
+                vboxActualTemp.getChildren().clear();
                 for (Room room : roomArray) {
                     if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
-                        Label roomName = new Label();
-                        Label desiredRoomTemp = new Label();
                         Label currentRoomTemp = new Label();
-                        TextField textFieldRoom = new TextField();
-                        Button setNewTemperature = new Button();
-                        setNewTemperature.setOnAction(new EventHandler<ActionEvent>()
-                        {
-                            @Override
-                            public void handle(ActionEvent e) {
-                                room.setTemperature(Double.parseDouble(setNewTemperature.getText()));
-                            }
-                        });
-                        desiredRoomTemp.setMaxWidth(40);
+                        currentRoomTemp.setMinHeight(27);
                         currentRoomTemp.setMaxWidth(40);
-                        roomName.setText(room.getName());
-                        desiredRoomTemp.setText(String.valueOf(room.getTemperature()));
                         currentRoomTemp.setText(String.valueOf(room.getCurrentTemperature()).substring(0,4));
-                        gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, desiredRoomTemp, currentRoomTemp);
+                        gpActualTemp.addRow(gpActualTemp.getRowCount(), currentRoomTemp);
 
                         drawTemperature(room);
                     }
                 }
-                vboxRoomsTemp.getChildren().add(gpRoomsTemp);
+                vboxActualTemp.getChildren().add(gpActualTemp);
             });
 
             Set<Room> traversed = new HashSet<>();

@@ -173,8 +173,9 @@
                                                                   <TextField fx:id="textZoneName" layoutX="181.0" layoutY="144.0" prefHeight="27.0" prefWidth="118.0" />
                                                                   <Label layoutX="15.0" layoutY="220.0" text="Room name     8h-16h     16h-00h     00h-8h " />
                                                                   <VBox fx:id="vboxZones" layoutX="8.0" layoutY="239.0" prefHeight="157.0" prefWidth="320.0" />
-                                                                  <VBox fx:id="vboxRoomsTemp" layoutX="14.0" layoutY="430.0" prefHeight="126.0" prefWidth="320.0" />
-                                                                  <Label layoutX="8.0" layoutY="403.0" text="Change specific room     Actual °C     Desired °C" />
+                                                                  <VBox fx:id="vboxActualTemp" layoutX="245.0" layoutY="426.0" prefHeight="129.0" prefWidth="84.0" />
+                                                                  <Label layoutX="8.0" layoutY="403.0" text="Change specific room    Desired °C    Actual °C     " />
+                                                                  <VBox fx:id="vboxDesiredTemp" layoutX="10.0" layoutY="426.0" prefHeight="129.0" prefWidth="236.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children></AnchorPane>
