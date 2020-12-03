@@ -58,9 +58,6 @@ public class Zone {
      */
     public void setZoneTemp(double[] zoneTemperature) {
         this.zoneTemperature = zoneTemperature;
-//        for (int i = 0 ; i < rooms.size() ; i++) {
-//            rooms.get(i).setTemperature(zoneTemperature);
-//        }
     }
 }
 

@@ -43,6 +43,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -139,7 +140,11 @@ public class LoginInfoController implements Initializable, MainController {
     private TextField textZoneName;
     @FXML
     private VBox vboxZones;
-  
+    @FXML
+    private TextArea textAreaRoomsTemp;
+    @FXML
+    private VBox vboxRoomsTemp;
+
     private static String userParent;
     private static Map<String, Room> house;
     private static Room[] roomArray;
@@ -171,6 +176,7 @@ public class LoginInfoController implements Initializable, MainController {
 
     private GridPane gpZone = new GridPane();
     private GridPane gpRooms = new GridPane();
+    private GridPane gpRoomsTemp = new GridPane();
 
     public LoginInfoController() {
     }
@@ -787,8 +793,35 @@ public class LoginInfoController implements Initializable, MainController {
             roomArray = HouseLayoutService.parseHouseLayout(file);
             HashMap<String, Room> rooms = new HashMap<>();
             for (Room room : roomArray) {
+                //set the default current temperature for all the rooms based on outside temperature.
+                room.setCurrentTemperature(Double.parseDouble(temperature.getText()));
+
                 rooms.put(room.getName(), room);
             }
+
+            //display the current and desired temperature of each room in SHH tab
+            time.textProperty().addListener((obs, oldV, newV) -> {
+                gpRoomsTemp.getChildren().clear();
+                vboxRoomsTemp.getChildren().clear();
+                textAreaRoomsTemp.clear();
+                for (Room room : roomArray) {
+                    if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                        textAreaRoomsTemp.appendText(room.getName() + " " + room.getTemperature() + " " + String.format("%.2f", room.getCurrentTemperature()) + "\n");
+                        Label roomName = new Label();
+                        Label desiredRoomTemp = new Label();
+                        Label currentRoomTemp = new Label();
+                        desiredRoomTemp.setMaxWidth(40);
+                        currentRoomTemp.setMaxWidth(40);
+                        roomName.setText(room.getName());
+                        desiredRoomTemp.setText(String.valueOf(room.getTemperature()));
+                        currentRoomTemp.setText(String.valueOf(room.getCurrentTemperature()).substring(0,4));
+                        gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), roomName, desiredRoomTemp, currentRoomTemp);
+
+                        drawTemperature(room);
+                    }
+                }
+                vboxRoomsTemp.getChildren().add(gpRoomsTemp);
+            });
 
             Set<Room> traversed = new HashSet<>();
 
@@ -814,6 +847,11 @@ public class LoginInfoController implements Initializable, MainController {
 
             GridPane gpSHCLights = new GridPane();
             gpSHCLights.setVgap(13);
+
+            //draw the temperature for each room.
+            for (int i = 0 ; i < roomArray.length ; i++) {
+                drawTemperature(roomArray[i]);
+            }
 
             for (int i = 0 ; i < roomArray.length ; i++) {
                 Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
@@ -1331,6 +1369,7 @@ public class LoginInfoController implements Initializable, MainController {
 
             aPZone.setVisible(true);
 
+            //creating two maps for available rooms and all the rooms to be used in SHH tab.
             for (Room room : roomArray) {
                 if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
                     availableRooms.put(room.getName(), room);
@@ -2026,6 +2065,23 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     /**
+     * This function will draw the actual temperature of a room
+     *
+     * @param room that will call this function
+     */
+    public void drawTemperature(Room room) {
+        if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+            Label temperature = new Label();
+            temperature.setText(String.valueOf(room.getCurrentTemperature()));
+            int[] coordinates = roomPosition.get(room.getName());
+            gc.setFill(Color.web("#455A64"));
+            gc.fillRect(coordinates[0] + 40, coordinates[1] + 35, 25, 15);
+            gc.setFill(Color.WHITE);
+            gc.fillText(temperature.getText().substring(0, 4),coordinates[0] + 40, coordinates[1] + 45);
+        }
+    }
+
+    /**
      * This function will draw the lights with a given room.
      *
      * @param room where light will be drawn.
@@ -2232,7 +2288,6 @@ public class LoginInfoController implements Initializable, MainController {
             room.setText(roomName);
             zone_name.setText(zoneName + ": ");
 
-
             Image deleteIcon = null;
             try {
                 deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
@@ -2266,7 +2321,7 @@ public class LoginInfoController implements Initializable, MainController {
             });
 
             double[] temps = new double[3];
-//            morning.setText("8am-4pm");
+
             temp1.setPrefWidth(50);
             temp1.setPromptText(String.valueOf(zone.getZoneTemp()[0]));
             temp2.setPrefWidth(50);
@@ -2282,12 +2337,59 @@ public class LoginInfoController implements Initializable, MainController {
                     temps[1] = Double.parseDouble(temp2.getText());
                     temps[2] = Double.parseDouble(temp3.getText());
                     zone.setZoneTemp(temps);
+                    time.textProperty().addListener((observable, oldValue, newValue) -> {
+                        int j = 0;
+                        if (newValue.startsWith("08") || newValue.startsWith("09") || newValue.startsWith("10") ||
+                                newValue.startsWith("11") || newValue.startsWith("12") || newValue.startsWith("13") ||
+                                newValue.startsWith("14") || newValue.startsWith("15")) {
+                            j = 0;
+                        }
+                        if (newValue.startsWith("16") || newValue.startsWith("17") || newValue.startsWith("18") ||
+                                newValue.startsWith("19") || newValue.startsWith("20") || newValue.startsWith("21") ||
+                                newValue.startsWith("22") || newValue.startsWith("23")) {
+                            j = 1;
+                        }
+                        if (newValue.startsWith("00") || newValue.startsWith("01") || newValue.startsWith("02") ||
+                                newValue.startsWith("03") || newValue.startsWith("04") || newValue.startsWith("05") ||
+                                newValue.startsWith("06") || newValue.startsWith("07")) {
+                            j = 2;
+                        }
 
-                    System.out.println(zone.getZoneTemp()[0] + "---" +zone.getZoneTemp()[1] + "---" + zone.getZoneTemp()[2]);
+                        for (int i = 0; i < zone.getRooms().size(); i++) {
+                            zone.getRooms().get(i).setTemperature(zone.getZoneTemp()[j]);
+                            int finalI = i;
+                            //when desired temperature is lower, AC will be turned on
+                            if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature()) {
+                                //AC should be turned on
+                                Timer t = new Timer();
+                                t.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        if (zone.getRooms().get(finalI).getCurrentTemperature() - 0.1 > zone.getRooms().get(finalI).getTemperature()) {
+                                            zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.1);
+                                            System.out.println(zone.getRooms().get(finalI).getCurrentTemperature());
+                                        }
+                                    }
+                                }, 1000);
+                            }
+                            //when desired temperature is higher, Heater will be turned on
+                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature()) {
+                                //Heater should be turned on
+                                Timer t = new Timer();
+                                t.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        if (zone.getRooms().get(finalI).getCurrentTemperature() + 0.1 < zone.getRooms().get(finalI).getTemperature()) {
+                                            zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.1);
+                                            System.out.println(zone.getRooms().get(finalI).getCurrentTemperature());
+                                        }
+                                    }
+                                }, 1000);
+                            }
+                        }
+                    });
                 }
             });
-
-
             gpZone.addRow(gpZone.getRowCount(), zone_name, room, delete, temp1, temp2, temp3, setTemp);
         });
         selectedRooms.clear();

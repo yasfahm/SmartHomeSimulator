@@ -12,6 +12,7 @@ public class Room {
     private int lightsOn;
     private int lightsTotal;
     private double roomTemperature;
+    private double currentRoomTemperature;
 
     /**
      * Constructor for class Room
@@ -20,14 +21,12 @@ public class Room {
      * @param windows     windows in the room
      * @param doors       doors in the room
      * @param lightsTotal total lights in the room
-     * @param roomTemperature temperature of the room
      */
-    private Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal, double roomTemperature) {
+    private Room(String name, ArrayList<Window> windows, ArrayList<Door> doors, int lightsTotal) {
         this.name = name;
         this.windows = windows;
         this.doors = doors;
         this.lightsTotal = lightsTotal;
-        this.roomTemperature = roomTemperature;
     }
 
     /**
@@ -84,6 +83,20 @@ public class Room {
      */
     public void setTemperature(double roomTemperature) {
         this.roomTemperature = roomTemperature;
+    }
+
+    /**
+     * @return current temperature of the room
+     */
+    public double getCurrentTemperature() {
+        return currentRoomTemperature;
+    }
+
+    /**
+     * @param currentRoomTemperature of the room
+     */
+    public void setCurrentTemperature(double currentRoomTemperature) {
+        this.currentRoomTemperature = currentRoomTemperature;
     }
 
     /**
@@ -155,7 +168,7 @@ public class Room {
         }
 
         public Room build() {
-            return new Room(name, windows, doors, lightsTotal, roomTemperature);
+            return new Room(name, windows, doors, lightsTotal);
         }
     }
 }
