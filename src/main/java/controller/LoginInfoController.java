@@ -141,8 +141,6 @@ public class LoginInfoController implements Initializable, MainController {
     @FXML
     private VBox vboxZones;
     @FXML
-    private TextArea textAreaRoomsTemp;
-    @FXML
     private VBox vboxRoomsTemp;
 
     private static String userParent;
@@ -803,19 +801,26 @@ public class LoginInfoController implements Initializable, MainController {
             time.textProperty().addListener((obs, oldV, newV) -> {
                 gpRoomsTemp.getChildren().clear();
                 vboxRoomsTemp.getChildren().clear();
-                textAreaRoomsTemp.clear();
                 for (Room room : roomArray) {
                     if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
-                        textAreaRoomsTemp.appendText(room.getName() + " " + room.getTemperature() + " " + String.format("%.2f", room.getCurrentTemperature()) + "\n");
                         Label roomName = new Label();
                         Label desiredRoomTemp = new Label();
                         Label currentRoomTemp = new Label();
+                        TextField textFieldRoom = new TextField();
+                        Button setNewTemperature = new Button();
+                        setNewTemperature.setOnAction(new EventHandler<ActionEvent>()
+                        {
+                            @Override
+                            public void handle(ActionEvent e) {
+                                room.setTemperature(Double.parseDouble(setNewTemperature.getText()));
+                            }
+                        });
                         desiredRoomTemp.setMaxWidth(40);
                         currentRoomTemp.setMaxWidth(40);
                         roomName.setText(room.getName());
                         desiredRoomTemp.setText(String.valueOf(room.getTemperature()));
                         currentRoomTemp.setText(String.valueOf(room.getCurrentTemperature()).substring(0,4));
-                        gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), roomName, desiredRoomTemp, currentRoomTemp);
+                        gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, desiredRoomTemp, currentRoomTemp);
 
                         drawTemperature(room);
                     }
