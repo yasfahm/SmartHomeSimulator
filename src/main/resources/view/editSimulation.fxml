@@ -60,8 +60,17 @@
             </HBox>
             <HBox fx:id="defaultSummerContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
                <children>
-                  <Label text="this is an invisible container to do the node swapping" />
                   <TextField fx:id="summerAwayTF" />
+               </children>
+            </HBox>
+            <HBox fx:id="hBoxWinter" alignment="CENTER" layoutX="25.0" layoutY="247.0" prefHeight="27.0" prefWidth="169.0" spacing="5.0">
+               <children>
+                  <Label fx:id="defaultAwayWinter" onMouseClicked="#setDefaultWinter" stylesheets="@application.css" />
+               </children>
+            </HBox>
+            <HBox fx:id="defaultWinterContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
+               <children>
+                  <TextField fx:id="winterAwayTF" />
                </children>
             </HBox>
          </children>

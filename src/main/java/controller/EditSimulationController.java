@@ -87,13 +87,11 @@ public class EditSimulationController implements Initializable, SubController {
     @FXML
     private HBox defaultSummerContainer, hBoxSummer;
     @FXML
-    private HBox defaultWinterContainer, hboxWinter;
+    private HBox defaultWinterContainer, hBoxWinter;
     @FXML
-    private Label defaultAwaySummer;
+    private Label defaultAwaySummer, defaultAwayWinter;
     @FXML
-    private TextField summerAwayTF;
-    @FXML
-    private TextField winterAwayTF;
+    private TextField summerAwayTF, winterAwayTF;
 
     private Map<String, Room> house;
     private String username;
@@ -218,6 +216,8 @@ public class EditSimulationController implements Initializable, SubController {
         setComboBoxValue();
 
         this.defaultAwaySummer.setText(Integer.toString(defaultSummerTemp));
+        this.defaultAwayWinter.setText(Integer.toString(defaultWinterTemp));
+
     }
 
     /**
@@ -656,6 +656,11 @@ public class EditSimulationController implements Initializable, SubController {
     }
 
 
+    /**
+     * This method is called when the default temperature for away mode in summer label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
     public void setDefaultSummer(MouseEvent mouseEvent) {
         defaultSummerContainer.getChildren().add(defaultAwaySummer);
         summerAwayTF.setText(defaultAwaySummer.getText());
@@ -663,16 +668,50 @@ public class EditSimulationController implements Initializable, SubController {
         hBoxSummer.getChildren().add(0, summerAwayTF);
         summerAwayTF.requestFocus();
         summerAwayTF.setOnAction(e -> {
-            changeDefaultTemp(defaultSummerContainer, hBoxSummer, summerAwayTF, defaultAwaySummer, "summer");
+            changeDefaultTemp(defaultSummerContainer, hBoxSummer, summerAwayTF, defaultAwaySummer, Season.SUMMER);
         });
     }
+    /**
+     * This method is called when the default temperature for away mode in winter label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultWinter(MouseEvent mouseEvent) {
+        defaultWinterContainer.getChildren().add(defaultAwayWinter);
+        winterAwayTF.setText(defaultAwayWinter.getText());
+        winterAwayTF.setPrefWidth(20 + (defaultAwayWinter.getText().length() * 5));
+        hBoxWinter.getChildren().add(0, winterAwayTF);
+        winterAwayTF.requestFocus();
+        winterAwayTF.setOnAction(e -> {
+            changeDefaultTemp(defaultWinterContainer, hBoxWinter, winterAwayTF, defaultAwayWinter, Season.WINTER);
+        });
+    }
+
+    /**
+     * This method is called on enter and modifies the default temperatures for away mode
+     * for each season
+     *
+     * @param defaultTempContainer defaultTempContainer invisible HBox
+     * @param hBox HBox with the summer default away mode value
+     * @param textField textField in which the user enters the new default temp
+     * @param defaultTempLabel either defaultAwayWinter or defaultAwaySummer
+     * @param season season for which the temperature is modified
+     */
     private void changeDefaultTemp(HBox defaultTempContainer, HBox hBox, TextField textField,
-                                   Label defaultTempLabel, String season) {
+                                   Label defaultTempLabel, Season season) {
         defaultTempContainer.getChildren().add(textField);
         hBox.getChildren().add(0, defaultTempLabel);
         defaultTempLabel.setText(textField.getText());
         textField.clear();
-        defaultSummerTemp = Integer.parseInt(defaultTempLabel.getText());
-        LoginInfoController.consoleLogFile("Change outside temperature to " + defaultSummerTemp, ConsoleComponents.SHS);
+        int temp = 0;
+        if (season.equals(Season.SUMMER)){
+            defaultSummerTemp = Integer.parseInt(defaultTempLabel.getText());
+            temp = defaultSummerTemp;
+        }
+        else if (season.equals(Season.WINTER)){
+            defaultWinterTemp = Integer.parseInt(defaultTempLabel.getText());
+            temp = defaultWinterTemp;
+        }
+        LoginInfoController.consoleLogFile("Change outside temperature to " + temp, ConsoleComponents.SHH);
     }
 }
