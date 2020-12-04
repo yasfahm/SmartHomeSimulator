@@ -139,6 +139,8 @@ public class LoginInfoController implements Initializable, MainController {
     private Label labelAwayMode;
     @FXML
 	private Button autoModeBt;
+    @FXML
+    private Label season;
   
     private static String userParent;
     private static Map<String, Room> house;
@@ -291,6 +293,7 @@ public class LoginInfoController implements Initializable, MainController {
         Calendar cal = Calendar.getInstance();
         timeInMillis += 1000;
         cal.setTimeInMillis(timeInMillis);
+        season.setText(EditSimulationController.getCurrentSeason(cal).toString());
         this.date.setText(formatDate.format(cal.getTime()));
         this.time.setText(formatTime.format(cal.getTime()));
     }
@@ -2304,7 +2307,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @throws ParseException if the Date can't be parsed correctly in lightScheduleLight
      */
     public void onTimeChangeLightRooms() throws ParseException {
-        for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()){
+        for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()) {
             lightScheduleLight(entry.getKey(), entry.getValue()[0], entry.getValue()[1]);
         }
     }

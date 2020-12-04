@@ -9,7 +9,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-radius: 5;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditSimulationController">
    <children>
-      <AnchorPane onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="750" prefWidth="900" styleClass="root" stylesheets="@application.css">
+      <AnchorPane layoutX="6.0" onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="750" prefWidth="900" styleClass="root" stylesheets="@application.css">
          <children>
             <Label layoutX="882.0" layoutY="5.0" onMouseClicked="#close" stylesheets="@application.css" text="X">
                <font>
@@ -27,12 +27,27 @@
             <Label layoutX="19.0" layoutY="424.0" prefHeight="17.0" prefWidth="123.0" text="Select Room:" />
             <Button fx:id="button" layoutX="258.0" layoutY="521.0" mnemonicParsing="false" onAction="#windowsBlocked" text="Action" />
             <AnchorPane fx:id="locationDisplay" layoutX="464.0" layoutY="69.0" prefHeight="215.0" prefWidth="415.0" />
-            <TextArea fx:id="windowNote" layoutX="469.0" layoutY="375.0" prefHeight="247.0" prefWidth="396.0" style="-fx-background-color: #455A64;" styleClass="custom" stylesheets="@application.css" />
+            <TextArea fx:id="windowNote" layoutX="474.0" layoutY="410.0" prefHeight="247.0" prefWidth="396.0" style="-fx-background-color: #455A64;" styleClass="custom" stylesheets="@application.css" />
             <Label fx:id="windowBlockStatus" layoutX="213.0" layoutY="495.0" prefHeight="19.0" prefWidth="140.0" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Italic" size="10.0" />
                </font>
             </Label>
+            <Label layoutX="15.0" layoutY="284.0" text="Change Season Dates" />
+            <Label layoutX="25.0" layoutY="315.0" text="Summer" />
+            <Label layoutX="25.0" layoutY="343.0" text="Winter" />
+            <ComboBox fx:id="summerDayStart" onAction="#onChangeSummerStartDay" layoutX="142.0" layoutY="312.0" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="summerMonthStart" onAction="#onChangeSummerStartMonth" layoutX="224.0" layoutY="312.0" prefWidth="150.0" />
+            <ComboBox fx:id="winterDayStart" onAction="#onChangeWinterStartDay" layoutX="142.0" layoutY="340.0" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="winterMonthStart" onAction="#onChangeWinterStartMonth" layoutX="224.0" layoutY="340.0" prefWidth="150.0" />
+            <Label layoutX="96.0" layoutY="315.0" text="From:" />
+            <Label layoutX="96.0" layoutY="343.0" text="From:" />
+            <Label layoutX="402.0" layoutY="343.0" text="To:" />
+            <Label layoutX="402.0" layoutY="315.0" text="To:" />
+            <ComboBox fx:id="summerDayEnd" onAction="#onChangeSummerEndDay" layoutX="439.0" layoutY="312.0" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="summerMonthEnd" onAction="#onChangeSummerEndMonth" layoutX="522.0" layoutY="312.0" prefWidth="150.0" />
+            <ComboBox fx:id="winterDayEnd" onAction="#onChangeWinterEndDay" layoutX="439.0" layoutY="340.0" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="winterMonthEnd" onAction="#onChangeWinterEndMonth" layoutX="522.0" layoutY="340.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
    </children>

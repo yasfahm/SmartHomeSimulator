@@ -3,6 +3,7 @@ package controller;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import constants.Season;
 import constants.UserRoles;
 import entity.Room;
 import javafx.event.ActionEvent;
@@ -23,6 +24,7 @@ import service.DatabaseService;
 import service.HouseLayoutService;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -106,6 +108,18 @@ public class EditSimulationControllerTest extends ApplicationTest {
         controller.windowsBlocked(new ActionEvent());
 
         assertTrue(rooms.get("Bathroom").getWindows().get(0).getBlocking());
+    }
+
+    @Test
+    public void test_get_season() {
+        Calendar calendarSummer = new Calendar.Builder().setDate(2020, 11, 1).build();
+        Calendar calendarWinter = new Calendar.Builder().setDate(2020, 1, 1).build();
+
+        assertEquals(Season.SUMMER, EditSimulationController.getCurrentSeason(calendarSummer));
+        assertEquals(Season.WINTER, EditSimulationController.getCurrentSeason(calendarWinter));
+
+        EditSimulationController.setSummerMonthEndCache(10);
+        assertEquals(Season.OTHER, EditSimulationController.getCurrentSeason(calendarSummer));
     }
 
 }

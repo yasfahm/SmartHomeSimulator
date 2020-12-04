@@ -52,8 +52,8 @@
                         <Button layoutX="114.0" layoutY="685.0" mnemonicParsing="false" onAction="#goToLogin" style="-fx-background-color: white; -fx-text-fill: black;" text="Log Out" />
                         <Button fx:id="addHouse" layoutX="57.0" layoutY="147.0" mnemonicParsing="false" onAction="#addHouseLayout" style="-fx-background-color: white; -fx-text-fill: black;" text="Add Layout" />
                         <Button layoutX="56.0" layoutY="212.0" mnemonicParsing="false" onAction="#goToEdit" style="-fx-background-color: white; -fx-text-fill: black;" text="Edit" />
-                        <Label fx:id="date" layoutX="16.0" layoutY="426.0" stylesheets="@application.css" text="_date" />
-                        <Label fx:id="time" layoutX="16.0" layoutY="453.0" stylesheets="@application.css" text="_time" />
+                        <Label fx:id="date" layoutX="16.0" layoutY="451.0" stylesheets="@application.css" text="_date" />
+                        <Label fx:id="time" layoutX="16.0" layoutY="477.0" stylesheets="@application.css" text="_time" />
                         <Label layoutX="15.0" layoutY="353.0" style="-fx-font-size: 18px;" stylesheets="@application.css" text="Location:" />
                         <Hyperlink fx:id="loc" layoutX="14.0" layoutY="376.0" onAction="#goToEdit" text="location" textFill="#ff9900" />
                         <Label fx:id="user" layoutX="16.0" layoutY="14.0" style="-fx-font-size: 20px;" stylesheets="@application.css" text="user" />
@@ -64,7 +64,7 @@
                               <Label text="°C" />
                            </children>
                         </HBox>
-                        <Button layoutX="61.0" layoutY="488.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
+                        <Button layoutX="62.0" layoutY="526.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
                         <AnchorPane fx:id="anchorToggle" layoutX="18.0" layoutY="42.0" prefHeight="94.0" prefWidth="188.0" />
                         <HBox fx:id="invisibleContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
                            <children>
@@ -72,6 +72,7 @@
                               <TextField fx:id="textFieldTemperature" />
                            </children>
                         </HBox>
+                        <Label fx:id="season" layoutX="66.0" layoutY="432.0" prefHeight="19.0" prefWidth="66.0" stylesheets="@application.css" text="SEASON" />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>

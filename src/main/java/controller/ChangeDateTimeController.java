@@ -36,7 +36,7 @@ public class ChangeDateTimeController implements Initializable {
 
     private static LoginInfoController parentController;
     private ObservableList<Integer> li_year; // dynamic year list
-    private final ObservableList<String> li_month = FXCollections.observableArrayList(
+    public final ObservableList<String> li_month = FXCollections.observableArrayList(
             "January", "February", "March", "April", "May", "June", "July", "August",
             "September", "October", "November", "December");
     private ObservableList<Integer> li_date; // dynamic date list
