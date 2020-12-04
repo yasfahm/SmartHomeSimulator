@@ -14,7 +14,8 @@ public class Room {
     private double roomTemperature;
     private double currentRoomTemperature;
     private boolean overrideTemperature;
-    private boolean hvac;
+    private boolean hvacPaused;
+    private boolean hvacStopped;
 
     /**
      * Constructor for class Room
@@ -144,18 +145,30 @@ public class Room {
     }
 
     /**
-     *
-     * @return HAVC Heating, AC, Ventilation system
+     * @return HAVC pausing Heating, AC, Ventilation system
      */
-    public boolean getHvac(){
-        return hvac;
+    public boolean getHvacPaused(){
+        return hvacPaused;
     }
 
     /**
-     * @param hvac set HAVC to on or off
+     * @param hvacPaused pause/unpause HVAC
      */
-    public void setHvac(boolean hvac) {
-        this.hvac = hvac;
+    public void setHvacPaused(boolean hvacPaused) {
+        this.hvacPaused = hvacPaused;
+    }
+
+    /**
+     * @return HAVC stopping Heating, AC, Ventilation system
+     */
+    public boolean getHvacStopped() { return hvacStopped; }
+
+    /**
+     *
+     * @param hvacStopped stop/start HVAC
+     */
+    public void setHvacStopped(boolean hvacStopped) {
+        this.hvacStopped = hvacStopped;
     }
 
     /**
