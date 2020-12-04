@@ -164,6 +164,7 @@ public class LoginInfoController implements Initializable, MainController {
     private static String timeBeforeAlert;
     private Map<String, String> userLocation = EditSimulationController.getUserLocations();
     private Map<String, Integer> userPositions = new HashMap<>();
+    private double clockSpeed = 1;
 
     /**
      * Sets up the logged in user as the active user
@@ -294,6 +295,37 @@ public class LoginInfoController implements Initializable, MainController {
         this.date.setText(formatDate.format(cal.getTime()));
         this.time.setText(formatTime.format(cal.getTime()));
     }
+    
+    /**
+     * Increase clock speed
+     */
+    public void increaseClockSpeed() {
+    	this.clockSpeed += 0.5;
+    	playClockAnimation();
+    }
+    
+    /**
+     * Decrease clock speed
+     */
+    public void decreaseClockSpeed() {
+    	this.clockSpeed -= 0.5;
+    	playClockAnimation();
+    }
+    
+    /**
+     * Clock animation trigger, this will clear the animation and replay
+     */
+    private void playClockAnimation() {
+        if (clock != null) clock.getKeyFrames().clear();
+        clock = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {
+                    moveClock();
+                }),
+                new KeyFrame(Duration.seconds(clockSpeed))
+        );
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
+    }
 
     /**
      * Function from interface Initializable, initialize default actions
@@ -332,16 +364,7 @@ public class LoginInfoController implements Initializable, MainController {
         // Temperature
         this.temperature.setText(Integer.toString(temperatureInInt));
 
-        // Clock animation
-        if (clock != null) clock.getKeyFrames().clear();
-        clock = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> {
-                    moveClock();
-                }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
+        playClockAnimation();
 
         setupCurrentUser();
         if(autoMode) {
