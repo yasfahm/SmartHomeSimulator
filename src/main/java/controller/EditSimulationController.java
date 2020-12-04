@@ -760,7 +760,8 @@ public class EditSimulationController implements Initializable, SubController {
             defaultWinterTemp = Integer.parseInt(defaultAwayWinter.getText());
             temp = defaultWinterTemp;
         }
-        LoginInfoController.consoleLogFile("Change outside temperature to " + temp, ConsoleComponents.SHH);
+        LoginInfoController.consoleLogFile("Set the default temperature for " + season +
+                " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
     }
 
 }
