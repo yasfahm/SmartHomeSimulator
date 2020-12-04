@@ -15,25 +15,24 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import observerPattern.SHPObserver;
 import observerPattern.Subject;
-import observerPattern.SHPObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.RoleService;
-import javax.swing.event.ChangeEvent;
+
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
@@ -85,6 +84,14 @@ public class EditSimulationController implements Initializable, SubController {
     private ComboBox<String> winterMonthEnd;
     @FXML
     private ComboBox<Integer> winterDayEnd;
+    @FXML
+    private HBox defaultSummerContainer, hBoxSummer;
+    @FXML
+    private HBox defaultWinterContainer, hBoxWinter;
+    @FXML
+    private Label defaultAwaySummer, defaultAwayWinter;
+    @FXML
+    private TextField summerAwayTF, winterAwayTF;
 
     private Map<String, Room> house;
     private String username;
@@ -109,6 +116,8 @@ public class EditSimulationController implements Initializable, SubController {
     private static Integer summerDayEndCache;
     private static Integer winterDayEndCache;
 
+    private static int defaultSummerTemp = 22;
+    private static int defaultWinterTemp = 18;
     static {
         summerMonthStartCache = 6;
         winterMonthStartCache = 1;
@@ -205,6 +214,10 @@ public class EditSimulationController implements Initializable, SubController {
             windows.getSelectionModel().selectFirst();
         }
         setComboBoxValue();
+
+        this.defaultAwaySummer.setText(Integer.toString(defaultSummerTemp));
+        this.defaultAwayWinter.setText(Integer.toString(defaultWinterTemp));
+
     }
 
     /**
@@ -641,4 +654,114 @@ public class EditSimulationController implements Initializable, SubController {
     public static void setSummerMonthEndCache(final int summerMonthEndCache) {
         EditSimulationController.summerMonthEndCache = summerMonthEndCache;
     }
+
+    /**
+     * Getter for summerAway text field
+     *
+     * @return summerAwayTF
+     */
+    public TextField getSummerAwayTF(){
+        return summerAwayTF;
+    }
+    /**
+     * Getter for winterAway text field
+     *
+     * @return winterAwayTF
+     */
+    public TextField getWinterAwayTF(){
+        return winterAwayTF;
+    }
+
+    /**
+     * Getter for default summer temp
+     *
+     * @return defaultSummerTemp integer
+     */
+    public int getDefaultSummerTemp(){
+        return defaultSummerTemp;
+    }
+    /**
+     * Getter for default winter temp
+     *
+     * @return defaultWinterTemp integer
+     */
+    public int getDefaultWinterTemp(){
+        return defaultWinterTemp;
+    }
+
+    /**
+     * Getter for default summer label
+     *
+     * @return defaultSummer label
+     */
+    public Label getDefaultAwaySummer(){
+        return defaultAwaySummer;
+    }
+    /**
+     * Getter for default winter label
+     *
+     * @return defaultWinter label
+     */
+    public Label getDefaultAwayWinter(){
+        return defaultAwayWinter;
+    }
+
+    /**
+     * This method is called when the default temperature for away mode in summer label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultSummer(MouseEvent mouseEvent) {
+        defaultSummerContainer.getChildren().add(defaultAwaySummer);
+        summerAwayTF.setText(defaultAwaySummer.getText());
+        summerAwayTF.setPrefWidth(20 + (defaultAwaySummer.getText().length() * 5));
+        hBoxSummer.getChildren().add(0, summerAwayTF);
+        summerAwayTF.requestFocus();
+        summerAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.SUMMER);
+        });
+    }
+    /**
+     * This method is called when the default temperature for away mode in winter label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultWinter(MouseEvent mouseEvent) {
+        defaultWinterContainer.getChildren().add(defaultAwayWinter);
+        winterAwayTF.setText(defaultAwayWinter.getText());
+        winterAwayTF.setPrefWidth(20 + (defaultAwayWinter.getText().length() * 5));
+        hBoxWinter.getChildren().add(0, winterAwayTF);
+        winterAwayTF.requestFocus();
+        winterAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.WINTER);
+        });
+    }
+
+    /**
+     * This method is called on enter and modifies the default temperatures for away mode
+     * for each season
+     *
+     */
+    protected void changeDefaultTemp(Season season) {
+        int temp = 0;
+        if (season.equals(Season.SUMMER)){
+            defaultSummerContainer.getChildren().add(summerAwayTF);
+            hBoxSummer.getChildren().add(0, defaultAwaySummer);
+            defaultAwaySummer.setText(summerAwayTF.getText());
+            summerAwayTF.clear();
+            defaultSummerTemp = Integer.parseInt(defaultAwaySummer.getText());
+            temp = defaultSummerTemp;
+        }
+        else if (season.equals(Season.WINTER)){
+            defaultWinterContainer.getChildren().add(winterAwayTF);
+            hBoxWinter.getChildren().add(0, defaultAwayWinter);
+            defaultAwayWinter.setText(winterAwayTF.getText());
+            winterAwayTF.clear();
+            defaultWinterTemp = Integer.parseInt(defaultAwayWinter.getText());
+            temp = defaultWinterTemp;
+        }
+        LoginInfoController.consoleLogFile("Set the default temperature for " + season +
+                " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
+    }
+
 }

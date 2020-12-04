@@ -7,9 +7,12 @@ import constants.Season;
 import constants.UserRoles;
 import entity.Room;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.io.FileUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -120,6 +123,25 @@ public class EditSimulationControllerTest extends ApplicationTest {
 
         EditSimulationController.setSummerMonthEndCache(10);
         assertEquals(Season.OTHER, EditSimulationController.getCurrentSeason(calendarSummer));
+    }
+
+    @Test
+    public void test_set_defaultAwayModeTemps() {
+        Event.fireEvent(controller.getDefaultAwaySummer(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+
+        controller.getSummerAwayTF().setText("10");
+        controller.changeDefaultTemp(Season.SUMMER);
+        assertEquals(10, controller.getDefaultSummerTemp());
+
+        Event.fireEvent(controller.getDefaultAwayWinter(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+
+        controller.getWinterAwayTF().setText("11");
+        controller.changeDefaultTemp(Season.WINTER);
+        assertEquals(11, controller.getDefaultWinterTemp());
     }
 
 }
