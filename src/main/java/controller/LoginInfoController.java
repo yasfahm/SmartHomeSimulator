@@ -844,7 +844,7 @@ public class LoginInfoController implements Initializable, MainController {
                                         @Override
                                         public void run() {
                                             if (room.getCurrentTemperature() - 0.25 > room.getTemperature()) {
-                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() - 0.1) * 100.00) / 100.00);
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -855,7 +855,7 @@ public class LoginInfoController implements Initializable, MainController {
                                         public void run() {
                                             if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) &&
                                                     (room.getCurrentTemperature() - Double.parseDouble(temperature.getText())) <= 0.25) {
-                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() - 0.05) * 100.00) / 100.00);
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -869,7 +869,7 @@ public class LoginInfoController implements Initializable, MainController {
                                         @Override
                                         public void run() {
                                             if (room.getCurrentTemperature() < room.getTemperature() - 0.25) {
-                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() + 0.1) * 100.00) / 100.00);
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -880,7 +880,7 @@ public class LoginInfoController implements Initializable, MainController {
                                         public void run() {
                                             if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) &&
                                                             (Double.parseDouble(temperature.getText()) - room.getCurrentTemperature()) <= 0.25) {
-                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() + 0.05) * 100.00) / 100.00);
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -2466,9 +2466,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (zone.getRooms().get(finalI).getCurrentTemperature() - 0.35 > zone.getRooms().get(finalI).getTemperature() &&
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() - 0.25 > zone.getRooms().get(finalI).getTemperature() &&
                                                     !zone.getRooms().get(finalI).getOverride()) {
-                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.1);
+                                                zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 - 10)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -2480,7 +2480,7 @@ public class LoginInfoController implements Initializable, MainController {
                                             if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature() &&
                                                     !zone.getRooms().get(finalI).getOverride() &&
                                                     (zone.getRooms().get(finalI).getCurrentTemperature() - zone.getRooms().get(finalI).getTemperature() <= 0.25)) {
-                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.05);
+                                                zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 - 5)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -2494,9 +2494,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() - 0.35 &&
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() - 0.25 &&
                                                     !zone.getRooms().get(finalI).getOverride()) {
-                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.1);
+                                                zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 + 10)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -2507,8 +2507,8 @@ public class LoginInfoController implements Initializable, MainController {
                                         public void run() {
                                             if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() &&
                                                     !zone.getRooms().get(finalI).getOverride() &&
-                                                    (zone.getRooms().get(finalI).getTemperature() - zone.getRooms().get(finalI).getCurrentTemperature()) <= 0.30) {
-                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.05);
+                                                    (zone.getRooms().get(finalI).getTemperature() - zone.getRooms().get(finalI).getCurrentTemperature()) <= 0.25) {
+                                                zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 + 5)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
