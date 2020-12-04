@@ -799,7 +799,6 @@ public class LoginInfoController implements Initializable, MainController {
 
                 rooms.put(room.getName(), room);
             }
-
             //display the current and desired temperature of each room in SHH tab
             gpRoomsTemp.getChildren().clear();
             vboxDesiredTemp.getChildren().clear();
@@ -807,12 +806,14 @@ public class LoginInfoController implements Initializable, MainController {
                 if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
                     Label roomName = new Label();
                     Label desiredRoomTemp = new Label();
+                    Label override = new Label();
                     TextField textFieldRoom = new TextField();
                     Button setNewTemperature = new Button();
                     setNewTemperature.setOnAction(new EventHandler<ActionEvent>()
                     {
                         @Override
                         public void handle(ActionEvent e) {
+                            override.setText("(Overridden)");
                             room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
                             room.setOverride(true);
 
@@ -837,12 +838,24 @@ public class LoginInfoController implements Initializable, MainController {
                                 //when desired temperature is lower, AC will be turned on
                                 if (room.getCurrentTemperature() > room.getTemperature()) {
                                     //AC should be turned on
+                                    room.setHvac(true);
                                     Timer t = new Timer();
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (room.getCurrentTemperature() > room.getTemperature()) {
-                                                room.setCurrentTemperature(room.getCurrentTemperature() - 0.1);
+                                            if (room.getCurrentTemperature() - 0.25 > room.getTemperature()) {
+                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() - 0.1) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                    room.setHvac(false);
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) &&
+                                                    (room.getCurrentTemperature() - Double.parseDouble(temperature.getText())) <= 0.25) {
+                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() - 0.05) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -850,12 +863,24 @@ public class LoginInfoController implements Initializable, MainController {
                                 //when desired temperature is higher, Heater will be turned on
                                 if (room.getCurrentTemperature() < room.getTemperature()) {
                                     //Heater should be turned on
+                                    room.setHvac(true);
                                     Timer t = new Timer();
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (room.getCurrentTemperature() < room.getTemperature()) {
-                                                room.setCurrentTemperature(room.getCurrentTemperature() + 0.1);
+                                            if (room.getCurrentTemperature() < room.getTemperature() - 0.25) {
+                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() + 0.1) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                    room.setHvac(false);
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) &&
+                                                            (Double.parseDouble(temperature.getText()) - room.getCurrentTemperature()) <= 0.25) {
+                                                room.setCurrentTemperature(Math.round((room.getCurrentTemperature() + 0.05) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -869,7 +894,7 @@ public class LoginInfoController implements Initializable, MainController {
                     textFieldRoom.setMaxWidth(40);
                     setNewTemperature.setMaxWidth(30);
                     setNewTemperature.setText("set");
-                    gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, desiredRoomTemp);
+                    gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, override, desiredRoomTemp);
                 }
             }
             vboxDesiredTemp.getChildren().add(gpRoomsTemp);
@@ -2144,9 +2169,13 @@ public class LoginInfoController implements Initializable, MainController {
             temperature.setText(String.valueOf(room.getCurrentTemperature()));
             int[] coordinates = roomPosition.get(room.getName());
             gc.setFill(Color.web("#455A64"));
-            gc.fillRect(coordinates[0] + 40, coordinates[1] + 35, 25, 15);
+            gc.fillRect(coordinates[0] + 40, coordinates[1] + 35, 45, 15);
             gc.setFill(Color.WHITE);
-            gc.fillText(temperature.getText().substring(0, 4),coordinates[0] + 40, coordinates[1] + 45);
+            int degree = 4;
+            if (temperature.getText().length() > 4) {
+                degree = 5;
+            }
+            gc.fillText(temperature.getText().substring(0, degree) + "°C",coordinates[0] + 40, coordinates[1] + 45);
         }
     }
 
@@ -2425,35 +2454,65 @@ public class LoginInfoController implements Initializable, MainController {
                         }
 
                         for (int i = 0; i < zone.getRooms().size(); i++) {
-                            zone.getRooms().get(i).setTemperature(zone.getZoneTemp()[j]);
-                            int finalI = i;
-                            //when desired temperature is lower, AC will be turned on
-                            if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature() &&
-                                    !zone.getRooms().get(finalI).getOverride()) {
-                                //AC should be turned on
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature()) {
-                                            zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.1);
+                            if (!zone.getRooms().get(i).getOverride()) {
+                                zone.getRooms().get(i).setTemperature(zone.getZoneTemp()[j]);
+                                int finalI = i;
+                                //when desired temperature is lower, AC will be turned on
+                                if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature() &&
+                                        !zone.getRooms().get(finalI).getOverride()) {
+                                    //AC should be turned on
+                                    zone.getRooms().get(finalI).setHvac(true);
+                                    Timer t = new Timer();
+                                    t.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() - 0.35 > zone.getRooms().get(finalI).getTemperature() &&
+                                                    !zone.getRooms().get(finalI).getOverride()) {
+                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.1);
+                                            }
                                         }
-                                    }
-                                }, 1000);
-                            }
-                            //when desired temperature is higher, Heater will be turned on
-                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() &&
-                                    !zone.getRooms().get(finalI).getOverride()) {
-                                //Heater should be turned on
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature()) {
-                                            zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.1);
+                                    }, 1000);
+                                    zone.getRooms().get(finalI).setHvac(false);
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature() &&
+                                                    !zone.getRooms().get(finalI).getOverride() &&
+                                                    (zone.getRooms().get(finalI).getCurrentTemperature() - zone.getRooms().get(finalI).getTemperature() <= 0.25)) {
+                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() - 0.05);
+                                            }
                                         }
-                                    }
-                                }, 1000);
+                                    }, 1000);
+                                }
+                                //when desired temperature is higher, Heater will be turned on
+                                if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() &&
+                                        !zone.getRooms().get(finalI).getOverride()) {
+                                    //Heater should be turned on
+                                    zone.getRooms().get(finalI).setHvac(true);
+                                    Timer t = new Timer();
+                                    t.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() - 0.35 &&
+                                                    !zone.getRooms().get(finalI).getOverride()) {
+                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.1);
+                                            }
+                                        }
+                                    }, 1000);
+                                    zone.getRooms().get(finalI).setHvac(false);
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() &&
+                                                    !zone.getRooms().get(finalI).getOverride() &&
+                                                    (zone.getRooms().get(finalI).getTemperature() - zone.getRooms().get(finalI).getCurrentTemperature()) <= 0.30) {
+                                                zone.getRooms().get(finalI).setCurrentTemperature(zone.getRooms().get(finalI).getCurrentTemperature() + 0.05);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
                             }
                         }
                     });

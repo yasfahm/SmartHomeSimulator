@@ -14,7 +14,7 @@ public class Room {
     private double roomTemperature;
     private double currentRoomTemperature;
     private boolean overrideTemperature;
-    private boolean havc;
+    private boolean hvac;
 
     /**
      * Constructor for class Room
@@ -147,15 +147,15 @@ public class Room {
      *
      * @return HAVC Heating, AC, Ventilation system
      */
-    public boolean getHavc(){
-        return havc;
+    public boolean getHvac(){
+        return hvac;
     }
 
     /**
-     * @param havc set HAVC to on or off
+     * @param hvac set HAVC to on or off
      */
-    public void setHavc(boolean havc) {
-        this.havc = havc;
+    public void setHvac(boolean hvac) {
+        this.hvac = hvac;
     }
 
     /**
