@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextField?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-radius: 5;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditSimulationController">
    <children>
       <AnchorPane layoutX="6.0" onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="750" prefWidth="900" styleClass="root" stylesheets="@application.css">
@@ -48,6 +50,20 @@
             <ComboBox fx:id="summerMonthEnd" onAction="#onChangeSummerEndMonth" layoutX="522.0" layoutY="312.0" prefWidth="150.0" />
             <ComboBox fx:id="winterDayEnd" onAction="#onChangeWinterEndDay" layoutX="439.0" layoutY="340.0" prefHeight="25.0" prefWidth="71.0" />
             <ComboBox fx:id="winterMonthEnd" onAction="#onChangeWinterEndMonth" layoutX="522.0" layoutY="340.0" prefWidth="150.0" />
+            <Label layoutX="15.0" layoutY="200.0" text="Set Default Temperatures for Away Mode (in °C)" />
+            <Label layoutX="25.0" layoutY="226.0" text="Summer:" />
+            <Label layoutX="25.0" layoutY="251.0" text="Winter:" />
+            <HBox fx:id="hBoxSummer" alignment="CENTER" layoutX="25.0" layoutY="222.0" prefHeight="27.0" prefWidth="169.0" spacing="5.0">
+               <children>
+                  <Label fx:id="defaultAwaySummer" onMouseClicked="#setDefaultSummer" stylesheets="@application.css" />
+               </children>
+            </HBox>
+            <HBox fx:id="defaultSummerContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
+               <children>
+                  <Label text="this is an invisible container to do the node swapping" />
+                  <TextField fx:id="summerAwayTF" />
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
    </children>
