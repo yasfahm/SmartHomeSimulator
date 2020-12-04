@@ -299,16 +299,28 @@ public class LoginInfoController implements Initializable, MainController {
     /**
      * Increase clock speed
      */
-    public void increaseClockSpeed() {
-    	this.clockSpeed += 0.5;
-    	playClockAnimation();
+    public void increaseClockSpeed(ActionEvent event) {
+    	if(!(this.clockSpeed < 0.001)) {
+        	double rate = 0.1;
+        	if(this.clockSpeed > (rate+rate*0.25)) this.clockSpeed -= 0.1;
+        	else  this.clockSpeed -= this.clockSpeed*0.3;
+        	playClockAnimation();
+    	}
     }
     
     /**
      * Decrease clock speed
      */
-    public void decreaseClockSpeed() {
-    	this.clockSpeed -= 0.5;
+    public void decreaseClockSpeed(ActionEvent event) {
+    	this.clockSpeed += 1;
+    	playClockAnimation();
+    }
+    
+    /**
+     * Reset clock speed
+     */
+    public void resetClockSpeed(ActionEvent event) {
+    	this.clockSpeed = 1;
     	playClockAnimation();
     }
     

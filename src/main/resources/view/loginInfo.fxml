@@ -72,6 +72,9 @@
                               <TextField fx:id="textFieldTemperature" />
                            </children>
                         </HBox>
+                        <Button layoutX="7.0" layoutY="529.0" mnemonicParsing="false" onAction="#increaseClockSpeed" text="Speed +" />
+                        <Button layoutX="111.0" layoutY="529.0" mnemonicParsing="false" onAction="#decreaseClockSpeed" text="Speed -" />
+                        <Button layoutX="61.0" layoutY="563.0" mnemonicParsing="false" onAction="#resetClockSpeed" text="Reset speed" />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
