@@ -13,6 +13,8 @@ public class Room {
     private int lightsTotal;
     private double roomTemperature;
     private double currentRoomTemperature;
+    private boolean overrideTemperature;
+    private boolean havc;
 
     /**
      * Constructor for class Room
@@ -125,6 +127,35 @@ public class Room {
      */
     public void setDoors(ArrayList<Door> doors) {
         this.doors = doors;
+    }
+
+    /**
+     * @param overrideTemperature override temperature in a specific room
+     */
+    public void setOverride(boolean overrideTemperature) {
+        this.overrideTemperature = overrideTemperature;
+    }
+
+    /**
+     * @return overridden temperature
+     */
+    public boolean getOverride() {
+        return overrideTemperature;
+    }
+
+    /**
+     *
+     * @return HAVC Heating, AC, Ventilation system
+     */
+    public boolean getHavc(){
+        return havc;
+    }
+
+    /**
+     * @param havc set HAVC to on or off
+     */
+    public void setHavc(boolean havc) {
+        this.havc = havc;
     }
 
     /**
