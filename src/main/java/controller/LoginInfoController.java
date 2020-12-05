@@ -866,7 +866,7 @@ public class LoginInfoController implements Initializable, MainController {
                             override.setText("(Overridden)");
                             room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
                             room.setOverride(true);
-
+                            room.setTemperatureDefault(false);
                             time.textProperty().addListener((observable, oldValue, newValue) -> {
                                 if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
                                     Timer t2 = new Timer();
@@ -950,7 +950,11 @@ public class LoginInfoController implements Initializable, MainController {
             time.textProperty().addListener((obs, oldV, newV) -> {
                 for (Room room : roomArray) {
                     if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
-                        drawTemperature(room);
+                        try {
+                            drawTemperature(room);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -982,6 +986,7 @@ public class LoginInfoController implements Initializable, MainController {
 
             //draw the temperature for each room.
             for (int i = 0 ; i < roomArray.length ; i++) {
+                roomArray[i].setTemperatureDefault(true);
                 drawTemperature(roomArray[i]);
             }
 
@@ -1524,6 +1529,15 @@ public class LoginInfoController implements Initializable, MainController {
         labelLight.setText("LIGHT");
         labelWindow.setText("WINDOW");
         labelDoor.setText("DOOR");
+
+        for (Room room : roomArray) {
+            if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+                availableRooms.put(room.getName(), room);
+            allRooms.put(room.getName(), room);
+        }
+        comboRoom.getItems().addAll(availableRooms.keySet());
+        vboxZones.getChildren().clear();
+        vboxZones.getChildren().addAll(gpZone);
 
         //show the away mode status on house layout
         if (awayMode) {
@@ -2201,7 +2215,7 @@ public class LoginInfoController implements Initializable, MainController {
      *
      * @param room that will call this function
      */
-    public void drawTemperature(Room room) {
+    public void drawTemperature(Room room) throws FileNotFoundException {
         if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
             Label temperature = new Label();
             temperature.setText(String.valueOf(room.getCurrentTemperature()));
@@ -2214,6 +2228,20 @@ public class LoginInfoController implements Initializable, MainController {
                 degree = 5;
             }
             gc.fillText(temperature.getText().substring(0, degree) + "°C",coordinates[0] + 40, coordinates[1] + 45);
+            Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
+            Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
+            if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()) {
+                gc.setFill(Color.web("#455A64"));
+                gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
+                gc.setFill(Color.WHITE);
+                gc.drawImage(heater, coordinates[0] + 10, coordinates[1] + 35);
+            }
+            if(!room.getHvacStopped() && room.getTemperature() < room.getCurrentTemperature() && !room.getTemperatureDefault()) {
+                gc.setFill(Color.web("#455A64"));
+                gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
+                gc.setFill(Color.WHITE);
+                gc.drawImage(ac, coordinates[0] + 10, coordinates[1] + 35);
+            }
         }
     }
 
@@ -2473,6 +2501,7 @@ public class LoginInfoController implements Initializable, MainController {
                     temps[1] = Double.parseDouble(temp2.getText());
                     temps[2] = Double.parseDouble(temp3.getText());
                     zone.setZoneTemp(temps);
+
                     time.textProperty().addListener((observable, oldValue, newValue) -> {
                         int j = 0;
                         if (newValue.startsWith("08") || newValue.startsWith("09") || newValue.startsWith("10") ||
@@ -2492,6 +2521,7 @@ public class LoginInfoController implements Initializable, MainController {
                         }
 
                         for (int i = 0; i < zone.getRooms().size(); i++) {
+                            zone.getRooms().get(i).setTemperatureDefault(false);
                             if (!zone.getRooms().get(i).getOverride()) {
                                 zone.getRooms().get(i).setTemperature(zone.getZoneTemp()[j]);
                                 int finalI = i;
@@ -2631,24 +2661,22 @@ public class LoginInfoController implements Initializable, MainController {
      * @throws IOException Thrown if the file cannot be read
      */
     public void goToEdit(ActionEvent event) throws IOException {
-    	if (!toggleText.getText().equals("ON")) {
-    		consoleLog("Simulation is off, enable to process action.");
-    	} else {
-	        if (Objects.nonNull(house)) {
-	            Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
-	            Scene editScene = new Scene(edit);
-	
-	            // stage info
-	            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	            window.setScene(editScene);
-	            window.show();
-	        } else {
-	        	consoleLog("Please input the house to change location.");
-	            Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
-	            alert.showAndWait();
-	        }
-    	}
-
+        if (!toggleText.getText().equals("ON")) {
+            consoleLog("Simulation is off, enable to process action.");
+        } else {
+            if (Objects.nonNull(house)) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setScene(new Scene(root));
+                stage.show();
+            } else {
+                consoleLog("Please input the house to change location.");
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
+                alert.showAndWait();
+            }
+        }
     }
 
     /**

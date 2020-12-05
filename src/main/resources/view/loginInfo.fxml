@@ -20,8 +20,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-color: #455A64;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
         <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" styleClass="root" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -64,7 +64,7 @@
                               <Label text="°C" />
                            </children>
                         </HBox>
-                        <Button layoutX="62.0" layoutY="526.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change" />
+                        <Button layoutX="62.0" layoutY="526.0" mnemonicParsing="false" onAction="#bt_changeDateTimeOnClick" style="-fx-background-color: white; -fx-text-fill: black;" text="Change Time" />
                         <AnchorPane fx:id="anchorToggle" layoutX="18.0" layoutY="42.0" prefHeight="94.0" prefWidth="188.0" />
                         <HBox fx:id="invisibleContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
                            <children>
@@ -72,9 +72,9 @@
                               <TextField fx:id="textFieldTemperature" />
                            </children>
                         </HBox>
-                        <Button layoutX="7.0" layoutY="529.0" mnemonicParsing="false" onAction="#increaseClockSpeed" text="Speed +" />
-                        <Button layoutX="111.0" layoutY="529.0" mnemonicParsing="false" onAction="#decreaseClockSpeed" text="Speed -" />
-                        <Button layoutX="61.0" layoutY="563.0" mnemonicParsing="false" onAction="#resetClockSpeed" text="Reset speed" />
+                        <Button layoutX="121.0" layoutY="564.0" mnemonicParsing="false" onAction="#increaseClockSpeed" style="-fx-max-width: 40;" text=" +" />
+                        <Button layoutX="62.0" layoutY="564.0" mnemonicParsing="false" onAction="#decreaseClockSpeed" style="-fx-max-width: 40;" text="-" />
+                        <Button layoutX="61.0" layoutY="611.0" mnemonicParsing="false" onAction="#resetClockSpeed" text="Reset speed" />
                         <Label fx:id="season" layoutX="66.0" layoutY="432.0" prefHeight="19.0" prefWidth="66.0" stylesheets="@application.css" text="SEASON" />
                      </children>
                   </AnchorPane>
@@ -168,7 +168,7 @@
                                                                <children>
                                                                   <ComboBox fx:id="comboRoom" layoutX="14.0" layoutY="28.0" prefHeight="27.0" prefWidth="143.0" />
                                                                   <Label layoutX="15.0" layoutY="5.0" style="-fx-font-size: 12;" text="Room:" />
-                                                                  <VBox fx:id="vboxRooms" layoutX="15.0" layoutY="102.0" prefHeight="118.0" prefWidth="160.0" />
+                                                                  <VBox fx:id="vboxRooms" layoutX="11.0" layoutY="77.0" prefHeight="144.0" prefWidth="133.0" />
                                                                   <Button fx:id="buttonAddRoom" cancelButton="true" layoutX="165.0" layoutY="28.0" mnemonicParsing="false" onAction="#addRoom" prefHeight="26.0" prefWidth="59.0" style="-fx-max-width: 50; -fx-font-size: 12;" text="Add" />
                                                                   <Button fx:id="buttonCreateZone" layoutX="160.0" layoutY="107.0" mnemonicParsing="false" onAction="#createZone" style="-fx-max-width: 50; -fx-font-size: 12;" text="Create" />
                                                                   <Label layoutX="15.0" layoutY="62.0" style="-fx-font-size: 12;" text="Selected Rooms:" />

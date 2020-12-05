@@ -16,6 +16,7 @@ public class Room {
     private boolean overrideTemperature;
     private boolean hvacPaused;
     private boolean hvacStopped;
+    private boolean temperatureDefault;
 
     /**
      * Constructor for class Room
@@ -164,13 +165,25 @@ public class Room {
     public boolean getHvacStopped() { return hvacStopped; }
 
     /**
-     *
      * @param hvacStopped stop/start HVAC
      */
     public void setHvacStopped(boolean hvacStopped) {
         this.hvacStopped = hvacStopped;
     }
 
+    /**
+     * @return default temperature of room
+     */
+    public boolean getTemperatureDefault() {
+        return temperatureDefault;
+    }
+
+    /**
+     * @param temperatureDefault check whether temperature has been set or not
+     */
+    public void setTemperatureDefault(boolean temperatureDefault) {
+        this.temperatureDefault = temperatureDefault;
+    }
     /**
      * Builder pattern for Room Object
      */

@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import observerPattern.SHPObserver;
 import observerPattern.Subject;
 import org.apache.commons.lang3.StringUtils;
@@ -140,12 +141,8 @@ public class EditSimulationController implements Initializable, SubController {
      * @throws IOException Thrown if the view file cannot be read
      */
     public void goToLoginInfo(ActionEvent event) throws IOException {
-        Parent loginInfo = FXMLLoader.load(getClass().getResource("/view/loginInfo.fxml"));
-        Scene loginInfoScene = new Scene(loginInfo);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(loginInfoScene);
-        window.show();
+        Stage stage = (Stage) roomsMove.getScene().getWindow();
+        stage.close();
     }
 
     /**
