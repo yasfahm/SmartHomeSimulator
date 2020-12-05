@@ -83,6 +83,10 @@ public class EditSimulationController implements Initializable, SubController {
     @FXML
     private ComboBox<Integer> winterDayEnd;
 
+    private static GridPane gpZones = new GridPane();
+    private static GridPane gpRooms = new GridPane();
+    private static GridPane gpRoomsTemp = new GridPane();
+
     private Map<String, Room> house;
     private String username;
     private double xOffset = 0;
@@ -128,10 +132,16 @@ public class EditSimulationController implements Initializable, SubController {
      * @throws IOException Thrown if the view file cannot be read
      */
     public void goToLoginInfo(ActionEvent event) throws IOException {
+        gpZones = LoginInfoController.getGpZone();
+        gpRooms = LoginInfoController.getGpRooms();
+        gpRoomsTemp = LoginInfoController.getGpRoomsTemp();
         Parent loginInfo = FXMLLoader.load(getClass().getResource("/view/loginInfo.fxml"));
         Scene loginInfoScene = new Scene(loginInfo);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        LoginInfoController.setGpZone(gpZones);
+        LoginInfoController.setGpRooms(gpRooms);
+        //LoginInfoController.setGpRoomsTemp(gpRoomsTemp);
         window.setScene(loginInfoScene);
         window.show();
     }
@@ -616,5 +626,26 @@ public class EditSimulationController implements Initializable, SubController {
      */
     public static void setSummerMonthEndCache(final int summerMonthEndCache) {
         EditSimulationController.summerMonthEndCache = summerMonthEndCache;
+    }
+
+    /**
+     * @param gpZones sets the gpZones
+     */
+    public static void setGpZones (GridPane gpZones) {
+        EditSimulationController.gpZones = gpZones;
+    }
+
+    /**
+     * @param gpRooms sets the gpRooms
+     */
+    public static void setGpRooms (GridPane gpRooms) {
+        EditSimulationController.gpRooms = gpRooms;
+    }
+
+    /**
+     * @param gpRoomsTemp sets the gpRoomsTemp
+     */
+    public static void setGpRoomsTemp (GridPane gpRoomsTemp) {
+        EditSimulationController.gpRoomsTemp = gpRoomsTemp;
     }
 }

@@ -182,9 +182,9 @@ public class LoginInfoController implements Initializable, MainController {
     private HashMap<String, Room> allRooms = new HashMap<>();
     private HashMap<String, Zone> zones = new HashMap<>();
 
-    private GridPane gpZone = new GridPane();
-    private GridPane gpRooms = new GridPane();
-    private GridPane gpRoomsTemp = new GridPane();
+    private static GridPane gpZone = new GridPane();
+    private static GridPane gpRooms = new GridPane();
+    private static GridPane gpRoomsTemp = new GridPane();
 
     private static int defaultSummerTemp = 22;
     private static int defaultWinterTemp = 18;
@@ -856,7 +856,6 @@ public class LoginInfoController implements Initializable, MainController {
             }
             //display the current and desired temperature of each room in SHH tab
             gpRoomsTemp.getChildren().clear();
-            vboxDesiredTemp.getChildren().clear();
 
             drawTemperatureInRooms();
 
@@ -1283,7 +1282,7 @@ public class LoginInfoController implements Initializable, MainController {
 
             //creating two maps for available rooms and all the rooms to be used in SHH tab.
             for (Room room : roomArray) {
-                if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+                if(!room.getName().equals("Entrance") && !room.getName().equals("Backyard"))
                     availableRooms.put(room.getName(), room);
                     allRooms.put(room.getName(), room);
             }
@@ -1298,7 +1297,7 @@ public class LoginInfoController implements Initializable, MainController {
 
     private void drawTemperatureInRooms() {
         for (Room room : roomArray) {
-            if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+            if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                 Label roomName = new Label();
                 Label override = new Label();
                 TextField textFieldRoom = new TextField();
@@ -1409,12 +1408,14 @@ public class LoginInfoController implements Initializable, MainController {
                 gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, override, hvacButton);
             }
         }
+        vboxDesiredTemp.getChildren().clear();
         vboxDesiredTemp.getChildren().add(gpRoomsTemp);
+        EditSimulationController.setGpRoomsTemp(gpRoomsTemp);
 
         //display the current and desired temperature of each room in SHH tab
         time.textProperty().addListener((obs, oldV, newV) -> {
             for (Room room : roomArray) {
-                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                     try {
                         drawTemperature(room);
                     } catch (FileNotFoundException e) {
@@ -1507,13 +1508,17 @@ public class LoginInfoController implements Initializable, MainController {
         labelDoor.setText("DOOR");
 
         for (Room room : roomArray) {
-            if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+            if(!room.getName().equals("Entrance") && !room.getName().equals("Backyard"))
                 availableRooms.put(room.getName(), room);
             allRooms.put(room.getName(), room);
         }
         comboRoom.getItems().addAll(availableRooms.keySet());
         vboxZones.getChildren().clear();
         vboxZones.getChildren().addAll(gpZone);
+        vboxRooms.getChildren().clear();
+        vboxRooms.getChildren().addAll(gpRooms);
+        vboxDesiredTemp.getChildren().clear();
+        vboxDesiredTemp.getChildren().addAll(gpRoomsTemp);
 
         //show the away mode status on house layout
         setUpAwayModeStatus();
@@ -2132,7 +2137,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @param room that will call this function
      */
     public void drawTemperature(Room room) throws FileNotFoundException {
-        if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+        if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
             Label temperature = new Label();
             temperature.setText(String.valueOf(room.getCurrentTemperature()));
             int[] coordinates = roomPosition.get(room.getName());
@@ -2359,6 +2364,7 @@ public class LoginInfoController implements Initializable, MainController {
             gpRooms.addRow(gpRooms.getRowCount(), room, delete);
             vboxRooms.getChildren().clear();
             vboxRooms.getChildren().add(gpRooms);
+            EditSimulationController.setGpRooms(gpRooms);
         }
     }
 
@@ -2546,6 +2552,7 @@ public class LoginInfoController implements Initializable, MainController {
 
                 vboxZones.getChildren().clear();
                 vboxZones.getChildren().addAll(gpZone);
+                EditSimulationController.setGpZones(gpZone);
             }
         }
     }
@@ -3026,5 +3033,47 @@ public class LoginInfoController implements Initializable, MainController {
                         ConsoleComponents.SHH);
             }
         }
+    }
+
+    /**
+     * @param gpZone set the gpZone GridPane
+     */
+    public static void setGpZone (GridPane gpZone) {
+        LoginInfoController.gpZone = gpZone;
+    }
+
+    /**
+     * @return get the gpZone GridPane
+     */
+    public static GridPane getGpZone () {
+        return gpZone;
+    }
+
+    /**
+     * @param gpRooms set the gpRooms GridPane
+     */
+    public static void setGpRooms (GridPane gpRooms) {
+        LoginInfoController.gpRooms = gpRooms;
+    }
+
+    /**
+     * @return get the gpZone GridPane
+     */
+    public static GridPane getGpRooms () {
+        return gpRooms;
+    }
+
+    /**
+     * @param gpRoomsTemp set the gpRoomsTemp GridPane
+     */
+    public static void setGpRoomsTemp (GridPane gpRoomsTemp) {
+        LoginInfoController.gpZone = gpZone;
+    }
+
+    /**
+     * @return get the gpRoomsTemp GridPane
+     */
+    public static GridPane getGpRoomsTemp () {
+        return gpRoomsTemp;
     }
 }
