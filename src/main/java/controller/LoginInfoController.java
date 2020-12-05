@@ -2151,13 +2151,15 @@ public class LoginInfoController implements Initializable, MainController {
             gc.fillText(temperature.getText().substring(0, degree) + "°C",coordinates[0] + 40, coordinates[1] + 45);
             Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
             Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
-            if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()) {
+            if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()
+                || (room.getCurrentTemperature() > temperatureInInt && isAwayMode() && !room.getHvacStopped())) {
                 gc.setFill(Color.web("#455A64"));
                 gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
                 gc.setFill(Color.WHITE);
                 gc.drawImage(heater, coordinates[0] + 10, coordinates[1] + 35);
             }
-            if(!room.getHvacStopped() && room.getTemperature() < room.getCurrentTemperature() && !room.getTemperatureDefault()) {
+            if(!room.getHvacStopped() && room.getTemperature() < room.getCurrentTemperature() && !room.getTemperatureDefault()
+                    || (room.getCurrentTemperature() < temperatureInInt && isAwayMode() && !room.getHvacStopped())) {
                 gc.setFill(Color.web("#455A64"));
                 gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
                 gc.setFill(Color.WHITE);
@@ -3000,6 +3002,17 @@ public class LoginInfoController implements Initializable, MainController {
                                 }
                             }
                         }, 1000);
+                        try {
+                            // if the outside temperature is warmer than the inside once the default is reached, AC
+                            // needs to be turned on in order to maintain it.
+                            if (room.getCurrentTemperature() < temperatureInInt && (defaultSummerTemp - 0.10) <= room.getCurrentTemperature()
+                                && room.getCurrentTemperature() <= defaultSummerTemp){
+                                room.setHvacStopped(false);
+                                drawTemperature(room);
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 consoleLog("The temperature in the " + room.getName() +
@@ -3009,7 +3022,7 @@ public class LoginInfoController implements Initializable, MainController {
         } else if (EditSimulationController.getCurrentSeason(calendar) == Season.WINTER) {
             for (Room room : roomArray) {
                 time.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (room.getCurrentTemperature() > defaultWinterTemp && room.getCurrentTemperature() < temperatureInInt) {
+                    if (room.getCurrentTemperature() > defaultWinterTemp && room.getCurrentTemperature() > temperatureInInt && !room.getName().equals("Garage")) {
                         // Turn Off Heating
                         room.setHvacStopped(true);
                         try {
@@ -3021,13 +3034,26 @@ public class LoginInfoController implements Initializable, MainController {
                         t2.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                if (room.getCurrentTemperature() < defaultSummerTemp) {
+                                if (room.getCurrentTemperature() > defaultWinterTemp) {
                                     room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
                                 }
                             }
                         }, 1000);
+                        try {
+                            // if the outside temperature is cooler than the inside once the default is reached, heating
+                            // needs to be turned on in order to maintain it.
+                            if (room.getCurrentTemperature() > temperatureInInt
+                                    && (defaultWinterTemp) <= room.getCurrentTemperature()
+                                    && room.getCurrentTemperature() <= (defaultWinterTemp + 0.10)) {
+                                room.setHvacStopped(false);
+                                drawTemperature(room);
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
+                if (!room.getName().equals("Garage"))
                 consoleLog("The temperature in the " + room.getName() +
                                 " is warmer than the default temperature set for away mode in Winter. Turning Heating off.",
                         ConsoleComponents.SHH);
