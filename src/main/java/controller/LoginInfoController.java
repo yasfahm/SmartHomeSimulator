@@ -2407,30 +2407,37 @@ public class LoginInfoController implements Initializable, MainController {
      */
     public void addRoom(ActionEvent event) throws FileNotFoundException {
         String selectedRoom = comboRoom.getValue();
-        selectedRooms.put(selectedRoom, allRooms.get(selectedRoom));
-        availableRooms.remove(selectedRoom);
-        comboRoom.getItems().clear();
-        comboRoom.getItems().addAll(availableRooms.keySet());
-        Label room = new Label();
-        room.setText(selectedRoom);
+        if (selectedRoom == null) {
+            consoleLog("Please select a room first.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
+            alert.showAndWait();
+        }
+        else {
+            selectedRooms.put(selectedRoom, allRooms.get(selectedRoom));
+            availableRooms.remove(selectedRoom);
+            comboRoom.getItems().clear();
+            comboRoom.getItems().addAll(availableRooms.keySet());
+            Label room = new Label();
+            room.setText(selectedRoom);
 
-        Image deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
-        ImageView delete = new ImageView(deleteIcon);
+            Image deleteIcon = new Image(new FileInputStream("src/main/resources/Images/deleteIcon.png"), 60, 27, true, false);
+            ImageView delete = new ImageView(deleteIcon);
 
-        delete.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                availableRooms.put(selectedRoom, selectedRooms.remove(availableRooms));
-                comboRoom.getItems().clear();
-                comboRoom.getItems().addAll(availableRooms.keySet());
-                gpRooms.getChildren().remove(room);
-                gpRooms.getChildren().remove(delete);
-            }
-        });
+            delete.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    availableRooms.put(selectedRoom, selectedRooms.remove(availableRooms));
+                    comboRoom.getItems().clear();
+                    comboRoom.getItems().addAll(availableRooms.keySet());
+                    gpRooms.getChildren().remove(room);
+                    gpRooms.getChildren().remove(delete);
+                }
+            });
 
-        gpRooms.addRow(gpRooms.getRowCount(), room, delete);
-        vboxRooms.getChildren().clear();
-        vboxRooms.getChildren().add(gpRooms);
+            gpRooms.addRow(gpRooms.getRowCount(), room, delete);
+            vboxRooms.getChildren().clear();
+            vboxRooms.getChildren().add(gpRooms);
+        }
     }
 
     /**
