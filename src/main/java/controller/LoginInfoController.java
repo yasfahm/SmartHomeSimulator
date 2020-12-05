@@ -1,6 +1,7 @@
 package controller;
 
 import constants.Position;
+import constants.Season;
 import constants.UserRoles;
 import entity.*;
 import interfaces.MainController;
@@ -43,7 +44,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -144,6 +144,14 @@ public class LoginInfoController implements Initializable, MainController {
     private VBox vboxDesiredTemp;
     @FXML
     private Label season;
+    @FXML
+    private HBox defaultSummerContainer, hBoxSummer;
+    @FXML
+    private HBox defaultWinterContainer, hBoxWinter;
+    @FXML
+    private Label defaultAwaySummer, defaultAwayWinter;
+    @FXML
+    private TextField summerAwayTF, winterAwayTF;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -177,6 +185,9 @@ public class LoginInfoController implements Initializable, MainController {
     private GridPane gpZone = new GridPane();
     private GridPane gpRooms = new GridPane();
     private GridPane gpRoomsTemp = new GridPane();
+
+    private static int defaultSummerTemp = 22;
+    private static int defaultWinterTemp = 18;
 
     public LoginInfoController() {
     }
@@ -431,7 +442,9 @@ public class LoginInfoController implements Initializable, MainController {
         toggleText.textProperty().bind(Bindings.when(toggle.switchedOnProperty()).then("ON").otherwise("OFF"));
         
         root.getChildren().addAll(toggle, toggleText);
-        
+
+        this.defaultAwaySummer.setText(Integer.toString(defaultSummerTemp));
+        this.defaultAwayWinter.setText(Integer.toString(defaultWinterTemp));
     }
 
     /**
@@ -551,7 +564,7 @@ public class LoginInfoController implements Initializable, MainController {
 	 * 
 	 * @param event The event that trigger action
 	 */
-    public void onMouseClickAwayToggleON(MouseEvent event) {
+    public void onMouseClickAwayToggleON(MouseEvent event) throws ParseException, FileNotFoundException {
         if (!toggleText.getText().equals("ON")) {
     		  consoleLog("Simulation is off, enable to process action.");
     	  } else {
@@ -571,6 +584,7 @@ public class LoginInfoController implements Initializable, MainController {
                     awayModeON.setSelected(true);
                     labelAwayMode.setTextFill(Color. WHITE);
                     labelAwayMode.setText("Away mode is on");
+                    setDefaultTemperatures();
               }else {
                     awayModeOFF.setSelected(true);
               }
@@ -2250,6 +2264,12 @@ public class LoginInfoController implements Initializable, MainController {
                 gc.setFill(Color.WHITE);
                 gc.drawImage(ac, coordinates[0] + 10, coordinates[1] + 35);
             }
+            if (room.getHvacStopped()){
+                gc.setFill(Color.web("#455A64"));
+                gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
+                gc.setFill(Color.WHITE);
+                gc.drawImage(null, coordinates[0] + 10, coordinates[1] + 35);
+            }
         }
     }
 
@@ -2938,5 +2958,179 @@ public class LoginInfoController implements Initializable, MainController {
                 })
         );
         timeline.play();
+    }
+
+    /**
+     * Getter for summerAway text field
+     *
+     * @return summerAwayTF
+     */
+    public TextField getSummerAwayTF(){
+        return summerAwayTF;
+    }
+    /**
+     * Getter for winterAway text field
+     *
+     * @return winterAwayTF
+     */
+    public TextField getWinterAwayTF(){
+        return winterAwayTF;
+    }
+
+    /**
+     * Getter for default summer temp
+     *
+     * @return defaultSummerTemp integer
+     */
+    public int getDefaultSummerTemp(){
+        return defaultSummerTemp;
+    }
+    /**
+     * Getter for default winter temp
+     *
+     * @return defaultWinterTemp integer
+     */
+    public int getDefaultWinterTemp(){
+        return defaultWinterTemp;
+    }
+
+    /**
+     * Getter for default summer label
+     *
+     * @return defaultSummer label
+     */
+    public Label getDefaultAwaySummer(){
+        return defaultAwaySummer;
+    }
+    /**
+     * Getter for default winter label
+     *
+     * @return defaultWinter label
+     */
+    public Label getDefaultAwayWinter(){
+        return defaultAwayWinter;
+    }
+
+    /**
+     * This method is called when the default temperature for away mode in summer label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultSummer(MouseEvent mouseEvent) {
+        defaultSummerContainer.getChildren().add(defaultAwaySummer);
+        summerAwayTF.setText(defaultAwaySummer.getText());
+        summerAwayTF.setPrefWidth(20 + (defaultAwaySummer.getText().length() * 5));
+        hBoxSummer.getChildren().add(0, summerAwayTF);
+        summerAwayTF.requestFocus();
+        summerAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.SUMMER);
+        });
+    }
+    /**
+     * This method is called when the default temperature for away mode in winter label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultWinter(MouseEvent mouseEvent) {
+        defaultWinterContainer.getChildren().add(defaultAwayWinter);
+        winterAwayTF.setText(defaultAwayWinter.getText());
+        winterAwayTF.setPrefWidth(20 + (defaultAwayWinter.getText().length() * 5));
+        hBoxWinter.getChildren().add(0, winterAwayTF);
+        winterAwayTF.requestFocus();
+        winterAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.WINTER);
+        });
+    }
+
+    /**
+     * This method is called on enter and modifies the default temperatures for away mode
+     * for each season
+     *
+     */
+    protected void changeDefaultTemp(Season season) {
+        int temp = 0;
+        if (season.equals(Season.SUMMER)){
+            defaultSummerContainer.getChildren().add(summerAwayTF);
+            hBoxSummer.getChildren().add(0, defaultAwaySummer);
+            defaultAwaySummer.setText(summerAwayTF.getText());
+            summerAwayTF.clear();
+            defaultSummerTemp = Integer.parseInt(defaultAwaySummer.getText());
+            temp = defaultSummerTemp;
+        }
+        else if (season.equals(Season.WINTER)){
+            defaultWinterContainer.getChildren().add(winterAwayTF);
+            hBoxWinter.getChildren().add(0, defaultAwayWinter);
+            defaultAwayWinter.setText(winterAwayTF.getText());
+            winterAwayTF.clear();
+            defaultWinterTemp = Integer.parseInt(defaultAwayWinter.getText());
+            temp = defaultWinterTemp;
+        }
+        LoginInfoController.consoleLogFile("Set the default temperature for " + season +
+                " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
+    }
+
+    /**
+     * This method is triggered when away mode is turned on. It sets the temperatures in the house
+     * to the default values set for away mode for the summer and winter seasons
+     *
+     * @throws ParseException if the Date can't be parsed correctly
+     */
+    public void setDefaultTemperatures() throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy - MMMM - dd", Locale.ENGLISH);
+        calendar.setTime(sdf.parse(getDate()));
+        if (EditSimulationController.getCurrentSeason(calendar) == Season.SUMMER) {
+            for (Room room : roomArray) {
+                time.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (room.getCurrentTemperature() < defaultSummerTemp && temperatureInInt > room.getCurrentTemperature()) {
+                        // Turn Off AC
+                        room.setHvacStopped(true);
+                        try {
+                            drawTemperature(room);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        Timer t2 = new Timer();
+                        t2.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if (room.getCurrentTemperature() < defaultSummerTemp && room.getCurrentTemperature() < temperatureInInt) {
+                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
+                                }
+                            }
+                        }, 1000);
+                    }
+                });
+                LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                                " is cooler than the default temperature set for away mode in Summer. Turning AC off.",
+                        ConsoleComponents.SHH);
+            }
+        } else if (EditSimulationController.getCurrentSeason(calendar) == Season.WINTER) {
+            for (Room room : roomArray) {
+                time.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (room.getCurrentTemperature() > defaultWinterTemp && room.getCurrentTemperature() < temperatureInInt) {
+                        // Turn Off Heating
+                        room.setHvacStopped(true);
+                        try {
+                            drawTemperature(room);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        Timer t2 = new Timer();
+                        t2.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if (room.getCurrentTemperature() < defaultSummerTemp) {
+                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
+                                }
+                            }
+                        }, 1000);
+                    }
+                });
+                LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                                " is warmer than the default temperature set for away mode in Winter. Turning Heating off.",
+                        ConsoleComponents.SHH);
+            }
+        }
     }
 }

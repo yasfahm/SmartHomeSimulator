@@ -164,8 +164,35 @@
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                          <children>
-                                                            <AnchorPane fx:id="aPZone" layoutX="6.0" layoutY="-1.0" prefHeight="563.0" prefWidth="335.0">
+                                                            <AnchorPane fx:id="aPZone" layoutX="6.0" layoutY="-1.0" prefHeight="563.0" prefWidth="400">
                                                                <children>
+                                                                   <Label layoutX="238.0" layoutY="5.0" text="Away Mode"/>
+                                                                   <Label layoutX="228.0" layoutY="19.0" text="Default Temps: " />
+                                                                   <Label layoutX="229.0" layoutY="42.0" text="Summer:" />
+                                                                   <Label layoutX="229.0" layoutY="63.0" text="Winter:" />
+                                                                   <HBox fx:id="hBoxSummer" alignment="CENTER" layoutX="226.0" layoutY="38.0" prefHeight="27.0" prefWidth="169.0" spacing="2.0">
+                                                                       <children>
+                                                                           <Label fx:id="defaultAwaySummer" onMouseClicked="#setDefaultSummer" stylesheets="@application.css" />
+                                                                           <Label text="°C" />
+                                                                       </children>
+                                                                   </HBox>
+                                                                   <HBox fx:id="defaultSummerContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
+                                                                       <children>
+                                                                           <TextField fx:id="summerAwayTF" />
+                                                                       </children>
+                                                                   </HBox>
+                                                                   <HBox fx:id="hBoxWinter" alignment="CENTER" layoutX="226.0" layoutY="60" prefHeight="27.0" prefWidth="169.0" spacing="2.0">
+                                                                       <children>
+                                                                           <Label fx:id="defaultAwayWinter" onMouseClicked="#setDefaultWinter" stylesheets="@application.css"/>
+                                                                           <Label text="°C" />
+                                                                       </children>
+                                                                   </HBox>
+                                                                   <HBox fx:id="defaultWinterContainer" layoutX="1.0" layoutY="632.0" prefHeight="35.0" prefWidth="222.0" visible="false">
+                                                                       <children>
+                                                                           <TextField fx:id="winterAwayTF" />
+                                                                       </children>
+                                                                   </HBox>
+
                                                                   <ComboBox fx:id="comboRoom" layoutX="14.0" layoutY="28.0" prefHeight="27.0" prefWidth="143.0" />
                                                                   <Label layoutX="15.0" layoutY="5.0" style="-fx-font-size: 12;" text="Room:" />
                                                                   <VBox fx:id="vboxRooms" layoutX="11.0" layoutY="77.0" prefHeight="144.0" prefWidth="133.0" />

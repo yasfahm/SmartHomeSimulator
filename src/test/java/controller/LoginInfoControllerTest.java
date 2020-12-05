@@ -3,6 +3,7 @@ package controller;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import constants.Season;
 import entity.Door;
 import entity.Room;
 import entity.Window;
@@ -370,5 +371,24 @@ public class LoginInfoControllerTest extends ApplicationTest {
         assertTrue(room.getLightsOn()==1);
         controller.setRoomArray(null);
         controller.autoModeOnClick(null);
+    }
+
+    @Test
+    public void test_set_defaultAwayModeTemps() {
+        Event.fireEvent(controller.getDefaultAwaySummer(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+
+        controller.getSummerAwayTF().setText("10");
+        controller.changeDefaultTemp(Season.SUMMER);
+        assertEquals(10, controller.getDefaultSummerTemp());
+
+        Event.fireEvent(controller.getDefaultAwayWinter(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
+
+        controller.getWinterAwayTF().setText("11");
+        controller.changeDefaultTemp(Season.WINTER);
+        assertEquals(11, controller.getDefaultWinterTemp());
     }
 }
