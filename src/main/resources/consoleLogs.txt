@@ -1,7 +1,2 @@
-[2020-12-03T18:57:22] System initialized
-[2020-12-03T18:57:26] Successfully added house layout.
-[2020-12-03T18:57:36] Summer can only start after the end of winter
-[2020-12-03T18:57:41] Summer can only end before the start of winter
-[2020-12-03T18:57:53] Summer can only end before the start of winter
-[2020-12-03T18:57:55] Summer can only end before the start of winter
-[2020-12-03T18:57:58] Summer can only end before the start of winter
+[2020-12-05T13:18:24] System initialized
+[2020-12-05T13:18:28] Successfully added house layout.
