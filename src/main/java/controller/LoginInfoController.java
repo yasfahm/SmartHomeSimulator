@@ -852,10 +852,12 @@ public class LoginInfoController implements Initializable, MainController {
                             if (!room.getHvacStopped()) {
                                 room.setHvacStopped(true);
                                 hvacButton.setText("HVAC OFF");
+                                consoleLog("HVAC for " + room.getName() + " is off");
                             }
                             else {
                                 room.setHvacStopped(false);
                                 hvacButton.setText("HVAC ON");
+                                consoleLog("HVAC for " + room.getName() + " is on");
                             }
                         }
                     });
@@ -863,78 +865,84 @@ public class LoginInfoController implements Initializable, MainController {
                     {
                         @Override
                         public void handle(ActionEvent e) {
-                            override.setText("(Overridden)");
-                            room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
-                            room.setOverride(true);
-                            room.setTemperatureDefault(false);
-                            time.textProperty().addListener((observable, oldValue, newValue) -> {
-                                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
-                                    Timer t2 = new Timer();
-                                    t2.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5)/100) * 100.00) / 100.00);
-                                            }
-                                        }
-                                    }, 1000);
-                                }
-                                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
-                                    Timer t2 = new Timer();
-                                    t2.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5)/100) * 100.00) / 100.00);
-                                            }
-                                        }
-                                    }, 1000);
-                                }
-
-                                //when desired temperature is lower, AC will be turned on
-                                if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
-                                    //AC should be turned on
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() > room.getTemperature()  && !room.getHvacStopped()) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
-                                                if (room.getCurrentTemperature() == room.getTemperature()   && !room.getHvacStopped()) {
-                                                    room.setHvacPaused(true);
+                            if (textFieldRoom.getText().equals("")) {
+                                consoleLog("Please enter a temperature for " + room.getName() +" first.");
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
+                                alert.showAndWait();
+                            }
+                            else {
+                                consoleLog("Temperature for " + room.getName() + " is overridden.");
+                                override.setText("(Overridden)");
+                                room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
+                                room.setOverride(true);
+                                room.setTemperatureDefault(false);
+                                time.textProperty().addListener((observable, oldValue, newValue) -> {
+                                    if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                        Timer t2 = new Timer();
+                                        t2.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
                                                 }
                                             }
-                                            else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
-                                                    room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
-                                                room.setHvacPaused(false);
-                                            }
-                                        }
-                                    }, 1000);
-                                }
-
-
-                                //when desired temperature is higher, Heater will be turned on
-                                if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
-                                    //Heater should be turned on
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() < room.getTemperature() - 0.25 && !room.getHvacStopped()) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10)/100) * 100.00) / 100.00);
-                                                if (room.getCurrentTemperature() == room.getTemperature()) {
-                                                    room.setHvacPaused(true);
+                                        }, 1000);
+                                    }
+                                    if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                        Timer t2 = new Timer();
+                                        t2.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
                                                 }
                                             }
-                                            else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
-                                                    room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                        }, 1000);
+                                    }
+
+                                    //when desired temperature is lower, AC will be turned on
+                                    if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                        //AC should be turned on
+                                        Timer t = new Timer();
+                                        t.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
+                                                    if (room.getCurrentTemperature() == room.getTemperature() && !room.getHvacStopped()) {
+                                                        room.setHvacPaused(true);
+                                                    }
+                                                } else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
+                                                        room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
                                                     room.setHvacPaused(false);
+                                                }
                                             }
-                                        }
-                                    }, 1000);
-                                }
+                                        }, 1000);
+                                    }
 
-                            });
+
+                                    //when desired temperature is higher, Heater will be turned on
+                                    if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                        //Heater should be turned on
+                                        Timer t = new Timer();
+                                        t.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                if (room.getCurrentTemperature() < room.getTemperature() - 0.25 && !room.getHvacStopped()) {
+                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10) / 100) * 100.00) / 100.00);
+                                                    if (room.getCurrentTemperature() == room.getTemperature()) {
+                                                        room.setHvacPaused(true);
+                                                    }
+                                                } else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
+                                                        room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                                    room.setHvacPaused(false);
+                                                }
+                                            }
+                                        }, 1000);
+                                    }
+
+                                });
+                            }
                         }
                     });
                     roomName.setText(" " + room.getName());
