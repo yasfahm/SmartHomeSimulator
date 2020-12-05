@@ -174,7 +174,7 @@
                                                                   <Label layoutX="15.0" layoutY="62.0" style="-fx-font-size: 12;" text="Selected Rooms:" />
                                                                   <Label layoutX="151.0" layoutY="61.0" style="-fx-font-size: 12;" text="Zone:" />
                                                                   <TextField fx:id="textZoneName" layoutX="150.0" layoutY="76.0" prefHeight="27.0" prefWidth="59.0" />
-                                                                  <Label layoutX="9.0" layoutY="225.0" style="-fx-font-size: 12;" text="Room name       8h-16h     16h-00h      00h-8h ">
+                                                                  <Label layoutX="9.0" layoutY="225.0" style="-fx-font-size: 12;" text="Room name             8h-16h    16h-00h   00h-8h ">
                                                                      <font>
                                                                         <Font size="8.0" />
                                                                      </font></Label>

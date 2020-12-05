@@ -2665,18 +2665,20 @@ public class LoginInfoController implements Initializable, MainController {
             consoleLog("Simulation is off, enable to process action.");
         } else {
             if (Objects.nonNull(house)) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
-                Parent root = loader.load();
-                Stage stage = new Stage();
-                stage.initStyle(StageStyle.TRANSPARENT);
-                stage.setScene(new Scene(root));
-                stage.show();
+                Parent edit = FXMLLoader.load(getClass().getResource("/view/editSimulation.fxml"));
+                Scene editScene = new Scene(edit);
+
+                // stage info
+                Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                window.setScene(editScene);
+                window.show();
             } else {
                 consoleLog("Please input the house to change location.");
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please input the house");
                 alert.showAndWait();
             }
         }
+
     }
 
     /**
