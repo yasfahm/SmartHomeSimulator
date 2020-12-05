@@ -3015,9 +3015,11 @@ public class LoginInfoController implements Initializable, MainController {
                         }
                     }
                 });
-                consoleLog("The temperature in the " + room.getName() +
-                                " is cooler than the default temperature set for away mode in Summer. Turning AC off.",
-                        ConsoleComponents.SHH);
+                if (!room.getName().equals("Garage")){
+                    consoleLog("The temperature in the " + room.getName() +
+                                    " is cooler than the default temperature set for away mode in Summer. Turning AC off.",
+                            ConsoleComponents.SHH);
+                }
             }
         } else if (EditSimulationController.getCurrentSeason(calendar) == Season.WINTER) {
             for (Room room : roomArray) {
@@ -3053,10 +3055,11 @@ public class LoginInfoController implements Initializable, MainController {
                         }
                     }
                 });
-                if (!room.getName().equals("Garage"))
-                consoleLog("The temperature in the " + room.getName() +
-                                " is warmer than the default temperature set for away mode in Winter. Turning Heating off.",
-                        ConsoleComponents.SHH);
+                if (!room.getName().equals("Garage")) {
+                    consoleLog("The temperature in the " + room.getName() +
+                                    " is warmer than the default temperature set for away mode in Winter. Turning Heating off.",
+                            ConsoleComponents.SHH);
+                }
             }
         }
     }
