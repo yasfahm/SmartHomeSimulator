@@ -565,7 +565,7 @@ public class LoginInfoController implements Initializable, MainController {
 	 * 
 	 * @param event The event that trigger action
 	 */
-    public void onMouseClickAwayToggleON(MouseEvent event) {
+    public void onMouseClickAwayToggleON(MouseEvent event) throws ParseException {
         if (!toggleText.getText().equals("ON")) {
     		  consoleLog("Simulation is off, enable to process action.");
     	  } else {
@@ -3033,6 +3033,53 @@ public class LoginInfoController implements Initializable, MainController {
                 " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
     }
 
-    public void setDefaultTemperatures(){
-    }
+    public void setDefaultTemperatures() throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy - MMMM - dd", Locale.ENGLISH);
+        calendar.setTime(sdf.parse(getDate()));
+        if (EditSimulationController.getCurrentSeason(calendar) == Season.SUMMER){
+            for (Room room : roomArray) {
+                    time.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (room.getCurrentTemperature() < defaultSummerTemp) {
+                            // Turn Off AC
+                            room.setHvacStopped(true);
+                            Timer t2 = new Timer();
+                            t2.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if (room.getCurrentTemperature() < defaultSummerTemp) {
+                                        room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10)/100) * 100.00) / 100.00);
+                                    }
+                                }
+                            }, 1000);
+                        }
+                    });
+                    LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                            " is cooler than the default temperature set for away mode in Summer. Turning AC off." ,
+                            ConsoleComponents.SHH);
+                }
+            }
+        else if (EditSimulationController.getCurrentSeason(calendar) == Season.WINTER){
+                for (Room room : roomArray) {
+                    time.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (room.getCurrentTemperature() > defaultSummerTemp) {
+                            // Turn Off Heating
+                            room.setHvacStopped(true);
+                            Timer t2 = new Timer();
+                            t2.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if (room.getCurrentTemperature() < defaultSummerTemp) {
+                                        room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10)/100) * 100.00) / 100.00);
+                                    }
+                                }
+                            }, 1000);
+                        }
+                    });
+                    LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                                    " is cooler than the default temperature set for away mode in Summer. Turning AC off." ,
+                            ConsoleComponents.SHH);
+                }
+        }
+        }
 }
