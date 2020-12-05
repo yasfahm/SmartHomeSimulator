@@ -44,7 +44,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -565,7 +564,7 @@ public class LoginInfoController implements Initializable, MainController {
 	 * 
 	 * @param event The event that trigger action
 	 */
-    public void onMouseClickAwayToggleON(MouseEvent event) throws ParseException {
+    public void onMouseClickAwayToggleON(MouseEvent event) throws ParseException, FileNotFoundException {
         if (!toggleText.getText().equals("ON")) {
     		  consoleLog("Simulation is off, enable to process action.");
     	  } else {
@@ -2257,6 +2256,12 @@ public class LoginInfoController implements Initializable, MainController {
                 gc.setFill(Color.WHITE);
                 gc.drawImage(ac, coordinates[0] + 10, coordinates[1] + 35);
             }
+            if (room.getHvacStopped()){
+                gc.setFill(Color.web("#455A64"));
+                gc.fillRect(coordinates[0] + 10, coordinates[1] + 25, 30, 40);
+                gc.setFill(Color.WHITE);
+                gc.drawImage(null, coordinates[0] + 10, coordinates[1] + 35);
+            }
         }
     }
 
@@ -3033,6 +3038,12 @@ public class LoginInfoController implements Initializable, MainController {
                 " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
     }
 
+    /**
+     * This method is triggered when away mode is turned on. It sets the temperatures in the house
+     * to the default values set for away mode for the summer and winter seasons
+     *
+     * @throws ParseException if the Date can't be parsed correctly
+     */
     public void setDefaultTemperatures() throws ParseException {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy - MMMM - dd", Locale.ENGLISH);
@@ -3040,14 +3051,19 @@ public class LoginInfoController implements Initializable, MainController {
         if (EditSimulationController.getCurrentSeason(calendar) == Season.SUMMER) {
             for (Room room : roomArray) {
                 time.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (room.getCurrentTemperature() < defaultSummerTemp) {
+                    if (room.getCurrentTemperature() < defaultSummerTemp && temperatureInInt > room.getCurrentTemperature()) {
                         // Turn Off AC
                         room.setHvacStopped(true);
+                        try {
+                            drawTemperature(room);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                         Timer t2 = new Timer();
                         t2.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                if (room.getCurrentTemperature() < defaultSummerTemp) {
+                                if (room.getCurrentTemperature() < defaultSummerTemp && room.getCurrentTemperature() < temperatureInInt) {
                                     room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
                                 }
                             }
@@ -3061,9 +3077,14 @@ public class LoginInfoController implements Initializable, MainController {
         } else if (EditSimulationController.getCurrentSeason(calendar) == Season.WINTER) {
             for (Room room : roomArray) {
                 time.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (room.getCurrentTemperature() > defaultSummerTemp) {
+                    if (room.getCurrentTemperature() > defaultWinterTemp && room.getCurrentTemperature() < temperatureInInt) {
                         // Turn Off Heating
                         room.setHvacStopped(true);
+                        try {
+                            drawTemperature(room);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                         Timer t2 = new Timer();
                         t2.schedule(new TimerTask() {
                             @Override
