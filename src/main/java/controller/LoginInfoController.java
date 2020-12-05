@@ -524,9 +524,9 @@ public class LoginInfoController implements Initializable, MainController {
             temperature.setText(textFieldTemperature.getText());
             textFieldTemperature.clear();
             temperatureInInt = Integer.parseInt(temperature.getText());
-            consoleLog("Change outside temperature to " + temperatureInInt);
+            consoleLog("Change outside temperature to " + temperatureInInt, ConsoleComponents.SHH);
         } else {
-            consoleLog("Please enter a valid input for outside temperature.");
+            consoleLog("Please enter a valid input for outside temperature.", ConsoleComponents.SHH);
         }
     }
     
@@ -743,6 +743,16 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     /**
+     * This function appends text onto the console
+     *
+     * @param str String to append onto the console
+     */
+    public void consoleLog(String str, ConsoleComponents consoleComponents) {
+        updateConsoleLog(str, consoleComponents);
+        console.appendText("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() + "] " + str + "\n");
+    }
+
+    /**
      * This function is responsible for updating the cached logs
      *
      * @param str String to append onto the console
@@ -830,15 +840,7 @@ public class LoginInfoController implements Initializable, MainController {
             labelWindow.setText("WINDOW");
             labelDoor.setText("DOOR");
 
-            //show the away mode status on house layout
-            if (awayMode) {
-                labelAwayMode.setTextFill(Color. WHITE);
-                labelAwayMode.setText("Away mode is on");
-            }
-            else {
-                labelAwayMode.setTextFill(Color. WHITE);
-                labelAwayMode.setText("Away mode is off");
-            }
+            setUpAwayModeStatus();
 
             roomArray = HouseLayoutService.parseHouseLayout(file);
             HashMap<String, Room> rooms = new HashMap<>();
@@ -851,135 +853,8 @@ public class LoginInfoController implements Initializable, MainController {
             //display the current and desired temperature of each room in SHH tab
             gpRoomsTemp.getChildren().clear();
             vboxDesiredTemp.getChildren().clear();
-            for (Room room : roomArray) {
-                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
-                    Label roomName = new Label();
-                    Label override = new Label();
-                    TextField textFieldRoom = new TextField();
-                    Button setNewTemperature = new Button();
-                    Button hvacButton = new Button();
-                    hvacButton.setMaxWidth(75);
-                    hvacButton.setText("HVAC ON");
-                    hvacButton.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            if (!room.getHvacStopped()) {
-                                room.setHvacStopped(true);
-                                hvacButton.setText("HVAC OFF");
-                                consoleLog("HVAC for " + room.getName() + " is off");
-                            }
-                            else {
-                                room.setHvacStopped(false);
-                                hvacButton.setText("HVAC ON");
-                                consoleLog("HVAC for " + room.getName() + " is on");
-                            }
-                        }
-                    });
-                    setNewTemperature.setOnAction(new EventHandler<ActionEvent>()
-                    {
-                        @Override
-                        public void handle(ActionEvent e) {
-                            if (textFieldRoom.getText().equals("")) {
-                                consoleLog("Please enter a temperature for " + room.getName() +" first.");
-                                Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
-                                alert.showAndWait();
-                            }
-                            else {
-                                consoleLog("Temperature for " + room.getName() + " is overridden.");
-                                override.setText("(Overridden)");
-                                room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
-                                room.setOverride(true);
-                                room.setTemperatureDefault(false);
-                                time.textProperty().addListener((observable, oldValue, newValue) -> {
-                                    if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
-                                        Timer t2 = new Timer();
-                                        t2.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
-                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
-                                                }
-                                            }
-                                        }, 1000);
-                                    }
-                                    if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
-                                        Timer t2 = new Timer();
-                                        t2.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
-                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
-                                                }
-                                            }
-                                        }, 1000);
-                                    }
 
-                                    //when desired temperature is lower, AC will be turned on
-                                    if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
-                                        //AC should be turned on
-                                        Timer t = new Timer();
-                                        t.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
-                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
-                                                    if (room.getCurrentTemperature() == room.getTemperature() && !room.getHvacStopped()) {
-                                                        room.setHvacPaused(true);
-                                                    }
-                                                } else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
-                                                        room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
-                                                    room.setHvacPaused(false);
-                                                }
-                                            }
-                                        }, 1000);
-                                    }
-
-
-                                    //when desired temperature is higher, Heater will be turned on
-                                    if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
-                                        //Heater should be turned on
-                                        Timer t = new Timer();
-                                        t.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                if (room.getCurrentTemperature() < room.getTemperature() - 0.25 && !room.getHvacStopped()) {
-                                                    room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10) / 100) * 100.00) / 100.00);
-                                                    if (room.getCurrentTemperature() == room.getTemperature()) {
-                                                        room.setHvacPaused(true);
-                                                    }
-                                                } else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
-                                                        room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
-                                                    room.setHvacPaused(false);
-                                                }
-                                            }
-                                        }, 1000);
-                                    }
-
-                                });
-                            }
-                        }
-                    });
-                    roomName.setText(" " + room.getName());
-                    textFieldRoom.setMaxWidth(40);
-                    setNewTemperature.setMaxWidth(30);
-                    setNewTemperature.setText("Set");
-                    gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, override, hvacButton);
-                }
-            }
-            vboxDesiredTemp.getChildren().add(gpRoomsTemp);
-
-            //display the current and desired temperature of each room in SHH tab
-            time.textProperty().addListener((obs, oldV, newV) -> {
-                for (Room room : roomArray) {
-                    if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
-                        try {
-                            drawTemperature(room);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
+            drawTemperatureInRooms();
 
             Set<Room> traversed = new HashSet<>();
 
@@ -1012,38 +887,7 @@ public class LoginInfoController implements Initializable, MainController {
                 drawTemperature(roomArray[i]);
             }
 
-            for (int i = 0 ; i < roomArray.length ; i++) {
-                Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
-                Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
-                ImageView light = new ImageView(lightOff);
-                int finalI = i;
-
-                if (roomArray[finalI].getLightsOn() == 0)
-                    light.setImage(lightOff);
-                else {
-                    light.setImage(lightOn);
-                }
-
-                light.setOnMousePressed(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        if (roomArray[finalI].getLightsOn() == 0) {
-                            roomArray[finalI].setLightsOn(1);
-                            drawLight(roomArray[finalI]);
-                            light.setImage(lightOn);
-                        }
-                        else {
-                            roomArray[finalI].setLightsOn(0);
-                            drawLight(roomArray[finalI]);
-                            light.setImage(lightOff);
-                        }
-                    }
-                });
-                gpSHCLights.addRow(i, light);
-            }
-            vboxSHCLights.getChildren().clear();
-
-            vboxSHCLights.getChildren().add(gpSHCLights);
+            setupLights(gpSHCLights);
 
             // open/close window functionality
             GridPane gpSHCWindows = new GridPane();
@@ -1204,65 +1048,7 @@ public class LoginInfoController implements Initializable, MainController {
                         drawBlockWindow(roomArray[i], windowList.get(finalJ).getPosition());
                     }
                 }
-
-                // when room has 0 windows
-                if(windowList.size() == 0) {
-                    gpSHCWindows.addRow(i, windowsEmpty);
-                }
-
-                // when room has 1 window
-                if(windowList.size() == 1) {
-                    ImageView selectedWindow = new ImageView();
-
-                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("TOP"))
-                        selectedWindow = windowsTop;
-                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("BOTTOM"))
-                        selectedWindow = windowsBottom;
-                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("LEFT"))
-                        selectedWindow = windowsLeft;
-                    if(roomArray[i].getWindows().get(0).getPosition().toString().equals("RIGHT"))
-                        selectedWindow = windowsRight;
-                    gpSHCWindows.addRow(i, selectedWindow);
-                }
-
-                // when room has 2 windows
-                if(windowList.size() == 2) {
-                    ImageView[] selectedWindows = new ImageView[2];
-
-                    for(int j = 0; j < selectedWindows.length; j++) {
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
-                            selectedWindows[j] = windowsTop;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
-                            selectedWindows[j] = windowsBottom;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
-                            selectedWindows[j] = windowsLeft;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
-                            selectedWindows[j] = windowsRight;
-                    }
-                    gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1]);
-                }
-
-                // when room has 3 windows
-                if(windowList.size() == 3) {
-                    ImageView[] selectedWindows = new ImageView[3];
-
-                    for(int j = 0; j < selectedWindows.length; j++) {
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
-                            selectedWindows[j] = windowsTop;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
-                            selectedWindows[j] = windowsBottom;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
-                            selectedWindows[j] = windowsLeft;
-                        if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
-                            selectedWindows[j] = windowsRight;
-                    }
-                    gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1], selectedWindows[2]);
-                }
-
-                // when room has 4 windows
-                if(windowList.size() == 4) {
-                    gpSHCWindows.addRow(i, windowsTop, windowsBottom, windowsLeft, windowsRight);
-                }
+                setupWindowsPerNumber(gpSHCWindows, i, windowsTop, windowsLeft, windowsRight, windowsBottom, windowsEmpty, windowList);
             }
 
             vboxSHCWindows.getChildren().clear();
@@ -1333,6 +1119,10 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsTop.setImage(doorCloseTop);
                                     }
+                                } else {
+                                    consoleLog("This door is locked");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This door is locked");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -1375,6 +1165,10 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsLeft.setImage(doorCloseLeft);
                                     }
+                                } else {
+                                    consoleLog("This door is locked");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This door is locked");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -1417,6 +1211,10 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsRight.setImage(doorCloseRight);
                                     }
+                                } else {
+                                    consoleLog("This door is locked");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This door is locked");
+                                    alert.showAndWait();
                                 }
                             }
                         });
@@ -1459,65 +1257,16 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawDoor(roomArray[finalI], doorList.get(finalJ).getPosition().toString());
                                         doorsBottom.setImage(doorCloseBottom);
                                     }
+                                } else {
+                                    consoleLog("This door is locked");
+                                    Alert alert = new Alert(Alert.AlertType.WARNING, "This door is locked");
+                                    alert.showAndWait();
                                 }
                             }
                         });
                     }
                 }
-
-                // when room has 1 door
-                if(doorList.size() == 1) {
-                    ImageView selectedDoors = new ImageView();
-
-                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("TOP"))
-                        selectedDoors = doorsTop;
-                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("BOTTOM"))
-                        selectedDoors = doorsBottom;
-                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("LEFT"))
-                        selectedDoors = doorsLeft;
-                    if(roomArray[i].getDoors().get(0).getPosition().toString().equals("RIGHT"))
-                        selectedDoors = doorsRight;
-                    gpSHCDoors.addRow(i, selectedDoors);
-                }
-
-                // when room has 2 doors
-                if(doorList.size() == 2) {
-                    ImageView[] selectedDoors = new ImageView[2];
-
-                    for(int j = 0; j < selectedDoors.length; j++) {
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
-                            selectedDoors[j] = doorsTop;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
-                            selectedDoors[j] = doorsBottom;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
-                            selectedDoors[j] = doorsLeft;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
-                            selectedDoors[j] = doorsRight;
-                    }
-                    gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1]);
-                }
-
-                // when room has 3 doors
-                if(doorList.size() == 3) {
-                    ImageView[] selectedDoors = new ImageView[3];
-
-                    for(int j = 0; j < selectedDoors.length; j++) {
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
-                            selectedDoors[j] = doorsTop;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
-                            selectedDoors[j] = doorsBottom;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
-                            selectedDoors[j] = doorsLeft;
-                        if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
-                            selectedDoors[j] = doorsRight;
-                    }
-                    gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1], selectedDoors[2]);
-                }
-
-                // when room has 4 doors
-                if(doorList.size() == 4) {
-                    gpSHCDoors.addRow(i, doorsTop, doorsBottom, doorsLeft, doorsRight);
-                }
+                setupRoomPerDoorNumber(gpSHCDoors, i, doorsTop, doorsLeft, doorsRight, doorsBottom, doorList);
             }
 
             vboxSHCDoors.getChildren().clear();
@@ -1543,6 +1292,207 @@ public class LoginInfoController implements Initializable, MainController {
         }
     }
 
+    private void drawTemperatureInRooms() {
+        for (Room room : roomArray) {
+            if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                Label roomName = new Label();
+                Label override = new Label();
+                TextField textFieldRoom = new TextField();
+                Button setNewTemperature = new Button();
+                Button hvacButton = new Button();
+                hvacButton.setMaxWidth(75);
+                hvacButton.setText("HVAC ON");
+                hvacButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        if (!room.getHvacStopped()) {
+                            room.setHvacStopped(true);
+                            hvacButton.setText("HVAC OFF");
+                            consoleLog("HVAC for " + room.getName() + " is off", ConsoleComponents.SHH);
+                        } else {
+                            room.setHvacStopped(false);
+                            hvacButton.setText("HVAC ON");
+                            consoleLog("HVAC for " + room.getName() + " is on", ConsoleComponents.SHH);
+                        }
+                    }
+                });
+                setNewTemperature.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        if (textFieldRoom.getText().equals("")) {
+                            consoleLog("Please enter a temperature for " + room.getName() + " first.", ConsoleComponents.SHH);
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
+                            alert.showAndWait();
+                        } else {
+                            consoleLog("Temperature for " + room.getName() + " is overridden.", ConsoleComponents.SHH);
+                            override.setText("(Overridden)");
+                            room.setTemperature(Double.parseDouble(textFieldRoom.getText()));
+                            room.setOverride(true);
+                            room.setTemperatureDefault(false);
+                            time.textProperty().addListener((observable, oldValue, newValue) -> {
+                                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+                                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+
+                                //when desired temperature is lower, AC will be turned on
+                                if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                    //AC should be turned on
+                                    Timer t = new Timer();
+                                    t.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
+                                                if (room.getCurrentTemperature() == room.getTemperature() && !room.getHvacStopped()) {
+                                                    room.setHvacPaused(true);
+                                                }
+                                            } else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
+                                                    room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                                room.setHvacPaused(false);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+
+
+                                //when desired temperature is higher, Heater will be turned on
+                                if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                    //Heater should be turned on
+                                    Timer t = new Timer();
+                                    t.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() < room.getTemperature() - 0.25 && !room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10) / 100) * 100.00) / 100.00);
+                                                if (room.getCurrentTemperature() == room.getTemperature()) {
+                                                    room.setHvacPaused(true);
+                                                }
+                                            } else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
+                                                    room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                                room.setHvacPaused(false);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+
+                            });
+                        }
+                    }
+                });
+                roomName.setText(" " + room.getName());
+                textFieldRoom.setMaxWidth(40);
+                setNewTemperature.setMaxWidth(30);
+                setNewTemperature.setText("Set");
+                gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, override, hvacButton);
+            }
+        }
+        vboxDesiredTemp.getChildren().add(gpRoomsTemp);
+
+        //display the current and desired temperature of each room in SHH tab
+        time.textProperty().addListener((obs, oldV, newV) -> {
+            for (Room room : roomArray) {
+                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                    try {
+                        drawTemperature(room);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void setupWindowsPerNumber(GridPane gpSHCWindows, int i, ImageView windowsTop, ImageView windowsLeft, ImageView windowsRight, ImageView windowsBottom, ImageView windowsEmpty, ArrayList<Window> windowList) {
+        // when room has 0 windows
+        if (windowList.size() == 0) {
+            gpSHCWindows.addRow(i, windowsEmpty);
+        }
+
+        // when room has 1 window
+        if (windowList.size() == 1) {
+            ImageView selectedWindow = new ImageView();
+
+            if (roomArray[i].getWindows().get(0).getPosition().toString().equals("TOP"))
+                selectedWindow = windowsTop;
+            if (roomArray[i].getWindows().get(0).getPosition().toString().equals("BOTTOM"))
+                selectedWindow = windowsBottom;
+            if (roomArray[i].getWindows().get(0).getPosition().toString().equals("LEFT"))
+                selectedWindow = windowsLeft;
+            if (roomArray[i].getWindows().get(0).getPosition().toString().equals("RIGHT"))
+                selectedWindow = windowsRight;
+            gpSHCWindows.addRow(i, selectedWindow);
+        }
+
+        // when room has 2 windows
+        if (windowList.size() == 2) {
+            ImageView[] selectedWindows = new ImageView[2];
+
+            for (int j = 0; j < selectedWindows.length; j++) {
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
+                    selectedWindows[j] = windowsTop;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
+                    selectedWindows[j] = windowsBottom;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
+                    selectedWindows[j] = windowsLeft;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
+                    selectedWindows[j] = windowsRight;
+            }
+            gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1]);
+        }
+
+        // when room has 3 windows
+        if (windowList.size() == 3) {
+            ImageView[] selectedWindows = new ImageView[3];
+
+            for (int j = 0; j < selectedWindows.length; j++) {
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
+                    selectedWindows[j] = windowsTop;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
+                    selectedWindows[j] = windowsBottom;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
+                    selectedWindows[j] = windowsLeft;
+                if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
+                    selectedWindows[j] = windowsRight;
+            }
+            gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1], selectedWindows[2]);
+        }
+
+        // when room has 4 windows
+        if (windowList.size() == 4) {
+            gpSHCWindows.addRow(i, windowsTop, windowsBottom, windowsLeft, windowsRight);
+        }
+    }
+
+    private void setUpAwayModeStatus() {
+        //show the away mode status on house layout
+        if (awayMode) {
+            labelAwayMode.setTextFill(Color.WHITE);
+            labelAwayMode.setText("Away mode is on");
+        } else {
+            labelAwayMode.setTextFill(Color.WHITE);
+            labelAwayMode.setText("Away mode is off");
+        }
+    }
+
     /**
      * Draws the room based on the cached static variables after this file has been submitted
      */
@@ -1562,14 +1512,7 @@ public class LoginInfoController implements Initializable, MainController {
         vboxZones.getChildren().addAll(gpZone);
 
         //show the away mode status on house layout
-        if (awayMode) {
-            labelAwayMode.setTextFill(Color. WHITE);
-            labelAwayMode.setText("Away mode is on");
-        }
-        else {
-            labelAwayMode.setTextFill(Color. WHITE);
-            labelAwayMode.setText("Away mode is off");
-        }
+        setUpAwayModeStatus();
 
         gc = houseRender.getGraphicsContext2D();
         gc.setFont(new Font(11));
@@ -1592,38 +1535,7 @@ public class LoginInfoController implements Initializable, MainController {
         GridPane gpSHCLights = new GridPane();
         gpSHCLights.setVgap(13);
 
-        for (int i = 0 ; i < roomArray.length ; i++) {
-
-            Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
-            Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
-            ImageView light = new ImageView(lightOff);
-            int finalI = i;
-            if (roomArray[finalI].getLightsOn() == 0)
-                light.setImage(lightOff);
-            else {
-                light.setImage(lightOn);
-            }
-            light.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent e) {
-                    if (roomArray[finalI].getLightsOn() == 0) {
-                        roomArray[finalI].setLightsOn(1);
-                        drawLight(roomArray[finalI]);
-                        light.setImage(lightOn);
-                    }
-                    else {
-                        roomArray[finalI].setLightsOn(0);
-                        drawLight(roomArray[finalI]);
-                        light.setImage(lightOff);
-                    }
-                }
-            });
-            gpSHCLights.addRow(i, light);
-        }
-
-        vboxSHCLights.getChildren().clear();
-
-        vboxSHCLights.getChildren().add(gpSHCLights);
+        setupLights(gpSHCLights);
 
         // open/close window functionality
         GridPane gpSHCWindows = new GridPane();
@@ -1780,65 +1692,7 @@ public class LoginInfoController implements Initializable, MainController {
 					}
                 }
             }
-
-            // when room has 0 windows
-            if(windowList.size() == 0) {
-                gpSHCWindows.addRow(i, windowsEmpty);
-            }
-
-            // when room has 1 window
-            if(windowList.size() == 1) {
-                ImageView selectedWindow = new ImageView();
-
-                if(roomArray[i].getWindows().get(0).getPosition().toString().equals("TOP"))
-                    selectedWindow = windowsTop;
-                if(roomArray[i].getWindows().get(0).getPosition().toString().equals("BOTTOM"))
-                    selectedWindow = windowsBottom;
-                if(roomArray[i].getWindows().get(0).getPosition().toString().equals("LEFT"))
-                    selectedWindow = windowsLeft;
-                if(roomArray[i].getWindows().get(0).getPosition().toString().equals("RIGHT"))
-                    selectedWindow = windowsRight;
-                gpSHCWindows.addRow(i, selectedWindow);
-            }
-
-            // when room has 2 windows
-            if(windowList.size() == 2) {
-                ImageView[] selectedWindows = new ImageView[2];
-
-                for(int j = 0; j < selectedWindows.length; j++) {
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
-                        selectedWindows[j] = windowsTop;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
-                        selectedWindows[j] = windowsBottom;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
-                        selectedWindows[j] = windowsLeft;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
-                        selectedWindows[j] = windowsRight;
-                }
-                gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1]);
-            }
-
-            // when room has 3 windows
-            if(windowList.size() == 3) {
-                ImageView[] selectedWindows = new ImageView[3];
-
-                for(int j = 0; j < selectedWindows.length; j++) {
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("TOP"))
-                        selectedWindows[j] = windowsTop;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("BOTTOM"))
-                        selectedWindows[j] = windowsBottom;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("LEFT"))
-                        selectedWindows[j] = windowsLeft;
-                    if (roomArray[i].getWindows().get(j).getPosition().toString().equals("RIGHT"))
-                        selectedWindows[j] = windowsRight;
-                }
-                gpSHCWindows.addRow(i, selectedWindows[0], selectedWindows[1], selectedWindows[2]);
-            }
-
-            // when room has 4 windows
-            if(windowList.size() == 4) {
-                gpSHCWindows.addRow(i, windowsTop, windowsBottom, windowsLeft, windowsRight);
-            }
+            setupWindowsPerNumber(gpSHCWindows, i, windowsTop, windowsLeft, windowsRight, windowsBottom, windowsEmpty, windowList);
         }
 
         vboxSHCWindows.getChildren().clear();
@@ -2056,60 +1910,7 @@ public class LoginInfoController implements Initializable, MainController {
                     });
                 }
             }
-
-            // when room has 1 door
-            if(doorList.size() == 1) {
-                ImageView selectedDoors = new ImageView();
-
-                if(roomArray[i].getDoors().get(0).getPosition().toString().equals("TOP"))
-                    selectedDoors = doorsTop;
-                if(roomArray[i].getDoors().get(0).getPosition().toString().equals("BOTTOM"))
-                    selectedDoors = doorsBottom;
-                if(roomArray[i].getDoors().get(0).getPosition().toString().equals("LEFT"))
-                    selectedDoors = doorsLeft;
-                if(roomArray[i].getDoors().get(0).getPosition().toString().equals("RIGHT"))
-                    selectedDoors = doorsRight;
-                gpSHCDoors.addRow(i, selectedDoors);
-            }
-
-            // when room has 2 doors
-            if(doorList.size() == 2) {
-                ImageView[] selectedDoors = new ImageView[2];
-
-                for(int j = 0; j < selectedDoors.length; j++) {
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
-                        selectedDoors[j] = doorsTop;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
-                        selectedDoors[j] = doorsBottom;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
-                        selectedDoors[j] = doorsLeft;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
-                        selectedDoors[j] = doorsRight;
-                }
-                gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1]);
-            }
-
-            // when room has 3 doors
-            if(doorList.size() == 3) {
-                ImageView[] selectedDoors = new ImageView[3];
-
-                for(int j = 0; j < selectedDoors.length; j++) {
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
-                        selectedDoors[j] = doorsTop;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
-                        selectedDoors[j] = doorsBottom;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
-                        selectedDoors[j] = doorsLeft;
-                    if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
-                        selectedDoors[j] = doorsRight;
-                }
-                gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1], selectedDoors[2]);
-            }
-
-            // when room has 4 doors
-            if(doorList.size() == 4) {
-                gpSHCDoors.addRow(i, doorsTop, doorsBottom, doorsLeft, doorsRight);
-            }
+            setupRoomPerDoorNumber(gpSHCDoors, i, doorsTop, doorsLeft, doorsRight, doorsBottom, doorList);
         }
 
         vboxSHCDoors.getChildren().clear();
@@ -2126,6 +1927,95 @@ public class LoginInfoController implements Initializable, MainController {
                 gc.fillText(String.valueOf(numberOfPeople) + " person(s)", positions[0] + 10, positions[1] + 35);
             }
         }
+        drawTemperatureInRooms();
+    }
+
+    private void setupRoomPerDoorNumber(GridPane gpSHCDoors, int i, ImageView doorsTop, ImageView doorsLeft, ImageView doorsRight, ImageView doorsBottom, ArrayList<Door> doorList) {
+        if (doorList.size() == 1) {
+            ImageView selectedDoors = new ImageView();
+
+            if (roomArray[i].getDoors().get(0).getPosition().toString().equals("TOP"))
+                selectedDoors = doorsTop;
+            if (roomArray[i].getDoors().get(0).getPosition().toString().equals("BOTTOM"))
+                selectedDoors = doorsBottom;
+            if (roomArray[i].getDoors().get(0).getPosition().toString().equals("LEFT"))
+                selectedDoors = doorsLeft;
+            if (roomArray[i].getDoors().get(0).getPosition().toString().equals("RIGHT"))
+                selectedDoors = doorsRight;
+            gpSHCDoors.addRow(i, selectedDoors);
+        }
+
+        // when room has 2 doors
+        if (doorList.size() == 2) {
+            ImageView[] selectedDoors = new ImageView[2];
+
+            for (int j = 0; j < selectedDoors.length; j++) {
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                    selectedDoors[j] = doorsTop;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                    selectedDoors[j] = doorsBottom;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                    selectedDoors[j] = doorsLeft;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                    selectedDoors[j] = doorsRight;
+            }
+            gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1]);
+        }
+
+        // when room has 3 doors
+        if (doorList.size() == 3) {
+            ImageView[] selectedDoors = new ImageView[3];
+
+            for (int j = 0; j < selectedDoors.length; j++) {
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("TOP"))
+                    selectedDoors[j] = doorsTop;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("BOTTOM"))
+                    selectedDoors[j] = doorsBottom;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("LEFT"))
+                    selectedDoors[j] = doorsLeft;
+                if (roomArray[i].getDoors().get(j).getPosition().toString().equals("RIGHT"))
+                    selectedDoors[j] = doorsRight;
+            }
+            gpSHCDoors.addRow(i, selectedDoors[0], selectedDoors[1], selectedDoors[2]);
+        }
+
+        // when room has 4 doors
+        if (doorList.size() == 4) {
+            gpSHCDoors.addRow(i, doorsTop, doorsBottom, doorsLeft, doorsRight);
+        }
+    }
+
+    private void setupLights(GridPane gpSHCLights) throws FileNotFoundException {
+        for (int i = 0; i < roomArray.length; i++) {
+            Image lightOn = new Image(new FileInputStream("src/main/resources/Images/lightOn.png"), 60, 27, true, false);
+            Image lightOff = new Image(new FileInputStream("src/main/resources/Images/lightOff.png"), 60, 27, true, false);
+            ImageView light = new ImageView(lightOff);
+            int finalI = i;
+            if (roomArray[finalI].getLightsOn() == 0)
+                light.setImage(lightOff);
+            else {
+                light.setImage(lightOn);
+            }
+            light.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    if (roomArray[finalI].getLightsOn() == 0) {
+                        roomArray[finalI].setLightsOn(1);
+                        drawLight(roomArray[finalI]);
+                        light.setImage(lightOn);
+                    } else {
+                        roomArray[finalI].setLightsOn(0);
+                        drawLight(roomArray[finalI]);
+                        light.setImage(lightOff);
+                    }
+                }
+            });
+            gpSHCLights.addRow(i, light);
+        }
+
+        vboxSHCLights.getChildren().clear();
+
+        vboxSHCLights.getChildren().add(gpSHCLights);
     }
 
     /**
@@ -2546,7 +2436,7 @@ public class LoginInfoController implements Initializable, MainController {
                     setTemp.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
-                            consoleLog( "Temperature for zone " + zoneName + " has been set.");
+                            consoleLog( "Temperature for zone " + zoneName + " has been set.", ConsoleComponents.SHH);
                             temps[0] = Double.parseDouble(temp1.getText());
                             temps[1] = Double.parseDouble(temp2.getText());
                             temps[2] = Double.parseDouble(temp3.getText());
@@ -3065,7 +2955,7 @@ public class LoginInfoController implements Initializable, MainController {
             defaultWinterTemp = Integer.parseInt(defaultAwayWinter.getText());
             temp = defaultWinterTemp;
         }
-        LoginInfoController.consoleLogFile("Set the default temperature for " + season +
+        consoleLog("Set the default temperature for " + season +
                 " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
     }
 
@@ -3101,7 +2991,7 @@ public class LoginInfoController implements Initializable, MainController {
                         }, 1000);
                     }
                 });
-                LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                consoleLog("The temperature in the " + room.getName() +
                                 " is cooler than the default temperature set for away mode in Summer. Turning AC off.",
                         ConsoleComponents.SHH);
             }
@@ -3127,7 +3017,7 @@ public class LoginInfoController implements Initializable, MainController {
                         }, 1000);
                     }
                 });
-                LoginInfoController.consoleLogFile("The temperature in the " + room.getName() +
+                consoleLog("The temperature in the " + room.getName() +
                                 " is warmer than the default temperature set for away mode in Winter. Turning Heating off.",
                         ConsoleComponents.SHH);
             }
