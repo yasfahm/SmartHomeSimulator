@@ -52,7 +52,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import observerPattern.UserLocationObserver;
+import observerPattern.SHPObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.ConsoleService;
 import service.HouseLayoutService;
@@ -125,7 +125,7 @@ public class LoginInfoController implements Initializable, MainController {
     @FXML
     private Label labelAwayMode;
     @FXML
-	private Button autoModeBt;
+	  private Button autoModeBt;
     @FXML
     private AnchorPane aPZone;
     @FXML
@@ -142,6 +142,8 @@ public class LoginInfoController implements Initializable, MainController {
     private VBox vboxZones;
     @FXML
     private VBox vboxDesiredTemp;
+    @FXML
+    private Label season;
 
     private static String userParent;
     private static Map<String, Room> house;
@@ -179,6 +181,7 @@ public class LoginInfoController implements Initializable, MainController {
     public LoginInfoController() {
     }
 
+    private double clockSpeed = 1;
 
     /**
      * Sets up the logged in user as the active user
@@ -306,8 +309,52 @@ public class LoginInfoController implements Initializable, MainController {
         Calendar cal = Calendar.getInstance();
         timeInMillis += 1000;
         cal.setTimeInMillis(timeInMillis);
+        season.setText(EditSimulationController.getCurrentSeason(cal).toString());
         this.date.setText(formatDate.format(cal.getTime()));
         this.time.setText(formatTime.format(cal.getTime()));
+    }
+    
+    /**
+     * Increase clock speed
+     */
+    public void increaseClockSpeed(ActionEvent event) {
+    	if(!(this.clockSpeed < 0.001)) {
+        	double rate = 0.1;
+        	if(this.clockSpeed > (rate+rate*0.25)) this.clockSpeed -= 0.1;
+        	else  this.clockSpeed -= this.clockSpeed*0.3;
+        	playClockAnimation();
+    	}
+    }
+    
+    /**
+     * Decrease clock speed
+     */
+    public void decreaseClockSpeed(ActionEvent event) {
+    	this.clockSpeed += 1;
+    	playClockAnimation();
+    }
+    
+    /**
+     * Reset clock speed
+     */
+    public void resetClockSpeed(ActionEvent event) {
+    	this.clockSpeed = 1;
+    	playClockAnimation();
+    }
+    
+    /**
+     * Clock animation trigger, this will clear the animation and replay
+     */
+    private void playClockAnimation() {
+        if (clock != null) clock.getKeyFrames().clear();
+        clock = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {
+                    moveClock();
+                }),
+                new KeyFrame(Duration.seconds(clockSpeed))
+        );
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
     }
 
     /**
@@ -323,7 +370,7 @@ public class LoginInfoController implements Initializable, MainController {
             firstLaunch = false;
             ChangeDateTimeController.setParentController(this);
             LightsScheduleController.setParentController(this);
-            UserLocationObserver.setParentController(this);
+            SHPObserver.setParentController(this);
             SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
             SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
             long sysmillis = System.currentTimeMillis();
@@ -348,16 +395,7 @@ public class LoginInfoController implements Initializable, MainController {
         // Temperature
         this.temperature.setText(Integer.toString(temperatureInInt));
 
-        // Clock animation
-        if (clock != null) clock.getKeyFrames().clear();
-        clock = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> {
-                    moveClock();
-                }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
+        playClockAnimation();
 
         setupCurrentUser();
         if(autoMode) {
@@ -2682,7 +2720,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @throws ParseException if the Date can't be parsed correctly in lightScheduleLight
      */
     public void onTimeChangeLightRooms() throws ParseException {
-        for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()){
+        for (Map.Entry<String, Date[]> entry: lightsSchedule.entrySet()) {
             lightScheduleLight(entry.getKey(), entry.getValue()[0], entry.getValue()[1]);
         }
     }
@@ -2828,6 +2866,10 @@ public class LoginInfoController implements Initializable, MainController {
      * @param timeDelay the timeDelay to wait
      */
     public void sendNotification(String timeDelay){
+        if (timeDelay == "0"){
+            consoleLog("Notification sent to user. The time before alerting authorities of " + timeDelay
+                    + " seconds has been elapsed.");
+        }
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(Double.parseDouble(timeDelay)), e -> {
                     consoleLog("Notification sent to user. The time before alerting authorities of " + timeDelay

@@ -1,4 +1,2 @@
-[2020-11-23T21:27:18] System initialized
-[2020-11-23T21:27:18] Away mode turns on.
-[2020-11-23T21:27:18] user1 was detected in the Kitchen during Away Mode. Authorities will be alerted in 10 seconds.
-[2020-11-23T21:27:18] Moved user1 to Kitchen
+[2020-12-03T18:57:22] System initialized
+[2020-12-03T18:57:26] Successfully added house layout.

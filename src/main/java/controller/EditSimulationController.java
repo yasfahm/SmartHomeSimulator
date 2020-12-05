@@ -1,10 +1,13 @@
 package controller;
 
+import constants.Season;
 import entity.ConsoleComponents;
 import entity.Room;
 import entity.UserRole;
 import entity.Window;
 import interfaces.SubController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,26 +15,33 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import observerPattern.SHPObserver;
 import observerPattern.Subject;
-import observerPattern.UserLocationObserver;
 import org.apache.commons.lang3.StringUtils;
 import service.RoleService;
+
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Controller responsible for the editing of user location
@@ -58,13 +68,66 @@ public class EditSimulationController implements Initializable, SubController {
     private Label windowBlockStatus;
     @FXML
     private Button button;
+    @FXML
+    private ComboBox<String> summerMonthStart;
+    @FXML
+    private ComboBox<Integer> summerDayStart;
+    @FXML
+    private ComboBox<String> winterMonthStart;
+    @FXML
+    private ComboBox<Integer> winterDayStart;
+    @FXML
+    private ComboBox<String> summerMonthEnd;
+    @FXML
+    private ComboBox<Integer> summerDayEnd;
+    @FXML
+    private ComboBox<String> winterMonthEnd;
+    @FXML
+    private ComboBox<Integer> winterDayEnd;
+    @FXML
+    private HBox defaultSummerContainer, hBoxSummer;
+    @FXML
+    private HBox defaultWinterContainer, hBoxWinter;
+    @FXML
+    private Label defaultAwaySummer, defaultAwayWinter;
+    @FXML
+    private TextField summerAwayTF, winterAwayTF;
+
     private Map<String, Room> house;
     private String username;
     private double xOffset = 0;
     private double yOffset = 0;
     private static Room room;
 
+    private final ObservableList<String> li_month = FXCollections.observableArrayList(
+            "January", "February", "March", "April", "May", "June", "July", "August",
+            "September", "October", "November", "December");
+
     private static Map<String, String> userLocations;
+
+    private static Integer summerMonthStartCache;
+    private static Integer winterMonthStartCache;
+    private static Integer summerDayStartCache;
+    private static Integer winterDayStartCache;
+
+
+    private static Integer summerMonthEndCache;
+    private static Integer winterMonthEndCache;
+    private static Integer summerDayEndCache;
+    private static Integer winterDayEndCache;
+
+    private static int defaultSummerTemp = 22;
+    private static int defaultWinterTemp = 18;
+    static {
+        summerMonthStartCache = 6;
+        winterMonthStartCache = 1;
+        summerDayStartCache = 1;
+        winterDayStartCache = 1;
+        summerMonthEndCache = 12;
+        winterMonthEndCache = 5;
+        summerDayEndCache = 31;
+        winterDayEndCache = 31;
+    }
 
     public static Map<String, String> getUserLocations() {
         return userLocations;
@@ -150,6 +213,11 @@ public class EditSimulationController implements Initializable, SubController {
             });
             windows.getSelectionModel().selectFirst();
         }
+        setComboBoxValue();
+
+        this.defaultAwaySummer.setText(Integer.toString(defaultSummerTemp));
+        this.defaultAwayWinter.setText(Integer.toString(defaultWinterTemp));
+
     }
 
     /**
@@ -281,7 +349,7 @@ public class EditSimulationController implements Initializable, SubController {
                 ((Label) locationDisplay.lookup("#" + username + "Location")).setText(chosenLocation);
             }
             Subject subject = new Subject();
-            new UserLocationObserver(subject);
+            new SHPObserver(subject);
             subject.setUserLocations(username, chosenLocation);
             subject.notifyObserver();
             LoginInfoController.consoleLogFile("Moved " + username + " to " + chosenLocation, ConsoleComponents.SHS);
@@ -316,4 +384,384 @@ public class EditSimulationController implements Initializable, SubController {
     protected void setUsername(String username) {
         this.username = username;
     }
+
+    /**
+     * This function assigns the proper date range to List
+     */
+    private ObservableList<Integer> getDateList(ComboBox<String> monthBox) {
+        int length;
+        int month = Month.valueOf(monthBox.getValue().toUpperCase()).getValue();
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            length = 30;
+        } else if (month == 2) {
+            length = 29;
+        } else {
+            length = 31;
+        }
+        Integer[] arr = IntStream.of(IntStream.range(1, length + 1).toArray()).boxed().toArray(Integer[]::new);
+        return FXCollections.observableArrayList(arr);
+    }
+
+    /**
+     * This function will assign items to combo box
+     */
+    private void setComboBoxValue() {
+        winterMonthStart.setItems(li_month);
+        summerMonthStart.setItems(li_month);
+        winterMonthEnd.setItems(li_month);
+        summerMonthEnd.setItems(li_month);
+
+        winterMonthStart.getSelectionModel().select(winterMonthStartCache - 1);
+        summerMonthStart.getSelectionModel().select(summerMonthStartCache - 1);
+        winterMonthEnd.getSelectionModel().select(winterMonthEndCache - 1);
+        summerMonthEnd.getSelectionModel().select(summerMonthEndCache - 1);
+
+        updateMonthDays();
+    }
+
+    /**
+     * Adds and updates the combo boxes for the months and days
+     */
+    private void updateMonthDays() {
+        ObservableList<Integer> listOfDaySummerStart = getDateList(summerMonthStart);
+        ObservableList<Integer> listOfDayWinterStart = getDateList(winterMonthStart);
+        ObservableList<Integer> listOfDaySummerEnd = getDateList(summerMonthEnd);
+        ObservableList<Integer> listOfDayWinterEnd = getDateList(winterMonthEnd);
+
+        winterDayStart.setItems(listOfDayWinterStart);
+        summerDayStart.setItems(listOfDaySummerStart);
+        winterDayEnd.setItems(listOfDayWinterEnd);
+        summerDayEnd.setItems(listOfDaySummerEnd);
+
+        winterDayStart.getSelectionModel().select(winterDayStartCache);
+        summerDayStart.getSelectionModel().select(summerDayStartCache);
+        winterDayEnd.getSelectionModel().select(winterDayEndCache);
+        summerDayEnd.getSelectionModel().select(summerDayEndCache);
+    }
+
+    /**
+     * On change for the combobox controlling the month for the start of summer
+     */
+    public void onChangeSummerStartMonth() {
+        int month = Month.valueOf(summerMonthStart.getSelectionModel().getSelectedItem().toUpperCase()).getValue();
+        if (month > winterMonthEndCache) {
+            int maxDay = getMaxDay(month);
+            summerMonthStartCache = month;
+            if (summerDayStartCache > maxDay) {
+                summerDayStart.setItems(getDateList(summerMonthStart));
+                summerDayStart.getSelectionModel().select(maxDay);
+            }
+        } else if (((!(summerDayStartCache > winterDayEndCache)) && (month == winterMonthEndCache)) || month < winterMonthEndCache) {
+            String message = "Summer can only start after the end of winter";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            summerMonthStart.getSelectionModel().select(summerMonthStartCache);
+        } else {
+            int maxDay = getMaxDay(month);
+            summerMonthStartCache = month;
+            if (summerDayStartCache > maxDay) {
+                summerDayStart.setItems(getDateList(summerMonthStart));
+                summerDayStart.getSelectionModel().select(maxDay);
+            }
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the month for the end of summer
+     */
+    public void onChangeSummerEndMonth() {
+        int month = Month.valueOf(summerMonthEnd.getSelectionModel().getSelectedItem().toUpperCase()).getValue();
+        if (month < winterMonthStartCache) {
+            int maxDay = getMaxDay(month);
+            summerMonthEndCache = month;
+            if (summerDayEndCache > maxDay) {
+                summerDayEnd.setItems(getDateList(summerMonthEnd));
+                summerDayEnd.getSelectionModel().select(maxDay);
+            }
+        } else if (((!(summerDayEndCache < winterDayEndCache)) && (month == winterMonthStartCache)) || month > winterMonthStartCache || month < summerMonthStartCache) {
+            String message = "Summer can only end before the start of winter";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            summerMonthEnd.getSelectionModel().select(summerMonthEndCache);
+        } else {
+            int maxDay = getMaxDay(month);
+            summerMonthEndCache = month;
+            if (summerDayEndCache > maxDay) {
+                summerDayEnd.setItems(getDateList(summerMonthEnd));
+                summerDayEnd.getSelectionModel().select(maxDay);
+            }
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the day for the start of summer
+     */
+    public void onChangeSummerStartDay() {
+        int day = summerDayStart.getSelectionModel().getSelectedItem();
+        if (summerMonthStartCache.equals(winterMonthStartCache) && !(day > winterDayEndCache)) {
+            String message = "Summer can only start after the end of winter";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            summerDayStart.getSelectionModel().select(summerDayStartCache);
+        } else {
+            summerDayStartCache = day;
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the day for the end of summer
+     */
+    public void onChangeSummerEndDay() {
+        int day = summerDayEnd.getSelectionModel().getSelectedItem();
+        if (summerMonthStartCache.equals(winterMonthStartCache) && !(day < winterDayStartCache)) {
+            String message = "Summer can only end before the start of winter";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            summerDayEnd.getSelectionModel().select(summerDayEndCache);
+        } else {
+            summerDayStartCache = day;
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the month for the start of winter
+     */
+    public void onChangeWinterStartMonth() {
+        int month = Month.valueOf(winterMonthStart.getSelectionModel().getSelectedItem().toUpperCase()).getValue();
+        if (month > summerMonthEndCache) {
+            int maxDay = getMaxDay(month);
+            winterMonthStartCache = month;
+            if (winterDayStartCache > maxDay) {
+                winterDayStart.setItems(getDateList(winterMonthStart));
+                winterDayStart.getSelectionModel().select(maxDay);
+            }
+        } else if (((!(winterDayEndCache > summerDayEndCache)) && (month == summerMonthEndCache)) || month < summerMonthEndCache) {
+            String message = "Winter can only start after the end of Summer";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            winterMonthStart.getSelectionModel().select(winterMonthStartCache);
+        } else {
+            int maxDay = getMaxDay(month);
+            winterMonthStartCache = month;
+            if (winterDayStartCache > maxDay) {
+                winterDayStart.setItems(getDateList(winterMonthStart));
+                winterDayStart.getSelectionModel().select(maxDay);
+            }
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the month for the end of winter
+     */
+    public void onChangeWinterEndMonth() {
+        int month = Month.valueOf(winterMonthEnd.getSelectionModel().getSelectedItem().toUpperCase()).getValue();
+        if (month < summerMonthStartCache) {
+            int maxDay = getMaxDay(month);
+            winterMonthEndCache = month;
+            if (winterDayEndCache > maxDay) {
+                winterDayEnd.setItems(getDateList(winterMonthEnd));
+                winterDayEnd.getSelectionModel().select(maxDay);
+            }
+        } else if (((!(summerDayEndCache < winterDayEndCache)) && (month == summerMonthStartCache)) || month > summerMonthStartCache || month < winterMonthStartCache) {
+            String message = "Winter can only end after the start of Summer";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            winterMonthEnd.getSelectionModel().select(winterMonthEndCache);
+        } else {
+            int maxDay = getMaxDay(month);
+            winterMonthEndCache = month;
+            if (winterDayEndCache > maxDay) {
+                winterDayEnd.setItems(getDateList(winterMonthEnd));
+                winterDayEnd.getSelectionModel().select(maxDay);
+            }
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the day for the start of winter
+     */
+    public void onChangeWinterStartDay() {
+        int day = winterDayStart.getSelectionModel().getSelectedItem();
+        if (summerMonthStartCache.equals(winterMonthStartCache) && !(day > summerDayEndCache)) {
+            String message = "Winter can only start after the end of summer";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            winterDayStart.getSelectionModel().select(winterDayStartCache);
+        } else {
+            winterDayStartCache = day;
+        }
+    }
+
+    /**
+     * On change for the combobox controlling the day for the end of winter
+     */
+    public void onChangeWinterEndDay() {
+        int day = winterDayEnd.getSelectionModel().getSelectedItem();
+        if (summerMonthStartCache.equals(winterMonthStartCache) && !(day < summerDayStartCache)) {
+            String message = "Winter can only end before the start of summer";
+            Alert alert = new Alert(Alert.AlertType.WARNING, message);
+            alert.showAndWait();
+            LoginInfoController.consoleLogFile(message, ConsoleComponents.SHH);
+            winterDayEnd.getSelectionModel().select(winterDayEndCache);
+        } else {
+            winterDayEndCache = day;
+        }
+    }
+
+    /**
+     * function responsible for returning the correct season
+     */
+    public static Season getCurrentSeason(Calendar calendar) {
+        LocalDate summerStart = LocalDate.of(LocalDate.now().getYear(), Month.of(summerMonthStartCache), summerDayStartCache);
+        LocalDate summerEnd = LocalDate.of(LocalDate.now().getYear(), Month.of(summerMonthEndCache), summerDayEndCache);
+        LocalDate winterStart = LocalDate.of(LocalDate.now().getYear(), Month.of(winterMonthStartCache), winterDayStartCache);
+        LocalDate winterEnd = LocalDate.of(LocalDate.now().getYear(), Month.of(winterMonthEndCache), winterMonthEndCache);
+
+        LocalDate localCalendar = LocalDate.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
+
+        if (localCalendar.isAfter(summerStart) && localCalendar.isBefore(summerEnd)) {
+            return Season.SUMMER;
+        } else if (localCalendar.isAfter(winterStart) && localCalendar.isBefore(winterEnd)) {
+            return Season.WINTER;
+        } else {
+            return Season.OTHER;
+        }
+    }
+
+    /**
+     * Get maximal day of a month
+     */
+    private int getMaxDay(int month) {
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            return 30;
+        } else if (month == 2) {
+            return 29;
+        } else {
+            return 31;
+        }
+    }
+
+    /**
+     * Setter for summerMonthEnd
+     */
+    public static void setSummerMonthEndCache(final int summerMonthEndCache) {
+        EditSimulationController.summerMonthEndCache = summerMonthEndCache;
+    }
+
+    /**
+     * Getter for summerAway text field
+     *
+     * @return summerAwayTF
+     */
+    public TextField getSummerAwayTF(){
+        return summerAwayTF;
+    }
+    /**
+     * Getter for winterAway text field
+     *
+     * @return winterAwayTF
+     */
+    public TextField getWinterAwayTF(){
+        return winterAwayTF;
+    }
+
+    /**
+     * Getter for default summer temp
+     *
+     * @return defaultSummerTemp integer
+     */
+    public int getDefaultSummerTemp(){
+        return defaultSummerTemp;
+    }
+    /**
+     * Getter for default winter temp
+     *
+     * @return defaultWinterTemp integer
+     */
+    public int getDefaultWinterTemp(){
+        return defaultWinterTemp;
+    }
+
+    /**
+     * Getter for default summer label
+     *
+     * @return defaultSummer label
+     */
+    public Label getDefaultAwaySummer(){
+        return defaultAwaySummer;
+    }
+    /**
+     * Getter for default winter label
+     *
+     * @return defaultWinter label
+     */
+    public Label getDefaultAwayWinter(){
+        return defaultAwayWinter;
+    }
+
+    /**
+     * This method is called when the default temperature for away mode in summer label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultSummer(MouseEvent mouseEvent) {
+        defaultSummerContainer.getChildren().add(defaultAwaySummer);
+        summerAwayTF.setText(defaultAwaySummer.getText());
+        summerAwayTF.setPrefWidth(20 + (defaultAwaySummer.getText().length() * 5));
+        hBoxSummer.getChildren().add(0, summerAwayTF);
+        summerAwayTF.requestFocus();
+        summerAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.SUMMER);
+        });
+    }
+    /**
+     * This method is called when the default temperature for away mode in winter label is clicked
+     *
+     * @param mouseEvent The event that triggered the method call
+     */
+    public void setDefaultWinter(MouseEvent mouseEvent) {
+        defaultWinterContainer.getChildren().add(defaultAwayWinter);
+        winterAwayTF.setText(defaultAwayWinter.getText());
+        winterAwayTF.setPrefWidth(20 + (defaultAwayWinter.getText().length() * 5));
+        hBoxWinter.getChildren().add(0, winterAwayTF);
+        winterAwayTF.requestFocus();
+        winterAwayTF.setOnAction(e -> {
+            changeDefaultTemp(Season.WINTER);
+        });
+    }
+
+    /**
+     * This method is called on enter and modifies the default temperatures for away mode
+     * for each season
+     *
+     */
+    protected void changeDefaultTemp(Season season) {
+        int temp = 0;
+        if (season.equals(Season.SUMMER)){
+            defaultSummerContainer.getChildren().add(summerAwayTF);
+            hBoxSummer.getChildren().add(0, defaultAwaySummer);
+            defaultAwaySummer.setText(summerAwayTF.getText());
+            summerAwayTF.clear();
+            defaultSummerTemp = Integer.parseInt(defaultAwaySummer.getText());
+            temp = defaultSummerTemp;
+        }
+        else if (season.equals(Season.WINTER)){
+            defaultWinterContainer.getChildren().add(winterAwayTF);
+            hBoxWinter.getChildren().add(0, defaultAwayWinter);
+            defaultAwayWinter.setText(winterAwayTF.getText());
+            winterAwayTF.clear();
+            defaultWinterTemp = Integer.parseInt(defaultAwayWinter.getText());
+            temp = defaultWinterTemp;
+        }
+        LoginInfoController.consoleLogFile("Set the default temperature for " + season +
+                " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
+    }
+
 }
