@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToggleButton?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-color: #455A64;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginInfoController">
     <children>
         <MenuBar layoutY="2.0" onMouseDragged="#move" onMousePressed="#getLocation" styleClass="root" stylesheets="@application.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -162,7 +162,28 @@
                                                                 </Tab>
                                                                 <Tab style="-fx-background-color: #FFEB3B;" text="SHH">
                                                                     <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <AnchorPane fx:id="aPZone" layoutX="6.0" layoutY="-1.0" prefHeight="563.0" prefWidth="335.0">
+                                                               <children>
+                                                                  <ComboBox fx:id="comboRoom" layoutX="14.0" layoutY="28.0" prefHeight="27.0" prefWidth="143.0" />
+                                                                  <Label layoutX="15.0" layoutY="5.0" style="-fx-font-size: 12;" text="Room:" />
+                                                                  <VBox fx:id="vboxRooms" layoutX="15.0" layoutY="102.0" prefHeight="118.0" prefWidth="160.0" />
+                                                                  <Button fx:id="buttonAddRoom" cancelButton="true" layoutX="165.0" layoutY="28.0" mnemonicParsing="false" onAction="#addRoom" prefHeight="26.0" prefWidth="59.0" style="-fx-max-width: 50; -fx-font-size: 12;" text="Add" />
+                                                                  <Button fx:id="buttonCreateZone" layoutX="160.0" layoutY="107.0" mnemonicParsing="false" onAction="#createZone" style="-fx-max-width: 50; -fx-font-size: 12;" text="Create" />
+                                                                  <Label layoutX="15.0" layoutY="62.0" style="-fx-font-size: 12;" text="Selected Rooms:" />
+                                                                  <Label layoutX="151.0" layoutY="61.0" style="-fx-font-size: 12;" text="Zone:" />
+                                                                  <TextField fx:id="textZoneName" layoutX="150.0" layoutY="76.0" prefHeight="27.0" prefWidth="59.0" />
+                                                                  <Label layoutX="9.0" layoutY="225.0" style="-fx-font-size: 12;" text="Room name       8h-16h     16h-00h      00h-8h ">
+                                                                     <font>
+                                                                        <Font size="8.0" />
+                                                                     </font></Label>
+                                                                  <VBox fx:id="vboxZones" layoutX="8.0" layoutY="245.0" prefHeight="157.0" prefWidth="320.0" />
+                                                                  <Label layoutX="11.0" layoutY="403.0" prefHeight="19.0" prefWidth="181.0" style="-fx-font-size: 12;" text="Change Temperature" />
+                                                                  <VBox fx:id="vboxDesiredTemp" layoutX="10.0" layoutY="426.0" prefHeight="129.0" prefWidth="320.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children></AnchorPane>
                                                                     </content>
                                                                 </Tab>
                                                             </tabs>

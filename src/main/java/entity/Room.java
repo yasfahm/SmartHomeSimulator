@@ -11,6 +11,11 @@ public class Room {
     private ArrayList<Door> doors;
     private int lightsOn;
     private int lightsTotal;
+    private double roomTemperature;
+    private double currentRoomTemperature;
+    private boolean overrideTemperature;
+    private boolean hvacPaused;
+    private boolean hvacStopped;
 
     /**
      * Constructor for class Room
@@ -70,6 +75,34 @@ public class Room {
     }
 
     /**
+     * @return temperature of the room
+     */
+    public double getTemperature() {
+        return roomTemperature;
+    }
+
+    /**
+     * @param roomTemperature temperature of the room
+     */
+    public void setTemperature(double roomTemperature) {
+        this.roomTemperature = roomTemperature;
+    }
+
+    /**
+     * @return current temperature of the room
+     */
+    public double getCurrentTemperature() {
+        return currentRoomTemperature;
+    }
+
+    /**
+     * @param currentRoomTemperature of the room
+     */
+    public void setCurrentTemperature(double currentRoomTemperature) {
+        this.currentRoomTemperature = currentRoomTemperature;
+    }
+
+    /**
      * @return windows in the room
      */
     public ArrayList<Window> getWindows() {
@@ -98,6 +131,47 @@ public class Room {
     }
 
     /**
+     * @param overrideTemperature override temperature in a specific room
+     */
+    public void setOverride(boolean overrideTemperature) {
+        this.overrideTemperature = overrideTemperature;
+    }
+
+    /**
+     * @return overridden temperature
+     */
+    public boolean getOverride() {
+        return overrideTemperature;
+    }
+
+    /**
+     * @return HAVC pausing Heating, AC, Ventilation system
+     */
+    public boolean getHvacPaused(){
+        return hvacPaused;
+    }
+
+    /**
+     * @param hvacPaused pause/unpause HVAC
+     */
+    public void setHvacPaused(boolean hvacPaused) {
+        this.hvacPaused = hvacPaused;
+    }
+
+    /**
+     * @return HAVC stopping Heating, AC, Ventilation system
+     */
+    public boolean getHvacStopped() { return hvacStopped; }
+
+    /**
+     *
+     * @param hvacStopped stop/start HVAC
+     */
+    public void setHvacStopped(boolean hvacStopped) {
+        this.hvacStopped = hvacStopped;
+    }
+
+    /**
      * Builder pattern for Room Object
      */
     public static class Builder {
@@ -106,6 +180,7 @@ public class Room {
         private ArrayList<Door> doors;
         private int lightsOn;
         private int lightsTotal;
+        private double roomTemperature;
 
         public Builder(final String name) {
             this.name = name;
@@ -128,6 +203,11 @@ public class Room {
 
         public Builder withlightsTotal(final int lightsTotal) {
             this.lightsTotal = lightsTotal;
+            return this;
+        }
+
+        public Builder withRoomTemperature(final int roomTemperature) {
+            this.roomTemperature = roomTemperature;
             return this;
         }
 
