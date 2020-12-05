@@ -849,6 +849,29 @@ public class LoginInfoController implements Initializable, MainController {
                                     j = 2;
                                 }
 
+                                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5)/100) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+                                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
+                                    Timer t2 = new Timer();
+                                    t2.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText())  && room.getHvacStopped()) {
+                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5)/100) * 100.00) / 100.00);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+
                                 //when desired temperature is lower, AC will be turned on
                                 if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
                                     //AC should be turned on
@@ -856,28 +879,15 @@ public class LoginInfoController implements Initializable, MainController {
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (room.getCurrentTemperature() > room.getTemperature()) {
+                                            if (room.getCurrentTemperature() > room.getTemperature()  && !room.getHvacStopped()) {
                                                 room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
-                                                if (room.getCurrentTemperature() == room.getTemperature()) {
+                                                if (room.getCurrentTemperature() == room.getTemperature()   && !room.getHvacStopped()) {
                                                     room.setHvacPaused(true);
                                                 }
                                             }
                                             else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
-                                                    room.getCurrentTemperature() > room.getTemperature()) {
+                                                    room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
                                                 room.setHvacPaused(false);
-                                            }
-                                        }
-                                    }, 1000);
-                                }
-
-                                else if (room.getCurrentTemperature() > room.getTemperature() && room.getHvacStopped() &&
-                                        room.getCurrentTemperature() > Double.parseDouble(temperature.getText())) {
-                                    Timer t2 = new Timer();
-                                    t2.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText())) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5)/100) * 100.00) / 100.00);
                                             }
                                         }
                                     }, 1000);
@@ -891,31 +901,20 @@ public class LoginInfoController implements Initializable, MainController {
                                     t.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
-                                            if (room.getCurrentTemperature() < room.getTemperature() - 0.25) {
+                                            if (room.getCurrentTemperature() < room.getTemperature() - 0.25 && !room.getHvacStopped()) {
                                                 room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10)/100) * 100.00) / 100.00);
                                                 if (room.getCurrentTemperature() == room.getTemperature()) {
                                                     room.setHvacPaused(true);
                                                 }
                                             }
                                             else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
-                                                    room.getCurrentTemperature() < room.getTemperature()) {
+                                                    room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
                                                     room.setHvacPaused(false);
                                             }
                                         }
                                     }, 1000);
                                 }
-                                else if (room.getCurrentTemperature() < room.getTemperature() && room.getHvacStopped() &&
-                                        room.getCurrentTemperature() < Double.parseDouble(temperature.getText())) {
-                                    Timer t2 = new Timer();
-                                    t2.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-                                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText())) {
-                                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5)/100) * 100.00) / 100.00);
-                                            }
-                                        }
-                                    }, 1000);
-                                }
+
                             });
                         }
                     });
