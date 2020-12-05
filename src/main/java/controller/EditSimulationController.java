@@ -141,7 +141,6 @@ public class EditSimulationController implements Initializable, SubController {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         LoginInfoController.setGpZone(gpZones);
         LoginInfoController.setGpRooms(gpRooms);
-        //LoginInfoController.setGpRoomsTemp(gpRoomsTemp);
         window.setScene(loginInfoScene);
         window.show();
     }
