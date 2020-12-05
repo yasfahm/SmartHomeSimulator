@@ -4,11 +4,11 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.TextField?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="900.0" style="-fx-background-radius: 5;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditSimulationController">
    <children>
       <AnchorPane layoutX="6.0" onMouseDragged="#move" onMousePressed="#getLocation" prefHeight="750" prefWidth="900" styleClass="root" stylesheets="@application.css">
@@ -38,18 +38,18 @@
             <Label layoutX="15.0" layoutY="284.0" text="Change Season Dates" />
             <Label layoutX="25.0" layoutY="315.0" text="Summer" />
             <Label layoutX="25.0" layoutY="343.0" text="Winter" />
-            <ComboBox fx:id="summerDayStart" onAction="#onChangeSummerStartDay" layoutX="142.0" layoutY="312.0" prefHeight="25.0" prefWidth="71.0" />
-            <ComboBox fx:id="summerMonthStart" onAction="#onChangeSummerStartMonth" layoutX="224.0" layoutY="312.0" prefWidth="150.0" />
-            <ComboBox fx:id="winterDayStart" onAction="#onChangeWinterStartDay" layoutX="142.0" layoutY="340.0" prefHeight="25.0" prefWidth="71.0" />
-            <ComboBox fx:id="winterMonthStart" onAction="#onChangeWinterStartMonth" layoutX="224.0" layoutY="340.0" prefWidth="150.0" />
+            <ComboBox fx:id="summerDayStart" layoutX="142.0" layoutY="312.0" onAction="#onChangeSummerStartDay" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="summerMonthStart" layoutX="224.0" layoutY="312.0" onAction="#onChangeSummerStartMonth" prefWidth="150.0" />
+            <ComboBox fx:id="winterDayStart" layoutX="142.0" layoutY="340.0" onAction="#onChangeWinterStartDay" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="winterMonthStart" layoutX="224.0" layoutY="340.0" onAction="#onChangeWinterStartMonth" prefWidth="150.0" />
             <Label layoutX="96.0" layoutY="315.0" text="From:" />
             <Label layoutX="96.0" layoutY="343.0" text="From:" />
             <Label layoutX="402.0" layoutY="343.0" text="To:" />
             <Label layoutX="402.0" layoutY="315.0" text="To:" />
-            <ComboBox fx:id="summerDayEnd" onAction="#onChangeSummerEndDay" layoutX="439.0" layoutY="312.0" prefHeight="25.0" prefWidth="71.0" />
-            <ComboBox fx:id="summerMonthEnd" onAction="#onChangeSummerEndMonth" layoutX="522.0" layoutY="312.0" prefWidth="150.0" />
-            <ComboBox fx:id="winterDayEnd" onAction="#onChangeWinterEndDay" layoutX="439.0" layoutY="340.0" prefHeight="25.0" prefWidth="71.0" />
-            <ComboBox fx:id="winterMonthEnd" onAction="#onChangeWinterEndMonth" layoutX="522.0" layoutY="340.0" prefWidth="150.0" />
+            <ComboBox fx:id="summerDayEnd" layoutX="439.0" layoutY="312.0" onAction="#onChangeSummerEndDay" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="summerMonthEnd" layoutX="522.0" layoutY="312.0" onAction="#onChangeSummerEndMonth" prefWidth="150.0" />
+            <ComboBox fx:id="winterDayEnd" layoutX="439.0" layoutY="340.0" onAction="#onChangeWinterEndDay" prefHeight="25.0" prefWidth="71.0" />
+            <ComboBox fx:id="winterMonthEnd" layoutX="522.0" layoutY="340.0" onAction="#onChangeWinterEndMonth" prefWidth="150.0" />
             <Label layoutX="15.0" layoutY="200.0" text="Set Default Temperatures for Away Mode (in °C)" />
             <Label layoutX="25.0" layoutY="226.0" text="Summer:" />
             <Label layoutX="25.0" layoutY="251.0" text="Winter:" />
