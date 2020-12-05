@@ -377,20 +377,7 @@ public class LoginInfoController implements Initializable, MainController {
     public void initialize(URL location, ResourceBundle resources) {
         // any action at the first initialization
         if (firstLaunch) {
-            aPZone.setVisible(false);
-            firstLaunch = false;
-            ChangeDateTimeController.setParentController(this);
-            LightsScheduleController.setParentController(this);
-            SHPObserver.setParentController(this);
-            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
-            SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-            long sysmillis = System.currentTimeMillis();
-            timeInMillis = sysmillis;
-            Date d = new Date(sysmillis);
-            this.date.setText(formatDate.format(d));
-            this.time.setText(formatTime.format(d));
-            ConsoleService.initialize();
-            consoleLog("System initialized");
+            firstInitialization();
         }
         
         console.setText(ConsoleService.getConsole());
@@ -445,6 +432,23 @@ public class LoginInfoController implements Initializable, MainController {
 
         this.defaultAwaySummer.setText(Integer.toString(defaultSummerTemp));
         this.defaultAwayWinter.setText(Integer.toString(defaultWinterTemp));
+    }
+
+    private void firstInitialization() {
+        aPZone.setVisible(false);
+        firstLaunch = false;
+        ChangeDateTimeController.setParentController(this);
+        LightsScheduleController.setParentController(this);
+        SHPObserver.setParentController(this);
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy - MMMM - dd");
+        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
+        long sysmillis = System.currentTimeMillis();
+        timeInMillis = sysmillis;
+        Date d = new Date(sysmillis);
+        this.date.setText(formatDate.format(d));
+        this.time.setText(formatTime.format(d));
+        ConsoleService.initialize();
+        consoleLog("System initialized");
     }
 
     /**

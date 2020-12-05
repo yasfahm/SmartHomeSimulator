@@ -26,15 +26,19 @@ import service.DatabaseService;
 import service.HouseLayoutService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,6 +73,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
 
         mock = Mockito.mockStatic(EditSimulationController.class);
         mock.when(EditSimulationController::getUserLocations).thenReturn(null);
+        mock.when(() -> EditSimulationController.getCurrentSeason(Mockito.any(Calendar.class))).thenReturn(Season.SUMMER);
     }
 
     @BeforeEach
@@ -236,7 +241,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
      * Use case 8, Delivery 2
      */
     @Test
-    public void should_allow_away_mode() {
+    public void should_allow_away_mode() throws FileNotFoundException, ParseException {
         controller.onMouseClickAwayToggleON(null);
         assertTrue(LoginInfoController.isAwayMode());
     }
@@ -245,7 +250,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
      * Use case 8, Delivery 2
      */
     @Test
-    public void should_not_allow_away_mode() {
+    public void should_not_allow_away_mode() throws FileNotFoundException, ParseException {
         mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "not outside"));
         controller.onMouseClickAwayToggleON(null);
         assertFalse(LoginInfoController.isAwayMode());
@@ -255,7 +260,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
      * Use case 9, Delivery 2
      */
     @Test
-    public void should_notify_users_when_motion_detected_away_mode() throws IOException {
+    public void should_notify_users_when_motion_detected_away_mode() throws IOException, ParseException {
     	editSimulationLoader = new FXMLLoader(getClass().getResource("/view/editSimulation.fxml"));
         editSimulationLoader.load();
         editSimulationController = editSimulationLoader.getController();
@@ -300,7 +305,7 @@ public class LoginInfoControllerTest extends ApplicationTest {
      * Use case 10, Delivery 2
      */
     @Test
-    public void should_set_time_before_alert_on_user_input_away_mode() {
+    public void should_set_time_before_alert_on_user_input_away_mode() throws FileNotFoundException, ParseException {
         mock.when(EditSimulationController::getUserLocations).thenReturn(Map.of("user1", "Outside"));
         controller.onMouseClickAwayToggleON(null);
         controller.getTimeBeforeAlertField().setText("10");
