@@ -125,23 +125,4 @@ public class EditSimulationControllerTest extends ApplicationTest {
         assertEquals(Season.OTHER, EditSimulationController.getCurrentSeason(calendarSummer));
     }
 
-    @Test
-    public void test_set_defaultAwayModeTemps() {
-        Event.fireEvent(controller.getDefaultAwaySummer(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
-                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
-                true, true, true, true, true, true, null));
-
-        controller.getSummerAwayTF().setText("10");
-        controller.changeDefaultTemp(Season.SUMMER);
-        assertEquals(10, controller.getDefaultSummerTemp());
-
-        Event.fireEvent(controller.getDefaultAwayWinter(), new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
-                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
-                true, true, true, true, true, true, null));
-
-        controller.getWinterAwayTF().setText("11");
-        controller.changeDefaultTemp(Season.WINTER);
-        assertEquals(11, controller.getDefaultWinterTemp());
-    }
-
 }
