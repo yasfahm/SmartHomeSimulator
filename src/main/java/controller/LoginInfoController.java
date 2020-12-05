@@ -1283,7 +1283,7 @@ public class LoginInfoController implements Initializable, MainController {
 
             //creating two maps for available rooms and all the rooms to be used in SHH tab.
             for (Room room : roomArray) {
-                if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+                if(!room.getName().equals("Entrance") && !room.getName().equals("Backyard"))
                     availableRooms.put(room.getName(), room);
                     allRooms.put(room.getName(), room);
             }
@@ -1298,7 +1298,7 @@ public class LoginInfoController implements Initializable, MainController {
 
     private void drawTemperatureInRooms() {
         for (Room room : roomArray) {
-            if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+            if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                 Label roomName = new Label();
                 Label override = new Label();
                 TextField textFieldRoom = new TextField();
@@ -1414,7 +1414,7 @@ public class LoginInfoController implements Initializable, MainController {
         //display the current and desired temperature of each room in SHH tab
         time.textProperty().addListener((obs, oldV, newV) -> {
             for (Room room : roomArray) {
-                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+                if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                     try {
                         drawTemperature(room);
                     } catch (FileNotFoundException e) {
@@ -1507,7 +1507,7 @@ public class LoginInfoController implements Initializable, MainController {
         labelDoor.setText("DOOR");
 
         for (Room room : roomArray) {
-            if(!room.getName().equals("Entrance") && !room.getName().equals("Garage") && !room.getName().equals("Backyard"))
+            if(!room.getName().equals("Entrance") && !room.getName().equals("Backyard"))
                 availableRooms.put(room.getName(), room);
             allRooms.put(room.getName(), room);
         }
@@ -2132,7 +2132,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @param room that will call this function
      */
     public void drawTemperature(Room room) throws FileNotFoundException {
-        if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard") && !room.getName().equals("Garage")) {
+        if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
             Label temperature = new Label();
             temperature.setText(String.valueOf(room.getCurrentTemperature()));
             int[] coordinates = roomPosition.get(room.getName());
