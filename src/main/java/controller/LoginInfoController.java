@@ -182,9 +182,9 @@ public class LoginInfoController implements Initializable, MainController {
     private HashMap<String, Room> allRooms = new HashMap<>();
     private HashMap<String, Zone> zones = new HashMap<>();
 
-    private GridPane gpZone = new GridPane();
-    private GridPane gpRooms = new GridPane();
-    private GridPane gpRoomsTemp = new GridPane();
+    private static GridPane gpZone = new GridPane();
+    private static GridPane gpRooms = new GridPane();
+    private static GridPane gpRoomsTemp = new GridPane();
 
     private static int defaultSummerTemp = 22;
     private static int defaultWinterTemp = 18;
@@ -856,7 +856,6 @@ public class LoginInfoController implements Initializable, MainController {
             }
             //display the current and desired temperature of each room in SHH tab
             gpRoomsTemp.getChildren().clear();
-            vboxDesiredTemp.getChildren().clear();
 
             drawTemperatureInRooms();
 
@@ -1409,7 +1408,9 @@ public class LoginInfoController implements Initializable, MainController {
                 gpRoomsTemp.addRow(gpRoomsTemp.getRowCount(), textFieldRoom, setNewTemperature, roomName, override, hvacButton);
             }
         }
+        vboxDesiredTemp.getChildren().clear();
         vboxDesiredTemp.getChildren().add(gpRoomsTemp);
+        EditSimulationController.setGpRoomsTemp(gpRoomsTemp);
 
         //display the current and desired temperature of each room in SHH tab
         time.textProperty().addListener((obs, oldV, newV) -> {
@@ -1514,6 +1515,10 @@ public class LoginInfoController implements Initializable, MainController {
         comboRoom.getItems().addAll(availableRooms.keySet());
         vboxZones.getChildren().clear();
         vboxZones.getChildren().addAll(gpZone);
+        vboxRooms.getChildren().clear();
+        vboxRooms.getChildren().addAll(gpRooms);
+        vboxDesiredTemp.getChildren().clear();
+        vboxDesiredTemp.getChildren().addAll(gpRoomsTemp);
 
         //show the away mode status on house layout
         setUpAwayModeStatus();
@@ -2359,6 +2364,7 @@ public class LoginInfoController implements Initializable, MainController {
             gpRooms.addRow(gpRooms.getRowCount(), room, delete);
             vboxRooms.getChildren().clear();
             vboxRooms.getChildren().add(gpRooms);
+            EditSimulationController.setGpRooms(gpRooms);
         }
     }
 
@@ -2546,6 +2552,7 @@ public class LoginInfoController implements Initializable, MainController {
 
                 vboxZones.getChildren().clear();
                 vboxZones.getChildren().addAll(gpZone);
+                EditSimulationController.setGpZones(gpZone);
             }
         }
     }
@@ -3026,5 +3033,47 @@ public class LoginInfoController implements Initializable, MainController {
                         ConsoleComponents.SHH);
             }
         }
+    }
+
+    /**
+     * @param gpZone set the gpZone GridPane
+     */
+    public static void setGpZone (GridPane gpZone) {
+        LoginInfoController.gpZone = gpZone;
+    }
+
+    /**
+     * @return get the gpZone GridPane
+     */
+    public static GridPane getGpZone () {
+        return gpZone;
+    }
+
+    /**
+     * @param gpRooms set the gpRooms GridPane
+     */
+    public static void setGpRooms (GridPane gpRooms) {
+        LoginInfoController.gpRooms = gpRooms;
+    }
+
+    /**
+     * @return get the gpZone GridPane
+     */
+    public static GridPane getGpRooms () {
+        return gpRooms;
+    }
+
+    /**
+     * @param gpRoomsTemp set the gpRoomsTemp GridPane
+     */
+    public static void setGpRoomsTemp (GridPane gpRoomsTemp) {
+        LoginInfoController.gpZone = gpZone;
+    }
+
+    /**
+     * @return get the gpRoomsTemp GridPane
+     */
+    public static GridPane getGpRoomsTemp () {
+        return gpRoomsTemp;
     }
 }
