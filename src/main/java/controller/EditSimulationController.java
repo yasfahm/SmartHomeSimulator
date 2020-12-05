@@ -26,7 +26,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import observerPattern.SHPObserver;
 import observerPattern.Subject;
 import org.apache.commons.lang3.StringUtils;
