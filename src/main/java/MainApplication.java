@@ -16,9 +16,15 @@ public class MainApplication {
      * @throws ManagedProcessException Exception thrown if the DB unexpectedly crashes
      * @throws SQLException            Exception thrown if the DB is unable to start
      */
-    public static void main(String[] args) throws ManagedProcessException, SQLException {
-        SetupDatabase();
-        JavaFXController.main(args);
+    public static void main(String[] args) {
+        try {
+            SetupDatabase();
+            JavaFXController.main(args);
+        } catch (ManagedProcessException | SQLException e) {
+            throw new StartupFailureException(e);
+        } finally {
+            System.exit(0);
+        }
     }
 
     /**
