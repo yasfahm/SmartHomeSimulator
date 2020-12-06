@@ -539,7 +539,7 @@ public class LoginInfoController implements Initializable, MainController {
     }
     
     /*
-     * 
+     * This function handling the windows auto open during summer
      */
     private void handleSummerWindowsOpen() {
     	if(!season.getText().equals("SUMMER")) return;
