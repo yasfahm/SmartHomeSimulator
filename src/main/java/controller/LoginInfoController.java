@@ -2282,8 +2282,7 @@ public class LoginInfoController implements Initializable, MainController {
             if (temperature.getText().length() > 4) {
                 degree = 5;
             }
-            gc.fillText(temperature.getText() + " °C",coordinates[0] + 40, coordinates[1] + 45);
-//            if(Double.parseDouble(temperature.getText())<=0 && this.alterOnHold==false) alterPipeBurst();
+            gc.fillText(temperature.getText() + " Â°C",coordinates[0] + 40, coordinates[1] + 45);
             Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
             Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
             if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()
@@ -3120,7 +3119,7 @@ public class LoginInfoController implements Initializable, MainController {
             temp = defaultWinterTemp;
         }
         consoleLog("Set the default temperature for " + season +
-                " when the home is in away mode to "  + temp + " °C.", ConsoleComponents.SHH);
+                " when the home is in away mode to "  + temp + " Â°C.", ConsoleComponents.SHH);
     }
 
     /**
