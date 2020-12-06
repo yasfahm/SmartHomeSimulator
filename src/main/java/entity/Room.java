@@ -2,6 +2,8 @@ package entity;
 
 import java.util.ArrayList;
 
+import javafx.scene.image.ImageView;
+
 /**
  * class Room to represent Room objects in the house
  */
@@ -18,6 +20,7 @@ public class Room {
     private boolean hvacStopped;
     private boolean temperatureDefault;
     private boolean settingTemperature;
+    private ImageView[] imageView = new ImageView[5];
 
     /**
      * Constructor for class Room
@@ -32,6 +35,20 @@ public class Room {
         this.windows = windows;
         this.doors = doors;
         this.lightsTotal = lightsTotal;
+    }
+    
+    /**
+     * @param imageView image view object
+     */
+    public void setImageView(ImageView[] imageView) {
+    	this.imageView = imageView;
+    }
+    
+    /**
+     * @return image view object
+     */
+    public ImageView[] getImageView() {
+    	return this.imageView;
     }
 
     /**

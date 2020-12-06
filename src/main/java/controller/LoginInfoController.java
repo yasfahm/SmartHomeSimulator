@@ -212,6 +212,7 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     private double clockSpeed = 1;
+    private static boolean alterOnHold = false;
 
     /**
      * Sets up the logged in user as the active user
@@ -532,9 +533,44 @@ public class LoginInfoController implements Initializable, MainController {
 	        textFieldTemperature.requestFocus();
 	        textFieldTemperature.setOnAction(e -> {  // on enter key
 	            changeTemperatureOnEnter();
+	            handleSummerWindowsOpen();
 	        });
     	}
     }
+    
+    /*
+     * This function handling the windows auto open during summer
+     */
+    private void handleSummerWindowsOpen() {
+    	if(!season.getText().equals("SUMMER")) return;
+    	for (Room r : roomArray) {
+            Image windowOpenTop = null,windowOpenBottom = null,windowOpenLeft = null,windowOpenRight = null;
+			try {
+				windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+				windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+				windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+				windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+            if(LoginInfoController.temperatureInInt < r.getCurrentTemperature()) {
+                for (Window w : r.getWindows()) { 
+                    if (w.getBlocking()) 
+                    	consoleLog("Open windows failed. " + r.getName() + "'s " + w.getPosition() + " windows is blocked");
+                    else {
+                    	w.setOpenWindow(true);
+                    	drawWindows(r, w.getPosition().toString());
+                    	switch(w.getPosition().toString()) {
+	                    	case "TOP":   	r.getImageView()[0].setImage(windowOpenTop);
+	                    	case "LEFT":   	r.getImageView()[1].setImage(windowOpenLeft);
+	                    	case "RIGHT":   r.getImageView()[2].setImage(windowOpenRight);
+	                    	case "BOTTOM":  r.getImageView()[3].setImage(windowOpenBottom);
+                    	}
+                    }
+                }
+            }
+        }
+	}
 
     /**
      * On Enter functionality for the textFieldTemperature
@@ -930,6 +966,7 @@ public class LoginInfoController implements Initializable, MainController {
                 ImageView windowsRight = new ImageView(windowCloseRight);
                 ImageView windowsBottom = new ImageView(windowCloseBottom);
                 ImageView windowsEmpty = new ImageView(windowEmpty);
+                roomArray[i].setImageView(new ImageView[]{windowsTop,windowsLeft,windowsRight,windowsBottom,windowsEmpty});
 
                 int finalI = i;
                 ArrayList<Window> windowList = roomArray[i].getWindows();
@@ -1439,6 +1476,7 @@ public class LoginInfoController implements Initializable, MainController {
             for (Room room : roomArray) {
                 if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                     try {
+                    	if(room.getCurrentTemperature()<=0 && this.alterOnHold==false) alterPipeBurst();
                         drawTemperature(room);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -1661,6 +1699,7 @@ public class LoginInfoController implements Initializable, MainController {
             ImageView windowsRight = new ImageView(windowCloseRight);
             ImageView windowsBottom = new ImageView(windowCloseBottom);
             ImageView windowsEmpty = new ImageView(windowEmpty);
+            roomArray[i].setImageView(new ImageView[]{windowsTop,windowsLeft,windowsRight,windowsBottom,windowsEmpty});
 
             int finalI = i;
             ArrayList<Window> windowList = roomArray[i].getWindows();
@@ -2243,7 +2282,7 @@ public class LoginInfoController implements Initializable, MainController {
             if (temperature.getText().length() > 4) {
                 degree = 5;
             }
-            gc.fillText(temperature.getText().substring(0, degree) + "°C",coordinates[0] + 40, coordinates[1] + 45);
+            gc.fillText(temperature.getText() + " °C",coordinates[0] + 40, coordinates[1] + 45);
             Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
             Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
             if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()
@@ -2270,6 +2309,18 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     /**
+     * Alerting the user for a potential pipe burst
+     */
+    private void alterPipeBurst() {
+    	if(this.alterOnHold==false) {
+        	this.alterOnHold = true;
+        	consoleLog("The temperature inside room is 0 degree,there is a potential pipes burst, please increase the temperature in the room!");
+        	Alert alert = new Alert(Alert.AlertType.WARNING, "The temperature inside room is 0 degree, "
+        			+ "there is a potential pipes burst, please increase the temperature in the room!");
+        	javafx.application.Platform.runLater(alert::showAndWait);
+        }
+	}
+	/**
      * This function will draw the lights with a given room.
      *
      * @param room where light will be drawn.
@@ -2584,7 +2635,7 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
                                         //when desired temperature is higher but HVAC is stopped
                                         if (zone.getRooms().get(finalI).getCurrentTemperature() < Double.parseDouble(temperature.getText()) && zone.getRooms().get(finalI).getHvacStopped()) {
@@ -2597,7 +2648,7 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
 
                                         //when desired temperature is lower, AC will be turned on
@@ -2618,7 +2669,7 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setHvacPaused(false);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
 
 
