@@ -697,7 +697,6 @@ public class LoginInfoController implements Initializable, MainController {
         }
     }
 
-
     /**
      * Sets up the current active user and all possible options
      */
