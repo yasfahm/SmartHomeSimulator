@@ -371,6 +371,10 @@ public class LoginInfoController implements Initializable, MainController {
     public void resetClockSpeed(ActionEvent event) {
     	this.clockSpeed = 1;
     	playClockAnimation();
+    	for(Room r: roomArray) {
+    		System.out.println(r.getName() + "     \t" + r.getTemperature() + "\t" + r.getCurrentTemperature() + "\t" + r.getOverride() + "\t" + r.getTemperatureDefault());
+    	}
+    	System.out.println(awayMode);
     }
     
     /**
@@ -542,7 +546,7 @@ public class LoginInfoController implements Initializable, MainController {
      * This function handling the windows auto open during summer
      */
     private void handleSummerWindowsOpen() {
-    	if(!season.getText().equals("SUMMER")) return;
+    	if(!season.getText().equals("SUMMER") || awayMode==true) return;
     	for (Room r : roomArray) {
             Image windowOpenTop = null,windowOpenBottom = null,windowOpenLeft = null,windowOpenRight = null;
 			try {
@@ -984,7 +988,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -994,6 +998,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsTop.setImage(windowCloseTop);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1017,7 +1024,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1027,6 +1034,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsLeft.setImage(windowCloseLeft);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1050,7 +1060,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1060,6 +1070,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsRight.setImage(windowCloseRight);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1083,7 +1096,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1093,6 +1106,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsBottom.setImage(windowCloseBottom);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1377,6 +1393,21 @@ public class LoginInfoController implements Initializable, MainController {
                 setNewTemperature.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
+                    	
+                    	if (userRole.getText().equals(UserRoles.GUEST.toString())) {
+                            if (!(!Objects.isNull(EditSimulationController.getUserLocations()) && !Objects.isNull(EditSimulationController.getUserLocations().get(selectedUser.getSelectionModel().getSelectedItem())))) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Current user has no permissions for this action as they are not in the same room");
+                                alert.showAndWait();
+                                return;
+                            }
+
+                            if (!room.getName().equals(EditSimulationController.getUserLocations().get(selectedUser.getSelectionModel().getSelectedItem()))) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Current user has no permissions for this action as they are not in the same room");
+                                alert.showAndWait();
+                                return;
+                            }
+                        }
+                    	
                         if (textFieldRoom.getText().equals("")) {
                             consoleLog("Please enter a temperature for " + room.getName() + " first.", ConsoleComponents.SHH);
                             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
@@ -1716,7 +1747,8 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
+                        	System.out.println("MOUSE " + awayMode + (awayMode==true));
+                            if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1727,6 +1759,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     windowsTop.setImage(windowCloseTop);
                                 }
 
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1748,7 +1783,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1758,7 +1793,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsLeft.setImage(windowCloseLeft);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1780,7 +1817,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1790,7 +1827,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsRight.setImage(windowCloseRight);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1812,7 +1851,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                             	if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1822,7 +1861,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsBottom.setImage(windowCloseBottom);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -2282,7 +2323,7 @@ public class LoginInfoController implements Initializable, MainController {
             if (temperature.getText().length() > 4) {
                 degree = 5;
             }
-            gc.fillText(temperature.getText() + " Â°C",coordinates[0] + 40, coordinates[1] + 45);
+            gc.fillText(temperature.getText() + " À°C",coordinates[0] + 40, coordinates[1] + 45);
             Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
             Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
             if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()
@@ -2481,6 +2522,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @param event The event that called this function
      */
     public void addRoom(ActionEvent event) throws FileNotFoundException {
+    	
         String selectedRoom = comboRoom.getValue();
         if (selectedRoom == null) {
             consoleLog("Please select a room first.");
@@ -2522,6 +2564,11 @@ public class LoginInfoController implements Initializable, MainController {
      * @param event that calls this function
      */
     public void createZone(ActionEvent event) {
+    	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+    		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+            alert.showAndWait();
+            return;
+    	}
         if (selectedRooms.size() == 0) {
             consoleLog("Please add a room/rooms first.");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please add a room/rooms first.");
@@ -2563,6 +2610,11 @@ public class LoginInfoController implements Initializable, MainController {
                     delete.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
+                        	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+                        		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+                                alert.showAndWait();
+                                return;
+                        	}
                             consoleLog(roomName + " from zone " + zoneName + " has been deleted.");
                             availableRooms.put(roomName, allRooms.get(roomName));
                             comboRoom.getItems().clear();
@@ -2594,6 +2646,11 @@ public class LoginInfoController implements Initializable, MainController {
                     setTemp.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
+                        	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+                        		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+                                alert.showAndWait();
+                                return;
+                        	}
                             consoleLog( "Temperature for zone " + zoneName + " has been set.", ConsoleComponents.SHH);
                             temps[0] = Double.parseDouble(temp1.getText());
                             temps[1] = Double.parseDouble(temp2.getText());
@@ -3119,7 +3176,7 @@ public class LoginInfoController implements Initializable, MainController {
             temp = defaultWinterTemp;
         }
         consoleLog("Set the default temperature for " + season +
-                " when the home is in away mode to "  + temp + " Â°C.", ConsoleComponents.SHH);
+                " when the home is in away mode to "  + temp + " À°C.", ConsoleComponents.SHH);
     }
 
     /**
