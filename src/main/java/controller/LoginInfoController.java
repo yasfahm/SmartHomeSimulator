@@ -212,6 +212,7 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     private double clockSpeed = 1;
+    private static boolean alterOnHold = false;
 
     /**
      * Sets up the logged in user as the active user
@@ -370,6 +371,10 @@ public class LoginInfoController implements Initializable, MainController {
     public void resetClockSpeed(ActionEvent event) {
     	this.clockSpeed = 1;
     	playClockAnimation();
+    	for(Room r: roomArray) {
+    		System.out.println(r.getName() + "     \t" + r.getTemperature() + "\t" + r.getCurrentTemperature() + "\t" + r.getOverride() + "\t" + r.getTemperatureDefault());
+    	}
+    	System.out.println(awayMode);
     }
     
     /**
@@ -532,9 +537,44 @@ public class LoginInfoController implements Initializable, MainController {
 	        textFieldTemperature.requestFocus();
 	        textFieldTemperature.setOnAction(e -> {  // on enter key
 	            changeTemperatureOnEnter();
+	            handleSummerWindowsOpen();
 	        });
     	}
     }
+    
+    /*
+     * This function handling the windows auto open during summer
+     */
+    private void handleSummerWindowsOpen() {
+    	if(!season.getText().equals("SUMMER") || awayMode==true) return;
+    	for (Room r : roomArray) {
+            Image windowOpenTop = null,windowOpenBottom = null,windowOpenLeft = null,windowOpenRight = null;
+			try {
+				windowOpenTop = new Image(new FileInputStream("src/main/resources/Images/windowOpenTop.png"), 60, 27, true, false);
+				windowOpenBottom = new Image(new FileInputStream("src/main/resources/Images/windowOpenBottom.png"), 60, 27, true, false);
+				windowOpenLeft = new Image(new FileInputStream("src/main/resources/Images/windowOpenLeft.png"), 60, 27, true, false);
+				windowOpenRight = new Image(new FileInputStream("src/main/resources/Images/windowOpenRight.png"), 60, 27, true, false);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+            if(LoginInfoController.temperatureInInt < r.getCurrentTemperature()) {
+                for (Window w : r.getWindows()) { 
+                    if (w.getBlocking()) 
+                    	consoleLog("Open windows failed. " + r.getName() + "'s " + w.getPosition() + " windows is blocked");
+                    else {
+                    	w.setOpenWindow(true);
+                    	drawWindows(r, w.getPosition().toString());
+                    	switch(w.getPosition().toString()) {
+	                    	case "TOP":   	r.getImageView()[0].setImage(windowOpenTop);
+	                    	case "LEFT":   	r.getImageView()[1].setImage(windowOpenLeft);
+	                    	case "RIGHT":   r.getImageView()[2].setImage(windowOpenRight);
+	                    	case "BOTTOM":  r.getImageView()[3].setImage(windowOpenBottom);
+                    	}
+                    }
+                }
+            }
+        }
+	}
 
     /**
      * On Enter functionality for the textFieldTemperature
@@ -696,7 +736,6 @@ public class LoginInfoController implements Initializable, MainController {
             });
         }
     }
-
 
     /**
      * Sets up the current active user and all possible options
@@ -931,6 +970,7 @@ public class LoginInfoController implements Initializable, MainController {
                 ImageView windowsRight = new ImageView(windowCloseRight);
                 ImageView windowsBottom = new ImageView(windowCloseBottom);
                 ImageView windowsEmpty = new ImageView(windowEmpty);
+                roomArray[i].setImageView(new ImageView[]{windowsTop,windowsLeft,windowsRight,windowsBottom,windowsEmpty});
 
                 int finalI = i;
                 ArrayList<Window> windowList = roomArray[i].getWindows();
@@ -948,7 +988,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -958,6 +998,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsTop.setImage(windowCloseTop);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -981,7 +1024,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -991,6 +1034,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsLeft.setImage(windowCloseLeft);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1014,7 +1060,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1024,6 +1070,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsRight.setImage(windowCloseRight);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1047,7 +1096,7 @@ public class LoginInfoController implements Initializable, MainController {
                         windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent e) {
-                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
+                                if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                     if (!windowList.get(finalJ).getOpenWindow()) {
                                         windowList.get(finalJ).setOpenWindow(true);
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1057,6 +1106,9 @@ public class LoginInfoController implements Initializable, MainController {
                                         drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                         windowsBottom.setImage(windowCloseBottom);
                                     }
+                                } else if (awayMode == true) {
+                                	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                    alert.showAndWait();
                                 }
                                 else {
                                 	consoleLog("This window is blocked");
@@ -1341,6 +1393,21 @@ public class LoginInfoController implements Initializable, MainController {
                 setNewTemperature.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
+                    	
+                    	if (userRole.getText().equals(UserRoles.GUEST.toString())) {
+                            if (!(!Objects.isNull(EditSimulationController.getUserLocations()) && !Objects.isNull(EditSimulationController.getUserLocations().get(selectedUser.getSelectionModel().getSelectedItem())))) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Current user has no permissions for this action as they are not in the same room");
+                                alert.showAndWait();
+                                return;
+                            }
+
+                            if (!room.getName().equals(EditSimulationController.getUserLocations().get(selectedUser.getSelectionModel().getSelectedItem()))) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Current user has no permissions for this action as they are not in the same room");
+                                alert.showAndWait();
+                                return;
+                            }
+                        }
+                    	
                         if (textFieldRoom.getText().equals("")) {
                             consoleLog("Please enter a temperature for " + room.getName() + " first.", ConsoleComponents.SHH);
                             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a room first.");
@@ -1353,6 +1420,7 @@ public class LoginInfoController implements Initializable, MainController {
                             room.setTemperatureDefault(false);
                             time.textProperty().addListener((observable, oldValue, newValue) -> {
                                 if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                    room.setSettingTemperature(true);
                                     Timer t2 = new Timer();
                                     t2.schedule(new TimerTask() {
                                         @Override
@@ -1364,6 +1432,7 @@ public class LoginInfoController implements Initializable, MainController {
                                     }, 1000);
                                 }
                                 if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                    room.setSettingTemperature(true);
                                     Timer t2 = new Timer();
                                     t2.schedule(new TimerTask() {
                                         @Override
@@ -1378,6 +1447,7 @@ public class LoginInfoController implements Initializable, MainController {
                                 //when desired temperature is lower, AC will be turned on
                                 if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
                                     //AC should be turned on
+                                    room.setSettingTemperature(true);
                                     Timer t = new Timer();
                                     t.schedule(new TimerTask() {
                                         @Override
@@ -1399,6 +1469,7 @@ public class LoginInfoController implements Initializable, MainController {
                                 //when desired temperature is higher, Heater will be turned on
                                 if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
                                     //Heater should be turned on
+                                    room.setSettingTemperature(true);
                                     Timer t = new Timer();
                                     t.schedule(new TimerTask() {
                                         @Override
@@ -1436,6 +1507,7 @@ public class LoginInfoController implements Initializable, MainController {
             for (Room room : roomArray) {
                 if (!room.getName().equals("Entrance") && !room.getName().equals("Backyard")) {
                     try {
+                    	if(room.getCurrentTemperature()<=0 && this.alterOnHold==false) alterPipeBurst();
                         drawTemperature(room);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -1531,6 +1603,79 @@ public class LoginInfoController implements Initializable, MainController {
                 availableRooms.put(room.getName(), room);
             allRooms.put(room.getName(), room);
         }
+
+        //--------------------
+        for (Room room : roomArray) {
+            time.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped() && room.getSettingTemperature()) {
+                    Timer t2 = new Timer();
+                    t2.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (room.getCurrentTemperature() > Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
+                            }
+                        }
+                    }, 1000);
+                }
+                if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped() && room.getSettingTemperature()) {
+                    Timer t2 = new Timer();
+                    t2.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (room.getCurrentTemperature() < Double.parseDouble(temperature.getText()) && room.getHvacStopped()) {
+                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
+                            }
+                        }
+                    }, 1000);
+                }
+
+                //when desired temperature is lower, AC will be turned on
+                if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped() && room.getSettingTemperature() && room.getSettingTemperature()) {
+                    //AC should be turned on
+                    Timer t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 - 10) / 100) * 100.00) / 100.00);
+                                if (room.getCurrentTemperature() == room.getTemperature() && !room.getHvacStopped()) {
+                                    room.setHvacPaused(true);
+                                }
+                            } else if (room.getHvacPaused() && (room.getCurrentTemperature() - room.getTemperature()) > 0.25 &&
+                                    room.getCurrentTemperature() > room.getTemperature() && !room.getHvacStopped()) {
+                                room.setHvacPaused(false);
+                            }
+                        }
+                    }, 1000);
+                }
+
+
+                //when desired temperature is higher, Heater will be turned on
+                if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped() && room.getSettingTemperature()) {
+                    //Heater should be turned on
+                    Timer t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                room.setCurrentTemperature(Math.round(((room.getCurrentTemperature() * 100 + 10) / 100) * 100.00) / 100.00);
+                                if (room.getCurrentTemperature() == room.getTemperature()) {
+                                    room.setHvacPaused(true);
+                                }
+                            } else if (room.getHvacPaused() && (room.getTemperature() - room.getCurrentTemperature()) > 0.25 &&
+                                    room.getCurrentTemperature() < room.getTemperature() && !room.getHvacStopped()) {
+                                room.setHvacPaused(false);
+                            }
+                        }
+                    }, 1000);
+                }
+
+            });
+        }
+        //--------------------
+
+
         comboRoom.getItems().addAll(availableRooms.keySet());
         vboxZones.getChildren().clear();
         vboxZones.getChildren().addAll(gpZone);
@@ -1585,6 +1730,7 @@ public class LoginInfoController implements Initializable, MainController {
             ImageView windowsRight = new ImageView(windowCloseRight);
             ImageView windowsBottom = new ImageView(windowCloseBottom);
             ImageView windowsEmpty = new ImageView(windowEmpty);
+            roomArray[i].setImageView(new ImageView[]{windowsTop,windowsLeft,windowsRight,windowsBottom,windowsEmpty});
 
             int finalI = i;
             ArrayList<Window> windowList = roomArray[i].getWindows();
@@ -1601,7 +1747,8 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsTop.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking()) {
+                        	System.out.println("MOUSE " + awayMode + (awayMode==true));
+                            if (windowList.get(finalJ).getPosition().toString() == "TOP" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1612,6 +1759,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     windowsTop.setImage(windowCloseTop);
                                 }
 
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1633,7 +1783,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsLeft.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "LEFT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1643,7 +1793,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsLeft.setImage(windowCloseLeft);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1665,7 +1817,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsRight.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "RIGHT" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                                 if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1675,7 +1827,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsRight.setImage(windowCloseRight);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -1697,7 +1851,7 @@ public class LoginInfoController implements Initializable, MainController {
                     windowsBottom.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
-                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking()) {
+                            if (windowList.get(finalJ).getPosition().toString() == "BOTTOM" && !windowList.get(finalJ).getBlocking() && !awayMode) {
                             	if (!windowList.get(finalJ).getOpenWindow()) {
                                     windowList.get(finalJ).setOpenWindow(true);
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
@@ -1707,7 +1861,9 @@ public class LoginInfoController implements Initializable, MainController {
                                     drawWindows(roomArray[finalI], windowList.get(finalJ).getPosition().toString());
                                     windowsBottom.setImage(windowCloseBottom);
                                 }
-								
+                            } else if (awayMode == true) {
+                            	Alert alert = new Alert(Alert.AlertType.WARNING, "Not allow to open window in away mode.");
+                                alert.showAndWait();
                             } else {
                             	consoleLog("This window is blocked");
                                 Alert alert = new Alert(Alert.AlertType.WARNING, "This window path is blocked.");
@@ -2167,7 +2323,7 @@ public class LoginInfoController implements Initializable, MainController {
             if (temperature.getText().length() > 4) {
                 degree = 5;
             }
-            gc.fillText(temperature.getText().substring(0, degree) + "Â°C",coordinates[0] + 40, coordinates[1] + 45);
+            gc.fillText(temperature.getText() + " À°C",coordinates[0] + 40, coordinates[1] + 45);
             Image heater = new Image(new FileInputStream("src/main/resources/Images/heater.png"), 60, 27, true, false);
             Image ac = new Image(new FileInputStream("src/main/resources/Images/airconditioning.png"), 60, 27, true, false);
             if(!room.getHvacStopped() && room.getTemperature() > room.getCurrentTemperature() && !room.getTemperatureDefault()
@@ -2194,6 +2350,18 @@ public class LoginInfoController implements Initializable, MainController {
     }
 
     /**
+     * Alerting the user for a potential pipe burst
+     */
+    private void alterPipeBurst() {
+    	if(this.alterOnHold==false) {
+        	this.alterOnHold = true;
+        	consoleLog("The temperature inside room is 0 degree,there is a potential pipes burst, please increase the temperature in the room!");
+        	Alert alert = new Alert(Alert.AlertType.WARNING, "The temperature inside room is 0 degree, "
+        			+ "there is a potential pipes burst, please increase the temperature in the room!");
+        	javafx.application.Platform.runLater(alert::showAndWait);
+        }
+	}
+	/**
      * This function will draw the lights with a given room.
      *
      * @param room where light will be drawn.
@@ -2354,6 +2522,7 @@ public class LoginInfoController implements Initializable, MainController {
      * @param event The event that called this function
      */
     public void addRoom(ActionEvent event) throws FileNotFoundException {
+    	
         String selectedRoom = comboRoom.getValue();
         if (selectedRoom == null) {
             consoleLog("Please select a room first.");
@@ -2395,6 +2564,11 @@ public class LoginInfoController implements Initializable, MainController {
      * @param event that calls this function
      */
     public void createZone(ActionEvent event) {
+    	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+    		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+            alert.showAndWait();
+            return;
+    	}
         if (selectedRooms.size() == 0) {
             consoleLog("Please add a room/rooms first.");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please add a room/rooms first.");
@@ -2436,6 +2610,11 @@ public class LoginInfoController implements Initializable, MainController {
                     delete.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent e) {
+                        	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+                        		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+                                alert.showAndWait();
+                                return;
+                        	}
                             consoleLog(roomName + " from zone " + zoneName + " has been deleted.");
                             availableRooms.put(roomName, allRooms.get(roomName));
                             comboRoom.getItems().clear();
@@ -2467,6 +2646,11 @@ public class LoginInfoController implements Initializable, MainController {
                     setTemp.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
+                        	if(userRole.getText().equals(UserRoles.CHILD.toString()) || userRole.getText().equals(UserRoles.STRANGER.toString())|| userRole.getText().equals(UserRoles.GUEST.toString())) {
+                        		Alert alert = new Alert(Alert.AlertType.WARNING, "You do not have the permission for such action.");
+                                alert.showAndWait();
+                                return;
+                        	}
                             consoleLog( "Temperature for zone " + zoneName + " has been set.", ConsoleComponents.SHH);
                             temps[0] = Double.parseDouble(temp1.getText());
                             temps[1] = Double.parseDouble(temp2.getText());
@@ -2499,6 +2683,7 @@ public class LoginInfoController implements Initializable, MainController {
                                         //when desired temperature is lower but HVAC is stopped
                                         if (zone.getRooms().get(finalI).getCurrentTemperature() > Double.parseDouble(temperature.getText())
                                                 && zone.getRooms().get(finalI).getHvacStopped()) {
+                                            zone.getRooms().get(finalI).setSettingTemperature(true);
                                             Timer t2 = new Timer();
                                             t2.schedule(new TimerTask() {
                                                 @Override
@@ -2507,10 +2692,11 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 - 5) / 100) * 100.00) / 100.00);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
                                         //when desired temperature is higher but HVAC is stopped
                                         if (zone.getRooms().get(finalI).getCurrentTemperature() < Double.parseDouble(temperature.getText()) && zone.getRooms().get(finalI).getHvacStopped()) {
+                                            zone.getRooms().get(finalI).setSettingTemperature(true);
                                             Timer t2 = new Timer();
                                             t2.schedule(new TimerTask() {
                                                 @Override
@@ -2519,12 +2705,13 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setCurrentTemperature(Math.round(((zone.getRooms().get(finalI).getCurrentTemperature() * 100 + 5) / 100) * 100.00) / 100.00);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
 
                                         //when desired temperature is lower, AC will be turned on
                                         if (zone.getRooms().get(finalI).getCurrentTemperature() > zone.getRooms().get(finalI).getTemperature() && !zone.getRooms().get(finalI).getHvacStopped()) {
                                             //AC should be turned on
+                                            zone.getRooms().get(finalI).setSettingTemperature(true);
                                             Timer t = new Timer();
                                             t.schedule(new TimerTask() {
                                                 @Override
@@ -2539,13 +2726,14 @@ public class LoginInfoController implements Initializable, MainController {
                                                         zone.getRooms().get(finalI).setHvacPaused(false);
                                                     }
                                                 }
-                                            }, 1000);
+                                            }, (long) clockSpeed);
                                         }
 
 
                                         //when desired temperature is higher, Heater will be turned on
                                         if (zone.getRooms().get(finalI).getCurrentTemperature() < zone.getRooms().get(finalI).getTemperature() && !zone.getRooms().get(finalI).getHvacStopped()) {
                                             //Heater should be turned on
+                                            zone.getRooms().get(finalI).setSettingTemperature(true);
                                             Timer t = new Timer();
                                             t.schedule(new TimerTask() {
                                                 @Override
@@ -2988,7 +3176,7 @@ public class LoginInfoController implements Initializable, MainController {
             temp = defaultWinterTemp;
         }
         consoleLog("Set the default temperature for " + season +
-                " when the home is in away mode to "  + temp + " Â°C.", ConsoleComponents.SHH);
+                " when the home is in away mode to "  + temp + " À°C.", ConsoleComponents.SHH);
     }
 
     /**

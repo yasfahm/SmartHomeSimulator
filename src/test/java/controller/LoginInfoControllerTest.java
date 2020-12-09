@@ -7,6 +7,7 @@ import constants.Season;
 import entity.Door;
 import entity.Room;
 import entity.Window;
+import entity.Zone;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -395,5 +396,74 @@ public class LoginInfoControllerTest extends ApplicationTest {
         controller.getWinterAwayTF().setText("11");
         controller.changeDefaultTemp(Season.WINTER);
         assertEquals(11, controller.getDefaultWinterTemp());
+    }
+
+    /**
+     * Use Case 1, Delivery 3
+     */
+    @Test
+    public void set_zones_heating_cooling() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+
+        ArrayList<Room> selectedRooms = new ArrayList<>();
+        selectedRooms.add(rooms.get("Living Room"));
+        selectedRooms.add(rooms.get("Bedroom 1"));
+
+        Zone zone = new Zone("Zone 1", selectedRooms);
+
+        assertEquals(zone.getName(), "Zone 1");
+        assertEquals(zone.getRooms().size(), 2);
+        assertEquals(zone.getRooms().get(0).getName(), "Living Room");
+        assertEquals(zone.getRooms().get(1).getName(), "Bedroom 1");
+    }
+
+    /**
+     * Use Case 2, Delivery 3
+     */
+    @Test
+    public void set_temperature_in_zones() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+
+        ArrayList<Room> selectedRooms = new ArrayList<>();
+        selectedRooms.add(rooms.get("Living Room"));
+        selectedRooms.add(rooms.get("Bedroom 1"));
+
+        Zone zone = new Zone("Zone 1", selectedRooms);
+        double[] zoneTemperature = new double[]{23, 20, 18};
+        zone.setZoneTemp(zoneTemperature);
+        assertEquals(zone.getZoneTemp()[0], 23);
+        assertEquals(zone.getZoneTemp()[1], 20);
+        assertEquals(zone.getZoneTemp()[2], 18);
+    }
+
+    /**
+     * Use Case 3, Delivery 3
+     */
+    @Test
+    public void display_current_temperature() throws IOException {
+        File file = new File("src/test/resources/houseLayout.txt");
+        Room[] roomArray = HouseLayoutService.parseHouseLayout(file);
+        HashMap<String, Room> rooms = new HashMap<>();
+        for (Room room : roomArray) {
+            rooms.put(room.getName(), room);
+        }
+
+        Room kitchen = rooms.get("Kitchen");
+        Room garage = rooms.get("Garage");
+        kitchen.setTemperature(25);
+        garage.setTemperature(12);
+
+        assertEquals(kitchen.getTemperature(), 25);
+        assertEquals(garage.getTemperature(), 12);
     }
 }
